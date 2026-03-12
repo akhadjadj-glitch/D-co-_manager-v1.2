@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#6366f1">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Décor Pro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;min-height:-webkit-fill-available}
+input,select,textarea,button{font:inherit;font-size:16px}
+.hdr{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:rgba(15,23,42,0.9);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.logo span{width:36px;height:36px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.ibtn{width:40px;height:40px;border:none;background:rgba(255,255,255,0.1);color:#fff;border-radius:10px;font-size:18px;cursor:pointer}
+.cnt{padding:16px;padding-bottom:100px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.stat{background:rgba(255,255,255,0.05);border-radius:12px;padding:12px 8px;text-align:center}
+.stat b{display:block;font-size:20px;background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat small{font-size:10px;color:#64748b;text-transform:uppercase}
+.sec{margin-bottom:24px}
+.sec-t{font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;margin-bottom:12px}
+.card{background:rgba(255,255,255,0.05);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.05)}
+.card:active{background:rgba(255,255,255,0.1)}
+.card-i{font-size:28px}
+.card-c{flex:1;min-width:0}
+.card-c h3{font-size:15px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-c p{font-size:12px;color:#64748b}
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.fab{position:fixed;bottom:max(20px,calc(env(safe-area-inset-bottom)+12px));right:20px;width:56px;height:56px;border:none;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px;font-size:28px;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,0.4);z-index:50}
+.empty{text-align:center;padding:60px 20px;color:#64748b}
+.empty div{font-size:48px;margin-bottom:12px;opacity:0.5}
+.bk{display:flex;align-items:center;gap:4px;color:#6366f1;font-size:14px;background:none;border:none;cursor:pointer;margin-bottom:12px}
+.ttl{font-size:22px;font-weight:700;margin-bottom:4px}
+.sub{font-size:13px;color:#64748b;margin-bottom:16px}
+.box{background:rgba(255,255,255,0.05);border-radius:14px;padding:14px;margin-bottom:16px}
+.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.row:last-child{border:none}
+.row span:first-child{color:#64748b;font-size:13px}
+.row span:last-child{font-size:13px;font-weight:500}
+.acts{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.act{flex:1;min-width:100px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:#e2e8f0;font-size:13px;text-align:center;cursor:pointer}
+.act.p{background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:#fff}
+.act.d{color:#ef4444}
+.tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto}
+.tab{padding:8px 14px;border-radius:8px;border:none;background:rgba(255,255,255,0.05);color:#94a3b8;font-size:13px;cursor:pointer;white-space:nowrap}
+.tab.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:flex-end;justify-content:center;z-index:1000}
+.mpan{background:#1e293b;border-radius:20px 20px 0 0;padding:20px;padding-bottom:max(20px,calc(env(safe-area-inset-bottom)+12px));width:100%;max-width:500px;max-height:85vh;overflow-y:auto}
+.mbar{width:36px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 16px}
+.mtit{font-size:18px;font-weight:700;text-align:center;margin-bottom:16px}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12px;color:#94a3b8;margin-bottom:4px}
+.fld input,.fld select,.fld textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);color:#f1f5f9}
+.fld textarea{min-height:70px;resize:none}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-weight:600;cursor:pointer;margin-bottom:10px}
+.btn.p{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
+.btn.s{background:rgba(255,255,255,0.05);color:#94a3b8}
+.btn.d{background:rgba(239,68,68,0.15);color:#ef4444}
+.drop{border:2px dashed rgba(99,102,241,0.4);border-radius:14px;padding:24px;text-align:center;cursor:pointer;margin-bottom:14px;background:rgba(99,102,241,0.05)}
+.drop div{font-size:28px;margin-bottom:6px}
+.phgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.phgrid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px}
+.phmain{border-radius:14px;overflow:hidden;margin-bottom:14px;aspect-ratio:4/3;background:#1e293b}
+.phmain img{width:100%;height:100%;object-fit:cover}
+.phrow{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px}
+.phrow div{width:50px;height:50px;border-radius:8px;overflow:hidden;flex-shrink:0;cursor:pointer}
+.phrow img{width:100%;height:100%;object-fit:cover}
+.chip{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;background:rgba(255,255,255,0.1);margin-right:6px;margin-bottom:6px}
+.menu{position:fixed;inset:0;z-index:500}
+.menu-bg{position:absolute;inset:0;background:rgba(0,0,0,0.6)}
+.menu-p{position:absolute;top:0;right:0;bottom:0;width:260px;background:#1e293b;padding:20px;padding-top:max(20px,env(safe-area-inset-top));overflow-y:auto}
+.menu-i{display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;margin-bottom:6px;cursor:pointer;background:rgba(255,255,255,0.03)}
+.total{background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.2));border-radius:14px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.total span{color:#a5b4fc;font-size:13px}
+.total b{font-size:22px}
+.fbox{background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.2);border-radius:12px;padding:12px;margin-bottom:14px}
+.fbox h4{color:#ec4899;font-size:13px;margin-bottom:10px}
+.fltr{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px}
+.fltr button{padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;white-space:nowrap}
+.fltr button.on{background:#6366f1;color:#fff;border-color:#6366f1}
+.exp{background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.exp-i{flex:1}
+.exp-i h4{font-size:14px;font-weight:600;margin-bottom:2px}
+.exp-i p{font-size:11px;color:#64748b}
+.exp-v{font-size:18px;font-weight:700;color:#10b981}
+.view{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:2000;display:flex;flex-direction:column}
+.view-h{display:flex;justify-content:space-between;padding:16px;padding-top:max(16px,env(safe-area-inset-top))}
+.view-b{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+.view-b img{max-width:100%;max-height:100%;object-fit:contain}
+.view-f{padding:20px;padding-bottom:max(20px,calc(env(safe-area-inset-bottom)+12px))}
+.srch{position:relative;margin-bottom:14px}
+.srch input{width:100%;padding:10px 10px 10px 36px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#f1f5f9}
+.srch::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px}
+@media print{body{background:#fff;color:#000}.hdr,.fab,.acts,.tabs,.bk,.menu{display:none!important}.cnt{padding:10px}.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.pgrid div{border:1px solid #ccc;padding:6px;text-align:center;break-inside:avoid}.pgrid img{width:100%;height:80px;object-fit:cover}.pgrid p{font-size:9px;margin-top:4px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// DATA
+const RUB=[{id:'mobilier',n:'Mobilier',i:'🪑',c:'#6366f1'},{id:'accessoires',n:'Accessoires',i:'🎭',c:'#ec4899'},{id:'regie',n:'Régie',i:'🏢',c:'#14b8a6'},{id:'luminaires',n:'Luminaires',i:'💡',c:'#f59e0b'},{id:'deco',n:'Déco',i:'🖼️',c:'#8b5cf6'},{id:'textiles',n:'Textiles',i:'🧵',c:'#ef4444'},{id:'consommables',n:'Consommables',i:'📦',c:'#64748b'}];
+const STAT=[{id:'a_sourcer',l:'À sourcer',c:'#64748b'},{id:'en_recherche',l:'En recherche',c:'#f59e0b'},{id:'valide',l:'Validé',c:'#3b82f6'},{id:'reserve',l:'Réservé',c:'#6366f1'},{id:'loue',l:'En location',c:'#ec4899'},{id:'livre',l:'Livré',c:'#14b8a6'},{id:'installe',l:'Installé',c:'#10b981'},{id:'restitue',l:'Restitué',c:'#22c55e'}];
+const STATD=[{id:'a_preparer',l:'À préparer',c:'#64748b'},{id:'en_cours',l:'En cours',c:'#f59e0b'},{id:'pret',l:'Prêt',c:'#10b981'},{id:'en_tournage',l:'En tournage',c:'#6366f1'},{id:'termine',l:'Terminé',c:'#22c55e'}];
+const TPROJ=[{id:'film',l:'Long-métrage',i:'🎬'},{id:'serie',l:'Série',i:'📺'},{id:'pub',l:'Publicité',i:'📢'},{id:'clip',l:'Clip',i:'🎵'}];
+const TDEP=[{id:'location',l:'Location'},{id:'achat',l:'Achat'},{id:'transport',l:'Transport'},{id:'caution',l:'Caution'},{id:'autre',l:'Autre'}];
+
+// STATE
+let D=JSON.parse(localStorage.getItem('dp7')||'{"projets":[],"loueurs":[],"depenses":[]}');
+if(!D.depenses)D.depenses=[];
+let V='home',P=null,DC=null,EL=null,LO=null,RB=null,M=null,MN=false,TB='rub',VW=null,FR='',FD='',SQ='',DS='date';
+const sv=()=>localStorage.setItem('dp7',JSON.stringify(D));
+const gs=id=>STAT.find(s=>s.id===id)||STAT[0];
+const gsd=id=>STATD.find(s=>s.id===id)||STATD[0];
+const gr=id=>RUB.find(r=>r.id===id);
+const gt=id=>TPROJ.find(t=>t.id===id);
+const gl=id=>D.loueurs.find(l=>l.id===id);
+const fd=d=>d?new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}):'-';
+const fm=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);
+
+// RENDER
+function R(){
+  let h='';
+  h+=`<header class="hdr"><div class="logo"><span>🎬</span>Décor Pro</div><button class="ibtn" onclick="MN=true;R()">☰</button></header>`;
+  h+=`<main class="cnt">`;
+  
+  if(V==='home') h+=rHome();
+  else if(V==='proj') h+=rProj();
+  else if(V==='dec') h+=rDec();
+  else if(V==='el') h+=rEl();
+  else if(V==='lou') h+=rLou();
+  else if(V==='loud') h+=rLouD();
+  else if(V==='acc') h+=rAcc();
+  else if(V==='dep') h+=rDep();
+  else if(V==='print') h+=rPrint();
+  
+  h+=`</main>`;
+  if(M) h+=rModal();
+  if(MN) h+=rMenu();
+  if(VW!==null) h+=rView();
+  
+  document.getElementById('app').innerHTML=h;
+  bind();
+}
+
+function rHome(){
+  let np=D.projets.length,nd=0,ne=0,nl=D.loueurs.length,td=D.depenses.reduce((s,d)=>s+(parseFloat(d.montant)||0),0);
+  D.projets.forEach(p=>{nd+=p.decors?.length||0;p.decors?.forEach(d=>ne+=d.elements?.length||0)});
+  
+  let h=`<div class="stats"><div class="stat"><b>${np}</b><small>Projets</small></div><div class="stat"><b>${nd}</b><small>Décors</small></div><div class="stat"><b>${ne}</b><small>Éléments</small></div><div class="stat"><b>${nl}</b><small>Loueurs</small></div></div>`;
+  
+  if(td>0) h+=`<div class="total"><span>💰 Total dépenses</span><b>${fm(td)}</b></div>`;
+  
+  h+=`<div class="sec"><div class="sec-t">Projets</div>`;
+  if(!D.projets.length) h+=`<div class="empty"><div>🎬</div>Aucun projet</div>`;
+  else D.projets.forEach(p=>{
+    const t=gt(p.type);
+    h+=`<div class="card" onclick="P=D.projets.find(x=>x.id==='${p.id}');V='proj';R()"><span class="card-i">${t?.i||'📁'}</span><div class="card-c"><h3>${p.nom}</h3><p>${p.decors?.length||0} décors ${p.production?'• '+p.production:''}</p></div><span style="color:#64748b">›</span></div>`;
+  });
+  h+=`</div><button class="fab" onclick="M='np'">+</button>`;
+  return h;
+}
+
+function rProj(){
+  if(!P) return'';
+  const t=gt(P.type);
+  const td=D.depenses.filter(d=>d.projetId===P.id).reduce((s,d)=>s+(parseFloat(d.montant)||0),0);
+  
+  let h=`<button class="bk" onclick="V='home';P=null;R()">← Retour</button>`;
+  h+=`<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:12px"><span style="font-size:32px">${t?.i||'📁'}</span><div><div class="ttl">${P.nom}</div><div class="sub">${t?.l||''} ${P.production?'• '+P.production:''}</div></div></div>`;
+  
+  if(td>0) h+=`<div class="total"><span>💰 Budget</span><b>${fm(td)}</b></div>`;
+  
+  h+=`<div class="acts"><button class="act" onclick="V='dep';R()">💰 Dépenses</button><button class="act" onclick="V='acc';R()">🎭 Accessoires</button><button class="act" onclick="M='ep'">✏️</button><button class="act d" onclick="delP()">🗑️</button></div>`;
+  
+  h+=`<div class="sec"><div class="sec-t">Décors (${P.decors?.length||0})</div>`;
+  if(!P.decors?.length) h+=`<div class="empty"><div>🎭</div>Aucun décor</div>`;
+  else P.decors.forEach(d=>{
+    const st=gsd(d.statut);
+    h+=`<div class="card" onclick="DC=P.decors.find(x=>x.id==='${d.id}');V='dec';TB='rub';R()"><span class="card-i">${d.interieur?'🏠':'🌳'}</span><div class="card-c"><h3>${d.nom}</h3><p><span class="badge" style="background:${st.c}30;color:${st.c}">${st.l}</span> ${d.elements?.length||0} éléments</p></div><span style="color:#64748b">›</span></div>`;
+  });
+  h+=`</div><button class="fab" onclick="M='nd'">+</button>`;
+  return h;
+}
+
+function rDec(){
+  if(!DC) return'';
+  const st=gsd(DC.statut);
+  
+  let h=`<button class="bk" onclick="V='proj';DC=null;R()">← ${P.nom}</button>`;
+  h+=`<div class="ttl">${DC.nom}</div><div class="sub" style="display:flex;align-items:center;gap:8px"><span class="badge" style="background:${st.c}30;color:${st.c}">${st.l}</span>${DC.adresse?'📍 '+DC.adresse:''}</div>`;
+  
+  h+=`<div class="tabs"><button class="tab ${TB==='rub'?'on':''}" onclick="TB='rub';R()">Rubriques</button><button class="tab ${TB==='info'?'on':''}" onclick="TB='info';R()">Infos</button><button class="tab ${TB==='ph'?'on':''}" onclick="TB='ph';R()">📷 Photos</button></div>`;
+  
+  if(TB==='rub'){
+    h+=`<div class="sec">`;
+    RUB.forEach(r=>{
+      const els=DC.elements?.filter(e=>e.rubrique===r.id)||[];
+      h+=`<div class="card" onclick="RB=RUB.find(x=>x.id==='${r.id}');M='rub'"><div class="card-i" style="width:40px;height:40px;background:${r.c}20;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">${r.i}</div><div class="card-c"><h3>${r.n}</h3><p>${els.length} éléments</p></div><span style="color:#64748b">›</span></div>`;
+    });
+    h+=`</div>`;
+  } else if(TB==='info'){
+    h+=`<div class="box"><div class="row"><span>Type</span><span>${DC.interieur?'Intérieur':'Extérieur'} • ${DC.studio?'Studio':'Naturel'}</span></div>`;
+    if(DC.dateInstallation) h+=`<div class="row"><span>Installation</span><span>${fd(DC.dateInstallation)}</span></div>`;
+    if(DC.dateTournage) h+=`<div class="row"><span>Tournage</span><span>${fd(DC.dateTournage)}</span></div>`;
+    h+=`</div><div class="acts"><button class="act" onclick="M='ed'">✏️ Modifier</button><button class="act d" onclick="delD()">🗑️</button></div>`;
+  } else if(TB==='ph'){
+    const ph=[];
+    DC.elements?.forEach(e=>e.photos?.forEach(p=>ph.push({...p,el:e})));
+    h+=`<div class="acts"><button class="act p" onclick="V='print';R()">🖨️ Imprimer vignettes</button></div>`;
+    if(ph.length){
+      h+=`<div class="phgrid">`;
+      ph.forEach(p=>h+=`<div style="position:relative"><img src="${p.data}"><div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.8));padding:4px;font-size:9px;color:#fff">${p.el.nom}</div></div>`);
+      h+=`</div>`;
+    } else h+=`<div class="empty"><div>📷</div>Aucune photo</div>`;
+  }
+  
+  h+=`<button class="fab" onclick="M='ne'">+</button>`;
+  return h;
+}
+
+function rEl(){
+  if(!EL) return'';
+  const st=gs(EL.statut);
+  const rb=gr(EL.rubrique);
+  const lo=EL.loueurId?gl(EL.loueurId):null;
+  
+  let h=`<button class="bk" onclick="V='dec';EL=null;R()">← ${DC.nom}</button>`;
+  
+  if(EL.photos?.length){
+    h+=`<div class="phmain"><img src="${EL.photos[0].data}"></div>`;
+    if(EL.photos.length>1){
+      h+=`<div class="phrow">`;
+      EL.photos.forEach((p,i)=>h+=`<div onclick="VW=${i}"><img src="${p.data}"></div>`);
+      h+=`<div style="background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center" onclick="addPh()">+</div></div>`;
+    }
+  } else {
+    h+=`<div class="phmain" style="display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="addPh()"><div style="text-align:center;color:#64748b"><div style="font-size:40px;margin-bottom:8px">📷</div>Ajouter des photos</div></div>`;
+  }
+  
+  h+=`<div class="ttl">${EL.nom}</div>`;
+  h+=`<div style="margin-bottom:12px">`;
+  if(rb) h+=`<span class="chip">${rb.i} ${rb.n}</span>`;
+  if(EL.role) h+=`<span class="chip">👤 ${EL.role}</span>`;
+  if(EL.dateJeu) h+=`<span class="chip">📅 ${fd(EL.dateJeu)}</span>`;
+  h+=`</div>`;
+  
+  h+=`<div class="fld"><label>Statut</label><select id="st" onchange="EL.statut=this.value;sv();R()" style="background:${st.c}20;color:${st.c};border-color:${st.c}">`;
+  STAT.forEach(s=>h+=`<option value="${s.id}" ${s.id===EL.statut?'selected':''}>${s.l}</option>`);
+  h+=`</select></div>`;
+  
+  h+=`<div class="box">`;
+  if(EL.description) h+=`<div style="margin-bottom:10px"><small style="color:#64748b">Description</small><p style="margin-top:4px">${EL.description}</p></div>`;
+  if(EL.dimensions) h+=`<div class="row"><span>Dimensions</span><span>${EL.dimensions}</span></div>`;
+  if(EL.couleur) h+=`<div class="row"><span>Couleur</span><span>${EL.couleur}</span></div>`;
+  if(EL.quantite) h+=`<div class="row"><span>Quantité</span><span>${EL.quantite}</span></div>`;
+  h+=`</div>`;
+  
+  if(lo) h+=`<div class="box" style="background:rgba(99,102,241,0.1)"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:24px">🏪</span><div><div style="font-weight:600;color:#a5b4fc">${lo.nom}</div>${lo.telephone?`<a href="tel:${lo.telephone}" style="color:#64748b;font-size:12px">📞 ${lo.telephone}</a>`:''}</div></div></div>`;
+  
+  if(EL.dateDepart||EL.dateRetour||EL.coutLocation){
+    h+=`<div class="box"><div style="font-weight:600;margin-bottom:8px">📦 Location</div>`;
+    if(EL.dateDepart) h+=`<div class="row"><span>Départ</span><span>${fd(EL.dateDepart)}</span></div>`;
+    if(EL.dateRetour) h+=`<div class="row"><span>Retour</span><span>${fd(EL.dateRetour)}</span></div>`;
+    if(EL.coutLocation) h+=`<div class="row"><span>Coût</span><span>${fm(EL.coutLocation)}</span></div>`;
+    h+=`</div>`;
+  }
+  
+  h+=`<div class="acts"><button class="act" onclick="M='ee'">✏️ Modifier</button><button class="act d" onclick="delE()">🗑️</button></div>`;
+  return h;
+}
+
+function rAcc(){
+  let items=[];
+  D.projets.forEach(p=>p.decors?.forEach(d=>d.elements?.filter(e=>e.rubrique==='accessoires').forEach(e=>items.push({...e,dc:d,pj:p}))));
+  if(P) items=items.filter(e=>e.pj.id===P.id);
+  
+  const roles=[...new Set(items.map(e=>e.role).filter(Boolean))];
+  if(FR) items=items.filter(e=>e.role===FR);
+  if(FD) items=items.filter(e=>e.dateJeu===FD);
+  if(SQ) items=items.filter(e=>e.nom?.toLowerCase().includes(SQ.toLowerCase())||e.role?.toLowerCase().includes(SQ.toLowerCase()));
+  
+  let h=`<button class="bk" onclick="V=${P?'\'proj\'':'\'home\''};R()">← Retour</button>`;
+  h+=`<div class="ttl">🎭 Accessoires</div><div class="sub">${items.length} accessoires</div>`;
+  
+  h+=`<div class="srch"><input placeholder="Rechercher..." value="${SQ}" oninput="SQ=this.value;R()"></div>`;
+  h+=`<div class="fltr"><button class="${!FR?'on':''}" onclick="FR='';R()">Tous</button>`;
+  roles.forEach(r=>h+=`<button class="${FR===r?'on':''}" onclick="FR='${r}';R()">👤 ${r}</button>`);
+  h+=`</div>`;
+  h+=`<div class="fld"><label>Date de jeu</label><input type="date" value="${FD}" onchange="FD=this.value;R()"></div>`;
+  
+  if(!items.length) h+=`<div class="empty"><div>🎭</div>Aucun accessoire</div>`;
+  else items.forEach(e=>{
+    const st=gs(e.statut);
+    h+=`<div class="card" onclick="P=D.projets.find(x=>x.id==='${e.pj.id}');DC=P.decors.find(x=>x.id==='${e.dc.id}');EL=DC.elements.find(x=>x.id==='${e.id}');V='el';R()">`;
+    if(e.photos?.length) h+=`<img src="${e.photos[0].data}" style="width:44px;height:44px;object-fit:cover;border-radius:8px">`;
+    else h+=`<div style="width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center">🎭</div>`;
+    h+=`<div class="card-c"><h3>${e.nom}</h3><p>${e.role?'👤 '+e.role:''} ${e.dateJeu?'📅 '+fd(e.dateJeu):''}</p></div></div>`;
+  });
+  return h;
+}
+
+function rDep(){
+  let deps=D.depenses.filter(d=>!P||d.projetId===P?.id);
+  const total=deps.reduce((s,d)=>s+(parseFloat(d.montant)||0),0);
+  
+  if(DS==='date') deps.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+  else if(DS==='montant') deps.sort((a,b)=>(b.montant||0)-(a.montant||0));
+  
+  let h=`<button class="bk" onclick="V=${P?'\'proj\'':'\'home\''};R()">← Retour</button>`;
+  h+=`<div class="ttl">💰 Dépenses</div><div class="sub">${deps.length} dépenses</div>`;
+  h+=`<div class="total"><span>Total</span><b>${fm(total)}</b></div>`;
+  h+=`<div class="fltr"><button class="${DS==='date'?'on':''}" onclick="DS='date';R()">📅 Date</button><button class="${DS==='montant'?'on':''}" onclick="DS='montant';R()">💶 Montant</button></div>`;
+  
+  if(!deps.length) h+=`<div class="empty"><div>💰</div>Aucune dépense</div>`;
+  else deps.forEach(d=>{
+    const t=TDEP.find(x=>x.id===d.type)||TDEP[4];
+    h+=`<div class="exp"><div class="exp-i"><h4>${d.description||t.l}</h4><p>${fd(d.date)} ${d.fournisseur?'• '+d.fournisseur:''}</p></div><div class="exp-v">${fm(d.montant)}</div></div>`;
+  });
+  h+=`<button class="fab" onclick="M='ndep'">+</button>`;
+  return h;
+}
+
+function rPrint(){
+  if(!DC) return'';
+  const ph=[];
+  DC.elements?.forEach(e=>e.photos?.forEach(p=>ph.push({...p,el:e})));
+  
+  let h=`<div style="text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid rgba(255,255,255,0.2)"><h2 style="margin:0">${P.nom} - ${DC.nom}</h2><p style="color:#64748b;margin-top:4px">${ph.length} photos</p></div>`;
+  h+=`<div class="acts"><button class="act" onclick="V='dec';TB='ph';R()">← Retour</button><button class="act p" onclick="window.print()">🖨️ Imprimer</button></div>`;
+  h+=`<div class="pgrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">`;
+  ph.forEach(p=>h+=`<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;text-align:center"><img src="${p.data}" style="width:100%;height:80px;object-fit:cover;border-radius:6px"><p style="font-size:10px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.el.nom}</p></div>`);
+  h+=`</div>`;
+  return h;
+}
+
+function rLou(){
+  let h=`<button class="bk" onclick="V='home';R()">← Retour</button>`;
+  h+=`<div class="ttl">🏪 Loueurs</div><div class="sub">${D.loueurs.length} loueurs</div>`;
+  if(!D.loueurs.length) h+=`<div class="empty"><div>🏪</div>Aucun loueur</div>`;
+  else D.loueurs.forEach(l=>{
+    h+=`<div class="card" onclick="LO=D.loueurs.find(x=>x.id==='${l.id}');V='loud';R()"><div style="width:40px;height:40px;background:rgba(99,102,241,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center">🏪</div><div class="card-c"><h3>${l.nom}</h3>${l.specialite?`<p>${l.specialite}</p>`:''}</div>${l.telephone?`<a href="tel:${l.telephone}" onclick="event.stopPropagation()" style="width:36px;height:36px;background:rgba(16,185,129,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center">📞</a>`:''}</div>`;
+  });
+  h+=`<button class="fab" onclick="M='nl'">+</button>`;
+  return h;
+}
+
+function rLouD(){
+  if(!LO) return'';
+  let h=`<button class="bk" onclick="V='lou';LO=null;R()">← Loueurs</button>`;
+  h+=`<div class="ttl">🏪 ${LO.nom}</div>${LO.specialite?`<div class="sub">${LO.specialite}</div>`:''}`;
+  h+=`<div class="acts">${LO.telephone?`<a href="tel:${LO.telephone}" class="act p" style="text-decoration:none">📞 Appeler</a>`:''}${LO.email?`<a href="mailto:${LO.email}" class="act" style="text-decoration:none">✉️ Email</a>`:''}</div>`;
+  h+=`<div class="box">`;
+  if(LO.contact) h+=`<div class="row"><span>Contact</span><span>${LO.contact}</span></div>`;
+  if(LO.telephone) h+=`<div class="row"><span>Téléphone</span><span>${LO.telephone}</span></div>`;
+  if(LO.adresse) h+=`<div class="row"><span>Adresse</span><span>${LO.adresse}</span></div>`;
+  h+=`</div>`;
+  h+=`<div class="acts"><button class="act" onclick="M='el'">✏️</button><button class="act d" onclick="delL()">🗑️</button></div>`;
+  return h;
+}
+
+function rMenu(){
+  return `<div class="menu"><div class="menu-bg" onclick="MN=false;R()"></div><div class="menu-p"><h3 style="margin:0 0 20px">⚙️ Menu</h3><div class="menu-i" onclick="V='home';MN=false;R()">🏠 Tableau de bord</div><div class="menu-i" onclick="V='lou';MN=false;R()">🏪 Loueurs</div><div class="menu-i" onclick="P=null;V='dep';MN=false;R()">💰 Dépenses</div><div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1)"><div class="menu-i" onclick="expD()">💾 Exporter</div><label class="menu-i" style="cursor:pointer">📥 Importer<input type="file" accept=".json" style="display:none" onchange="impD(event)"></label></div></div></div>`;
+}
+
+function rView(){
+  const phs=EL?.photos||[];
+  if(!phs[VW]) return'';
+  return `<div class="view"><div class="view-h"><button style="background:none;border:none;color:#fff;cursor:pointer" onclick="VW=null;R()">✕ Fermer</button><span style="color:#64748b">${VW+1}/${phs.length}</span></div><div class="view-b"><img src="${phs[VW].data}"></div><div class="view-f"><button class="btn d" onclick="delPh()">🗑️ Supprimer</button></div></div>`;
+}
+
+function rModal(){
+  let c='';
+  
+  if(M==='np'){
+    c=`<div class="mbar"></div><div class="mtit">🎬 Nouveau projet</div>
+    <div class="fld"><label>Nom *</label><input id="f1"></div>
+    <div class="fld"><label>Type</label><select id="f2">${TPROJ.map(t=>`<option value="${t.id}">${t.i} ${t.l}</option>`).join('')}</select></div>
+    <div class="fld"><label>Production</label><input id="f3"></div>
+    <div class="cols"><div class="fld"><label>Réalisateur</label><input id="f4"></div><div class="fld"><label>Chef déco</label><input id="f5"></div></div>
+    <div class="cols"><div class="fld"><label>Début</label><input type="date" id="f6"></div><div class="fld"><label>Fin</label><input type="date" id="f7"></div></div>
+    <button class="btn p" onclick="saveP()">Créer</button><button class="btn s" onclick="M=null;R()">Annuler</button>`;
+  } else if(M==='nd'){
+    c=`<div class="mbar"></div><div class="mtit">🎭 Nouveau décor</div>
+    <div class="fld"><label>Nom *</label><input id="f1"></div>
+    <div class="fld"><label>Adresse</label><input id="f2"></div>
+    <div class="cols"><div class="fld"><label>Type</label><select id="f3"><option value="1">🏠 Intérieur</option><option value="0">🌳 Extérieur</option></select></div><div class="fld"><label>Nature</label><select id="f4"><option value="0">🏡 Naturel</option><option value="1">🎬 Studio</option></select></div></div>
+    <div class="fld"><label>Statut</label><select id="f5">${STATD.map(s=>`<option value="${s.id}">${s.l}</option>`).join('')}</select></div>
+    <div class="cols"><div class="fld"><label>Installation</label><input type="date" id="f6"></div><div class="fld"><label>Tournage</label><input type="date" id="f7"></div></div>
+    <button class="btn p" onclick="saveDC()">Créer</button><button class="btn s" onclick="M=null;R()">Annuler</button>`;
+  } else if(M==='ne'){
+    c=`<div class="mbar"></div><div class="mtit">📦 Nouvel élément</div>
+    <div class="drop" onclick="document.getElementById('phi').click()"><div id="phpr"></div><div id="phpl"><div>📸</div><div style="font-weight:600">Photos</div><small style="color:#64748b">Plusieurs possibles</small></div><input type="file" accept="image/*" multiple id="phi" style="display:none" onchange="prvPh(event)"></div>
+    <div class="fld"><label>Nom *</label><input id="f1"></div>
+    <div class="cols"><div class="fld"><label>Rubrique</label><select id="f2">${RUB.map(r=>`<option value="${r.id}" ${r.id===RB?.id?'selected':''}>${r.i} ${r.n}</option>`).join('')}</select></div><div class="fld"><label>Statut</label><select id="f3">${STAT.map(s=>`<option value="${s.id}">${s.l}</option>`).join('')}</select></div></div>
+    <div class="fld"><label>Description</label><textarea id="f4"></textarea></div>
+    <div class="cols"><div class="fld"><label>Dimensions</label><input id="f5" placeholder="L x l x H"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="1"></div></div>
+    <div class="cols"><div class="fld"><label>Couleur</label><input id="f7"></div><div class="fld"><label>Matière</label><input id="f8"></div></div>
+    <div class="fbox"><h4>🎭 Accessoire de jeu</h4><div class="cols"><div class="fld" style="margin:0"><label>Rôle</label><input id="f9" placeholder="Personnage"></div><div class="fld" style="margin:0"><label>Date jeu</label><input type="date" id="f10"></div></div></div>
+    ${D.loueurs.length?`<div class="fld"><label>Loueur</label><select id="f11"><option value="">Aucun</option>${D.loueurs.map(l=>`<option value="${l.id}">${l.nom}</option>`).join('')}</select></div>`:''}
+    <div class="cols"><div class="fld"><label>Coût (€)</label><input type="number" id="f12"></div><div class="fld"><label>Caution (€)</label><input type="number" id="f13"></div></div>
+    <div class="cols"><div class="fld"><label>Départ</label><input type="date" id="f14"></div><div class="fld"><label>Retour</label><input type="date" id="f15"></div></div>
+    <div class="fld"><label>Notes</label><textarea id="f16"></textarea></div>
+    <button class="btn p" onclick="saveEl()">Ajouter</button><button class="btn s" onclick="M=null;PHS=[];R()">Annuler</button>`;
+  } else if(M==='nl'){
+    c=`<div class="mbar"></div><div class="mtit">🏪 Nouveau loueur</div>
+    <div class="fld"><label>Nom *</label><input id="f1"></div>
+    <div class="fld"><label>Spécialité</label><input id="f2"></div>
+    <div class="cols"><div class="fld"><label>Contact</label><input id="f3"></div><div class="fld"><label>Téléphone</label><input type="tel" id="f4"></div></div>
+    <div class="fld"><label>Email</label><input type="email" id="f5"></div>
+    <div class="fld"><label>Adresse</label><input id="f6"></div>
+    <button class="btn p" onclick="saveLo()">Ajouter</button><button class="btn s" onclick="M=null;R()">Annuler</button>`;
+  } else if(M==='ndep'){
+    c=`<div class="mbar"></div><div class="mtit">💰 Nouvelle dépense</div>
+    <div class="fld"><label>Type</label><select id="f1">${TDEP.map(t=>`<option value="${t.id}">${t.l}</option>`).join('')}</select></div>
+    <div class="fld"><label>Description</label><input id="f2"></div>
+    <div class="cols"><div class="fld"><label>Montant (€) *</label><input type="number" step="0.01" id="f3"></div><div class="fld"><label>Date</label><input type="date" id="f4" value="${new Date().toISOString().split('T')[0]}"></div></div>
+    <div class="fld"><label>Fournisseur</label><input id="f5"></div>
+    <button class="btn p" onclick="saveDep()">Ajouter</button><button class="btn s" onclick="M=null;R()">Annuler</button>`;
+  } else if(M==='rub'){
+    const els=DC?.elements?.filter(e=>e.rubrique===RB?.id)||[];
+    c=`<div class="mbar"></div><div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:44px;height:44px;background:${RB?.c}20;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px">${RB?.i}</div><div><h3 style="margin:0">${RB?.n}</h3><small style="color:#64748b">${els.length} éléments</small></div></div>`;
+    if(!els.length) c+=`<div class="empty"><div>📦</div>Aucun élément</div>`;
+    else {
+      c+=`<div style="max-height:50vh;overflow-y:auto">`;
+      els.forEach(e=>{
+        const st=gs(e.statut);
+        c+=`<div class="card" onclick="EL=DC.elements.find(x=>x.id==='${e.id}');M=null;V='el';R()">${e.photos?.length?`<img src="${e.photos[0].data}" style="width:44px;height:44px;object-fit:cover;border-radius:8px">`:`<div style="width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center">📷</div>`}<div class="card-c"><h3>${e.nom}</h3><span class="badge" style="background:${st.c}30;color:${st.c}">${st.l}</span></div></div>`;
+      });
+      c+=`</div>`;
+    }
+    c+=`<button class="btn p" style="margin-top:16px" onclick="M='ne'">➕ Ajouter</button>`;
+  }
+  
+  return `<div class="modal" onclick="M=null;PHS=[];R()"><div class="mpan" onclick="event.stopPropagation()">${c}</div></div>`;
+}
+
+// ACTIONS
+let PHS=[];
+
+function prvPh(e){
+  Array.from(e.target.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=ev=>{PHS.push(ev.target.result);updPh()};
+    r.readAsDataURL(f);
+  });
+}
+
+function updPh(){
+  const pr=document.getElementById('phpr'),pl=document.getElementById('phpl');
+  if(pr&&pl){
+    if(PHS.length){
+      pr.innerHTML=PHS.map(d=>`<img src="${d}" style="width:50px;height:50px;object-fit:cover;border-radius:6px;margin:2px">`).join('')+`<div style="width:50px;height:50px;background:rgba(255,255,255,0.1);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;margin:2px">+</div>`;
+      pl.style.display='none';
+    } else {pr.innerHTML='';pl.style.display='block';}
+  }
+}
+
+function addPh(){
+  const i=document.createElement('input');
+  i.type='file';i.accept='image/*';i.multiple=true;
+  i.onchange=e=>{
+    Array.from(e.target.files).forEach(f=>{
+      const r=new FileReader();
+      r.onload=ev=>{
+        if(!EL.photos)EL.photos=[];
+        EL.photos.push({data:ev.target.result});
+        sv();R();
+      };
+      r.readAsDataURL(f);
+    });
+  };
+  i.click();
+}
+
+function delPh(){
+  if(confirm('Supprimer?')){EL.photos.splice(VW,1);sv();VW=null;R();}
+}
+
+function saveP(){
+  const n=document.getElementById('f1').value.trim();
+  if(!n)return;
+  D.projets.push({id:Date.now().toString(),nom:n,type:document.getElementById('f2').value,production:document.getElementById('f3').value,realisateur:document.getElementById('f4').value,chefDeco:document.getElementById('f5').value,dateDebut:document.getElementById('f6').value,dateFin:document.getElementById('f7').value,decors:[],createdAt:new Date().toISOString()});
+  sv();M=null;R();
+}
+
+function saveDC(){
+  const n=document.getElementById('f1').value.trim();
+  if(!n)return;
+  P.decors.push({id:Date.now().toString(),nom:n,adresse:document.getElementById('f2').value,interieur:document.getElementById('f3').value==='1',studio:document.getElementById('f4').value==='1',statut:document.getElementById('f5').value,dateInstallation:document.getElementById('f6').value,dateTournage:document.getElementById('f7').value,elements:[],photos:[]});
+  sv();M=null;R();
+}
+
+function saveEl(){
+  const n=document.getElementById('f1').value.trim();
+  if(!n)return;
+  DC.elements.push({id:Date.now().toString(),nom:n,rubrique:document.getElementById('f2').value,statut:document.getElementById('f3').value,description:document.getElementById('f4').value,dimensions:document.getElementById('f5').value,quantite:document.getElementById('f6').value,couleur:document.getElementById('f7').value,matiere:document.getElementById('f8').value,role:document.getElementById('f9')?.value||'',dateJeu:document.getElementById('f10')?.value||'',loueurId:document.getElementById('f11')?.value||'',coutLocation:document.getElementById('f12').value,caution:document.getElementById('f13').value,dateDepart:document.getElementById('f14').value,dateRetour:document.getElementById('f15').value,notes:document.getElementById('f16').value,photos:PHS.map(d=>({data:d}))});
+  sv();M=null;PHS=[];R();
+}
+
+function saveLo(){
+  const n=document.getElementById('f1').value.trim();
+  if(!n)return;
+  D.loueurs.push({id:Date.now().toString(),nom:n,specialite:document.getElementById('f2').value,contact:document.getElementById('f3').value,telephone:document.getElementById('f4').value,email:document.getElementById('f5').value,adresse:document.getElementById('f6').value});
+  sv();M=null;R();
+}
+
+function saveDep(){
+  const m=document.getElementById('f3').value;
+  if(!m)return;
+  D.depenses.push({id:Date.now().toString(),projetId:P?.id||null,type:document.getElementById('f1').value,description:document.getElementById('f2').value,montant:parseFloat(m),date:document.getElementById('f4').value,fournisseur:document.getElementById('f5').value});
+  sv();M=null;R();
+}
+
+function delP(){if(confirm('Supprimer?')){D.projets=D.projets.filter(p=>p.id!==P.id);D.depenses=D.depenses.filter(d=>d.projetId!==P.id);sv();P=null;V='home';R();}}
+function delD(){if(confirm('Supprimer?')){P.decors=P.decors.filter(d=>d.id!==DC.id);sv();DC=null;V='proj';R();}}
+function delE(){if(confirm('Supprimer?')){DC.elements=DC.elements.filter(e=>e.id!==EL.id);sv();EL=null;V='dec';R();}}
+function delL(){if(confirm('Supprimer?')){D.loueurs=D.loueurs.filter(l=>l.id!==LO.id);sv();LO=null;V='lou';R();}}
+
+function expD(){
+  const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download=`decor-pro-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  MN=false;R();
+}
+
+function impD(e){
+  const f=e.target.files[0];
+  if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.projets){D=d;if(!D.depenses)D.depenses=[];sv();MN=false;alert('Importé!');R();}
+    }catch(err){alert('Erreur');}
+  };
+  r.readAsText(f);
+}
+
+function bind(){
+  // Auto-focus first input in modal
+  if(M){const i=document.querySelector('.mpan input');if(i)i.focus();}
+}
+
+// Init
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+R();
+</script>
+</body>
+</html>
