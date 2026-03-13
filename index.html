@@ -99,6 +99,19 @@ button,input,select,textarea{font:inherit;font-size:16px;border:none;background:
 .srch{position:relative;margin-bottom:14px}
 .srch input{width:100%;padding:10px 10px 10px 36px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05)}
 .srch::before{content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px}
+.alert{border-radius:12px;padding:12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.alert:active{opacity:0.8}
+.alert.red{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3)}
+.alert.red .aicon{background:rgba(239,68,68,0.2);color:#ef4444}
+.alert.orange{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3)}
+.alert.orange .aicon{background:rgba(245,158,11,0.2);color:#f59e0b}
+.alert.blue{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3)}
+.alert.blue .aicon{background:rgba(59,130,246,0.2);color:#3b82f6}
+.alert.pink{background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.3)}
+.alert.pink .aicon{background:rgba(236,72,153,0.2);color:#ec4899}
+.aicon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.alert h4{font-size:13px;font-weight:600;margin-bottom:2px}
+.alert p{font-size:11px;opacity:0.8}
 @media print{body{background:#fff!important;color:#000!important}.hdr,.fab,.acts,.tabs,.bk,.menu,.modal{display:none!important}.cnt{padding:10px}.pgrid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:8px!important}.pgrid>div{border:1px solid #ccc;padding:6px;text-align:center}.pgrid img{width:100%;height:80px;object-fit:cover}.pgrid p{font-size:9px;margin-top:4px}}
 </style>
 </head>
@@ -114,8 +127,10 @@ var TPROJ=[{id:"film",l:"Long-métrage",i:"🎬"},{id:"serie",l:"Série",i:"📺
 var TDEP=[{id:"location",l:"Location"},{id:"achat",l:"Achat"},{id:"transport",l:"Transport"},{id:"autre",l:"Autre"}];
 
 // === STATE ===
-var D=JSON.parse(localStorage.getItem("dp8")||'{"projets":[],"loueurs":[],"depenses":[]}');
+var D=JSON.parse(localStorage.getItem("dp8")||'{"projets":[],"loueurs":[],"depenses":[],"collaborateurs":[],"notifAuto":true}');
 if(!D.depenses)D.depenses=[];
+if(!D.collaborateurs)D.collaborateurs=[];
+if(D.notifAuto===undefined)D.notifAuto=true;
 var V="home",P=null,DC=null,EL=null,LO=null,RB=null,M=null,MN=false,TB="rub",VW=null,FR="",FD="",SQ="",DS="date",PHS=[];
 
 function sv(){localStorage.setItem("dp8",JSON.stringify(D))}
@@ -126,6 +141,110 @@ function gt(id){return TPROJ.find(function(t){return t.id===id})}
 function gl(id){return D.loueurs.find(function(l){return l.id===id})}
 function fd(d){return d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):"-"}
 function fm(n){return new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(n||0)}
+
+// Fonction pour envoyer notification email
+function notifyCollab(type, details){
+  if(!D.notifAuto || !D.collaborateurs.length) return;
+  
+  var emails = D.collaborateurs.map(function(c){return c.email}).join(",");
+  var subject = "";
+  var body = "";
+  var projet = P ? P.nom : "";
+  var decor = DC ? DC.nom : "";
+  var date = new Date().toLocaleDateString("fr-FR");
+  
+  if(type === "photo"){
+    subject = "🎬 Décor Pro - Nouvelle photo ajoutée";
+    body = "Bonjour,\\n\\nUne nouvelle photo a été ajoutée :\\n\\n";
+    body += "📁 Projet : " + projet + "\\n";
+    body += "🎭 Décor : " + decor + "\\n";
+    body += "📦 Élément : " + details + "\\n";
+    body += "📅 Date : " + date + "\\n\\n";
+    body += "Cordialement,\\nDécor Pro";
+  } else if(type === "element"){
+    subject = "🎬 Décor Pro - Nouvel élément créé";
+    body = "Bonjour,\\n\\nUn nouvel élément a été ajouté :\\n\\n";
+    body += "📁 Projet : " + projet + "\\n";
+    body += "🎭 Décor : " + decor + "\\n";
+    body += "📦 Élément : " + details + "\\n";
+    body += "📅 Date : " + date + "\\n\\n";
+    body += "Cordialement,\\nDécor Pro";
+  } else if(type === "decor"){
+    subject = "🎬 Décor Pro - Nouveau décor créé";
+    body = "Bonjour,\\n\\nUn nouveau décor a été créé :\\n\\n";
+    body += "📁 Projet : " + projet + "\\n";
+    body += "🎭 Décor : " + details + "\\n";
+    body += "📅 Date : " + date + "\\n\\n";
+    body += "Cordialement,\\nDécor Pro";
+  } else if(type === "projet"){
+    subject = "🎬 Décor Pro - Nouveau projet créé";
+    body = "Bonjour,\\n\\nUn nouveau projet a été créé :\\n\\n";
+    body += "📁 Projet : " + details + "\\n";
+    body += "📅 Date : " + date + "\\n\\n";
+    body += "Cordialement,\\nDécor Pro";
+  } else if(type === "statut"){
+    subject = "🎬 Décor Pro - Statut modifié";
+    body = "Bonjour,\\n\\nUn statut a été modifié :\\n\\n";
+    body += "📁 Projet : " + projet + "\\n";
+    body += "🎭 Décor : " + decor + "\\n";
+    body += "📦 Élément : " + details.nom + "\\n";
+    body += "✅ Nouveau statut : " + details.statut + "\\n";
+    body += "📅 Date : " + date + "\\n\\n";
+    body += "Cordialement,\\nDécor Pro";
+  }
+  
+  // Ouvrir l'app email
+  var mailUrl = "mailto:" + emails + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body.replace(/\\n/g, "\n"));
+  window.open(mailUrl);
+}
+
+// Fonction pour obtenir les alertes accessoires
+function getAlerts(){
+  var today=new Date();today.setHours(0,0,0,0);
+  var tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
+  var in3days=new Date(today);in3days.setDate(in3days.getDate()+3);
+  
+  var alerts={aujourdhui:[],demain:[],semaine:[],retards:[],manquants:[]};
+  
+  D.projets.forEach(function(p){
+    if(p.decors)p.decors.forEach(function(d){
+      if(d.elements)d.elements.forEach(function(e){
+        if(e.rubrique==="accessoires"||e.dateJeu){
+          var dateJeu=e.dateJeu?new Date(e.dateJeu):null;
+          if(dateJeu)dateJeu.setHours(0,0,0,0);
+          
+          // Accessoires du jour
+          if(dateJeu&&dateJeu.getTime()===today.getTime()){
+            alerts.aujourdhui.push({e:e,d:d,p:p});
+          }
+          // Accessoires de demain
+          else if(dateJeu&&dateJeu.getTime()===tomorrow.getTime()){
+            alerts.demain.push({e:e,d:d,p:p});
+          }
+          // Accessoires cette semaine
+          else if(dateJeu&&dateJeu>today&&dateJeu<=in3days){
+            alerts.semaine.push({e:e,d:d,p:p});
+          }
+          
+          // Accessoires non prêts pour aujourd'hui/demain
+          if(dateJeu&&dateJeu<=tomorrow&&e.statut!=="installe"&&e.statut!=="livre"&&e.statut!=="restitue"){
+            alerts.manquants.push({e:e,d:d,p:p});
+          }
+        }
+        
+        // Retours en retard
+        if(e.dateRetour){
+          var dateRetour=new Date(e.dateRetour);dateRetour.setHours(0,0,0,0);
+          if(dateRetour<today&&e.statut!=="restitue"){
+            alerts.retards.push({e:e,d:d,p:p});
+          }
+        }
+      });
+    });
+  });
+  
+  return alerts;
+}
 
 // === GLOBAL FUNCTIONS ===
 window.go=function(v,data){
@@ -157,7 +276,14 @@ window.setFD=function(d){FD=d;R()};
 window.setSQ=function(q){SQ=q;R()};
 window.setDS=function(s){DS=s;R()};
 window.setVW=function(i){VW=i;R()};
-window.setStat=function(s){EL.statut=s;sv();R()};
+window.setStat=function(s){
+  var oldStat=EL.statut;
+  EL.statut=s;
+  sv();
+  var st=gs(s);
+  notifyCollab("statut",{nom:EL.nom,statut:st.l});
+  R();
+};
 
 // === RENDER ===
 function R(){
@@ -173,6 +299,7 @@ function R(){
   else if(V==="acc")h+=rAcc();
   else if(V==="dep")h+=rDep();
   else if(V==="print")h+=rPrint();
+  else if(V==="collab")h+=rCollab();
   h+="</main>";
   if(M)h+=rModal();
   if(MN)h+=rMenu();
@@ -185,12 +312,28 @@ function rHome(){
   var td=D.depenses.reduce(function(s,d){return s+(parseFloat(d.montant)||0)},0);
   D.projets.forEach(function(p){nd+=p.decors?p.decors.length:0;if(p.decors)p.decors.forEach(function(d){ne+=d.elements?d.elements.length:0})});
   
+  var alerts=getAlerts();
+  
   var h='<div class="stats">';
   h+='<div class="stat"><strong>'+np+'</strong><small>Projets</small></div>';
   h+='<div class="stat"><strong>'+nd+'</strong><small>Décors</small></div>';
   h+='<div class="stat"><strong>'+ne+'</strong><small>Éléments</small></div>';
   h+='<div class="stat"><strong>'+nl+'</strong><small>Loueurs</small></div>';
   h+="</div>";
+  
+  // ALERTES
+  if(alerts.retards.length>0){
+    h+='<div class="alert red" onclick="P=null;V=\'acc\';R()"><div class="aicon">⚠️</div><div><h4>'+alerts.retards.length+' retour(s) en retard</h4><p>Éléments à restituer</p></div></div>';
+  }
+  if(alerts.manquants.length>0){
+    h+='<div class="alert orange" onclick="P=null;V=\'acc\';R()"><div class="aicon">🚨</div><div><h4>'+alerts.manquants.length+' accessoire(s) non prêt(s)</h4><p>À préparer pour aujourd\'hui ou demain</p></div></div>';
+  }
+  if(alerts.aujourdhui.length>0){
+    h+='<div class="alert pink" onclick="P=null;V=\'acc\';FD=new Date().toISOString().split(\'T\')[0];R()"><div class="aicon">🎬</div><div><h4>'+alerts.aujourdhui.length+' accessoire(s) aujourd\'hui</h4><p>Jeu prévu aujourd\'hui</p></div></div>';
+  }
+  if(alerts.demain.length>0){
+    h+='<div class="alert blue" onclick="P=null;V=\'acc\';var d=new Date();d.setDate(d.getDate()+1);FD=d.toISOString().split(\'T\')[0];R()"><div class="aicon">📅</div><div><h4>'+alerts.demain.length+' accessoire(s) demain</h4><p>Jeu prévu demain</p></div></div>';
+  }
   
   if(td>0)h+='<div class="total"><span>💰 Total dépenses</span><strong>'+fm(td)+'</strong></div>';
   
@@ -215,10 +358,36 @@ function rProj(){
   var t=gt(P.type);
   var td=D.depenses.filter(function(d){return d.projetId===P.id}).reduce(function(s,d){return s+(parseFloat(d.montant)||0)},0);
   
+  // Alertes pour ce projet
+  var today=new Date();today.setHours(0,0,0,0);
+  var tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
+  var accAuj=0,accDem=0,retards=0,nonPrets=0;
+  
+  if(P.decors)P.decors.forEach(function(d){
+    if(d.elements)d.elements.forEach(function(e){
+      if(e.dateJeu){
+        var dj=new Date(e.dateJeu);dj.setHours(0,0,0,0);
+        if(dj.getTime()===today.getTime())accAuj++;
+        else if(dj.getTime()===tomorrow.getTime())accDem++;
+        if(dj<=tomorrow&&e.statut!=="installe"&&e.statut!=="livre"&&e.statut!=="restitue")nonPrets++;
+      }
+      if(e.dateRetour){
+        var dr=new Date(e.dateRetour);dr.setHours(0,0,0,0);
+        if(dr<today&&e.statut!=="restitue")retards++;
+      }
+    });
+  });
+  
   var h='<button class="bk" onclick="go(\'back\')">← Retour</button>';
   h+='<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:12px">';
   h+='<span style="font-size:32px">'+(t?t.i:"📁")+'</span>';
   h+='<div><div class="ttl">'+P.nom+'</div><div class="sub">'+(t?t.l:"")+(P.production?" • "+P.production:"")+'</div></div></div>';
+  
+  // Afficher alertes projet
+  if(retards>0)h+='<div class="alert red" onclick="go(\'acc\')"><div class="aicon">⚠️</div><div><h4>'+retards+' retour(s) en retard</h4></div></div>';
+  if(nonPrets>0)h+='<div class="alert orange" onclick="go(\'acc\')"><div class="aicon">🚨</div><div><h4>'+nonPrets+' accessoire(s) non prêt(s)</h4></div></div>';
+  if(accAuj>0)h+='<div class="alert pink" onclick="go(\'acc\')"><div class="aicon">🎬</div><div><h4>'+accAuj+' accessoire(s) aujourd\'hui</h4></div></div>';
+  if(accDem>0)h+='<div class="alert blue" onclick="go(\'acc\')"><div class="aicon">📅</div><div><h4>'+accDem+' accessoire(s) demain</h4></div></div>';
   
   if(td>0)h+='<div class="total"><span>💰 Budget</span><strong>'+fm(td)+'</strong></div>';
   
@@ -457,10 +626,43 @@ function rMenu(){
   h+='<div class="mitm" onclick="go(\'home\');menu(false)">🏠 Tableau de bord</div>';
   h+='<div class="mitm" onclick="go(\'lou\');menu(false)">🏪 Loueurs</div>';
   h+='<div class="mitm" onclick="P=null;go(\'dep\');menu(false)">💰 Toutes les dépenses</div>';
+  h+='<div class="mitm" onclick="V=\'collab\';menu(false);R()">👥 Collaborateurs <span style="background:rgba(99,102,241,0.3);padding:2px 8px;border-radius:10px;font-size:11px;margin-left:auto">'+D.collaborateurs.length+'</span></div>';
   h+='<div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1)">';
+  h+='<div class="mitm" onclick="toggleNotif()" style="justify-content:space-between">📧 Notifications auto <span style="color:'+(D.notifAuto?"#10b981":"#64748b")+'">'+(D.notifAuto?"ON":"OFF")+'</span></div>';
   h+='<div class="mitm" onclick="expD()">💾 Exporter</div>';
   h+='<label class="mitm" style="cursor:pointer">📥 Importer<input type="file" accept=".json" style="display:none" onchange="impD(event)"></label>';
   h+='</div></div></div>';
+  return h;
+}
+
+function rCollab(){
+  var h='<button class="bk" onclick="go(\'home\')">← Retour</button>';
+  h+='<div class="ttl">👥 Collaborateurs</div>';
+  h+='<div class="sub">'+D.collaborateurs.length+' collaborateur(s) • Notifications '+(D.notifAuto?'<span style="color:#10b981">activées</span>':'<span style="color:#ef4444">désactivées</span>')+'</div>';
+  
+  h+='<div class="box" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">';
+  h+='<div style="font-size:13px;color:#a5b4fc;margin-bottom:8px">📧 <strong>Notifications par email</strong></div>';
+  h+='<p style="font-size:12px;color:#94a3b8;line-height:1.5">Les collaborateurs recevront un email à chaque :</p>';
+  h+='<ul style="font-size:12px;color:#94a3b8;margin:8px 0 0 16px;line-height:1.8">';
+  h+='<li>Création de projet ou décor</li>';
+  h+='<li>Ajout d\'élément</li>';
+  h+='<li>Ajout de photo</li>';
+  h+='<li>Changement de statut</li>';
+  h+='</ul></div>';
+  
+  if(!D.collaborateurs.length){
+    h+='<div class="empty"><i>👥</i>Aucun collaborateur<br><small>Ajoutez des emails pour notifier votre équipe</small></div>';
+  }else{
+    D.collaborateurs.forEach(function(c,i){
+      h+='<div class="card" style="cursor:default">';
+      h+='<div style="width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600">'+c.nom.charAt(0).toUpperCase()+'</div>';
+      h+='<div class="cinfo"><h3>'+c.nom+'</h3><p>'+c.email+'</p></div>';
+      h+='<button style="width:36px;height:36px;background:rgba(239,68,68,0.2);border-radius:8px;color:#ef4444;cursor:pointer" onclick="delCollab('+i+')">🗑️</button>';
+      h+='</div>';
+    });
+  }
+  
+  h+='<button class="fab" onclick="modal(\'nc\')">+</button>';
   return h;
 }
 
@@ -542,6 +744,11 @@ function rModal(){
       c+='</div>';
     }
     c+='<button class="btn p" style="margin-top:16px" onclick="modal(\'ne\')">➕ Ajouter</button>';
+  }else if(M==="nc"){
+    c='<div class="mbar"></div><div class="mtit">👥 Nouveau collaborateur</div>';
+    c+='<div class="fld"><label>Nom *</label><input id="f1" placeholder="Ex: Marie Dupont"></div>';
+    c+='<div class="fld"><label>Email *</label><input type="email" id="f2" placeholder="marie@production.com"></div>';
+    c+='<button class="btn p" onclick="saveCollab()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
   
   return '<div class="modal" onclick="modal(null)"><div class="mpan" onclick="event.stopPropagation()">'+c+'</div></div>';
@@ -575,16 +782,21 @@ window.addPh=function(){
   i.type="file";i.accept="image/*";i.multiple=true;
   i.onchange=function(e){
     var files=e.target.files;
+    var count=files.length;
     for(var j=0;j<files.length;j++){
-      (function(file){
+      (function(file,isLast){
         var r=new FileReader();
         r.onload=function(ev){
           if(!EL.photos)EL.photos=[];
           EL.photos.push({data:ev.target.result});
-          sv();R();
+          sv();
+          if(isLast){
+            notifyCollab("photo",EL.nom);
+          }
+          R();
         };
         r.readAsDataURL(file);
-      })(files[j]);
+      })(files[j],j===count-1);
     }
   };
   i.click();
@@ -600,7 +812,9 @@ window.saveP=function(){
   var n=document.getElementById("f1").value.trim();
   if(!n)return alert("Nom requis");
   D.projets.push({id:Date.now().toString(),nom:n,type:document.getElementById("f2").value,production:document.getElementById("f3").value,realisateur:document.getElementById("f4").value,chefDeco:document.getElementById("f5").value,dateDebut:document.getElementById("f6").value,dateFin:document.getElementById("f7").value,decors:[]});
-  sv();M=null;R();
+  sv();M=null;
+  notifyCollab("projet",n);
+  R();
 };
 
 window.saveDC=function(){
@@ -608,7 +822,9 @@ window.saveDC=function(){
   if(!n)return alert("Nom requis");
   if(!P.decors)P.decors=[];
   P.decors.push({id:Date.now().toString(),nom:n,adresse:document.getElementById("f2").value,interieur:document.getElementById("f3").value==="1",studio:document.getElementById("f4").value==="1",statut:document.getElementById("f5").value,dateInstallation:document.getElementById("f6").value,dateTournage:document.getElementById("f7").value,elements:[],photos:[]});
-  sv();M=null;R();
+  sv();M=null;
+  notifyCollab("decor",n);
+  R();
 };
 
 window.saveEl=function(){
@@ -618,7 +834,9 @@ window.saveEl=function(){
   var el={id:Date.now().toString(),nom:n,rubrique:document.getElementById("f2").value,statut:document.getElementById("f3").value,description:document.getElementById("f4").value,dimensions:document.getElementById("f5").value,quantite:document.getElementById("f6").value,couleur:document.getElementById("f7").value,matiere:document.getElementById("f8").value,role:document.getElementById("f9")?document.getElementById("f9").value:"",dateJeu:document.getElementById("f10")?document.getElementById("f10").value:"",loueurId:document.getElementById("f11")?document.getElementById("f11").value:"",coutLocation:document.getElementById("f12").value,caution:document.getElementById("f13").value,dateDepart:document.getElementById("f14").value,dateRetour:document.getElementById("f15").value,notes:document.getElementById("f16").value,photos:[]};
   PHS.forEach(function(d){el.photos.push({data:d})});
   DC.elements.push(el);
-  sv();M=null;PHS=[];R();
+  sv();M=null;PHS=[];
+  notifyCollab("element",n);
+  R();
 };
 
 window.saveLo=function(){
@@ -633,6 +851,27 @@ window.saveDep=function(){
   if(!m)return alert("Montant requis");
   D.depenses.push({id:Date.now().toString(),projetId:P?P.id:null,type:document.getElementById("f1").value,description:document.getElementById("f2").value,montant:parseFloat(m),date:document.getElementById("f4").value,fournisseur:document.getElementById("f5").value});
   sv();M=null;R();
+};
+
+window.saveCollab=function(){
+  var n=document.getElementById("f1").value.trim();
+  var e=document.getElementById("f2").value.trim();
+  if(!n||!e)return alert("Nom et email requis");
+  if(e.indexOf("@")<1)return alert("Email invalide");
+  D.collaborateurs.push({id:Date.now().toString(),nom:n,email:e});
+  sv();M=null;R();
+};
+
+window.delCollab=function(i){
+  if(confirm("Supprimer ce collaborateur?")){
+    D.collaborateurs.splice(i,1);
+    sv();R();
+  }
+};
+
+window.toggleNotif=function(){
+  D.notifAuto=!D.notifAuto;
+  sv();R();
 };
 
 window.delP=function(){if(confirm("Supprimer ce projet?")){D.projets=D.projets.filter(function(p){return p.id!==P.id});D.depenses=D.depenses.filter(function(d){return d.projetId!==P.id});sv();P=null;V="home";R()}};
