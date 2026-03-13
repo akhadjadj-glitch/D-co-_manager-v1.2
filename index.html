@@ -190,14 +190,6 @@ button,input,select,textarea{font:inherit;font-size:16px;border:none;background:
 .upload-bar{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;margin-top:8px}
 .upload-fill{height:100%;background:#6366f1;border-radius:2px;transition:width 0.3s}
 
-.group-head{display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px;font-size:12px;color:#94a3b8;text-transform:uppercase}
-.gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.gallery-card{background:rgba(255,255,255,0.05);border-radius:12px;overflow:hidden;cursor:pointer}
-.gallery-cover{aspect-ratio:4/3;background:#1e293b;display:flex;align-items:center;justify-content:center}
-.gallery-cover img{width:100%;height:100%;object-fit:cover}
-.gallery-info{padding:10px}.gallery-info h4{font-size:13px;margin-bottom:3px}.gallery-info p{font-size:11px;color:#64748b}
-.segment{display:flex;gap:4px;padding:4px;background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:12px}.segment button{flex:1;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:#94a3b8}.segment button.on{background:rgba(99,102,241,0.25);color:#fff}
-.list-mini{display:flex;flex-direction:column;gap:6px}.mini-row{background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer}.mini-row h4{font-size:13px;margin-bottom:2px}.mini-row p{font-size:11px;color:#64748b}.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.kpi{background:rgba(255,255,255,0.05);border-radius:12px;padding:10px;text-align:center}.kpi strong{display:block;font-size:18px;color:#a5b4fc}.kpi span{font-size:10px;color:#64748b;text-transform:uppercase}
 @media print{.hdr,.navbar,.fab,.modal,.viewer,.menu{display:none!important}body{background:#fff!important;color:#000!important;padding:10px}}
 </style>
 </head>
@@ -223,14 +215,14 @@ const firebaseConfig = {
 };
 // ============================================
 
-var FIREBASE_READY=false,db=null,storage=null;
-if(hasFirebaseConfig()){
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-  storage = firebase.storage();
-  FIREBASE_READY=true;
-  db.enablePersistence().catch(function(err) { console.log("Persistence error:", err); });
-}
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+// Enable offline persistence
+db.enablePersistence().catch(function(err) {
+  console.log("Persistence error:", err);
+});
 
 (function(){
 var RUB=[{id:"mobilier",n:"Mobilier",i:"🪑",c:"#6366f1"},{id:"accessoires",n:"Accessoires",i:"🎭",c:"#ec4899"},{id:"regie",n:"Régie",i:"🏢",c:"#14b8a6"},{id:"luminaires",n:"Luminaires",i:"💡",c:"#f59e0b"},{id:"deco",n:"Déco",i:"🖼️",c:"#8b5cf6"},{id:"textiles",n:"Textiles",i:"🧵",c:"#ef4444"},{id:"graphiques",n:"Graphiques",i:"📋",c:"#06b6d4"},{id:"consommables",n:"Consommables",i:"📦",c:"#64748b"}];
@@ -247,7 +239,6 @@ var ONLINE = navigator.onLine;
 var SYNCING = false;
 var UNSUB = null;
 var LTAB = "join";
-var RENTTAB="decor",PORTFOLIO_FILTER="all";
 
 window.addEventListener("online", function(){ONLINE=true;R();});
 window.addEventListener("offline", function(){ONLINE=false;R();});
@@ -261,14 +252,9 @@ function fd(d){return d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",mo
 function fm(n){return new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(n||0)}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5)}
 function genCode(){var c="";var chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";for(var i=0;i<6;i++)c+=chars[Math.floor(Math.random()*chars.length)];return c}
-function hasFirebaseConfig(){return firebaseConfig&&firebaseConfig.projectId&&firebaseConfig.projectId.indexOf("VOTRE_")!==0}
-function num(v){var n=parseFloat(v);return isNaN(n)?0:n}
-function getRentalItems(){var items=[];for(var i=0;i<D.projets.length;i++){var p=D.projets[i];if(!p.decors)continue;for(var j=0;j<p.decors.length;j++){var d=p.decors[j];if(!d.elements)continue;for(var k=0;k<d.elements.length;k++){var e=d.elements[k];var isRental=!!(e.loueurId||e.coutLocation||e.coutReel||e.dateDepart||e.dateRetour||e.statut==="loue"||e.statut==="reserve"||e.statut==="livre"||e.statut==="restitue");if(isRental)items.push({e:e,d:d,p:p,lo:e.loueurId?gl(e.loueurId):null});}}}return items;}
-function getDecorPortfolio(decor){var groups=[];for(var i=0;i<RUB.length;i++){var r=RUB[i],photos=[],items=[];if(decor&&decor.elements)for(var j=0;j<decor.elements.length;j++){var e=decor.elements[j];if(e.rubrique===r.id){items.push(e);if(e.photos)for(var k=0;k<e.photos.length;k++)photos.push({data:e.photos[k],nom:e.nom,elementId:e.id});}}if(items.length||photos.length)groups.push({rubrique:r,photos:photos,items:items});}return groups;}
 
 // Firebase sync
 function subscribeToProject(code){
-  if(!FIREBASE_READY){var local=localStorage.getItem("decorpro_local_"+code);if(local){try{D=JSON.parse(local);}catch(e){D={projets:[],loueurs:[],depenses:[]};}}R();return;}
   if(UNSUB)UNSUB();
   SYNCING=true;R();
   
@@ -293,8 +279,6 @@ function subscribeToProject(code){
 
 function saveToFirebase(){
   if(!CODE)return;
-  localStorage.setItem("decorpro_local_"+CODE,JSON.stringify(D));
-  if(!FIREBASE_READY)return;
   SYNCING=true;R();
   db.collection("projects").doc(CODE).set({
     projets: D.projets,
@@ -368,7 +352,6 @@ window.go=function(v,id){
   else if(v==="dec"){if(P&&P.decors)for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===id){DC=P.decors[i];break}V="dec";EL=null;TB="rub"}
   else if(v==="el"){if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===id){EL=DC.elements[i];break}V="el"}
   else if(v==="lou"){V="lou";LO=null}
-  else if(v==="contacts"){V="contacts";LO=null}
   else if(v==="loud"){for(var i=0;i<D.loueurs.length;i++)if(D.loueurs[i].id===id){LO=D.loueurs[i];break}V="loud"}
   else if(v==="dep"){V="dep"}
   else if(v==="acc"){V="acc";SQ=""}
@@ -399,9 +382,15 @@ window.setLTab=function(t){LTAB=t;R()};
 window.joinProject=function(){
   var code = document.getElementById("join-code").value.toUpperCase().trim();
   if(code.length!==6)return alert("Le code doit contenir 6 caractères");
-  if(!FIREBASE_READY){CODE=code;localStorage.setItem("dp_code",CODE);subscribeToProject(CODE);return;}
+  
   db.collection("projects").doc(code).get().then(function(doc){
-    if(doc.exists){CODE=code;localStorage.setItem("dp_code",CODE);subscribeToProject(CODE);}else{alert("Projet introuvable. Vérifiez le code.");}
+    if(doc.exists){
+      CODE=code;
+      localStorage.setItem("dp_code",CODE);
+      subscribeToProject(CODE);
+    }else{
+      alert("Projet introuvable. Vérifiez le code.");
+    }
   });
 };
 
@@ -410,12 +399,12 @@ window.createProject=function(){
   CODE=code;
   localStorage.setItem("dp_code",CODE);
   D={projets:[],loueurs:[],depenses:[]};
-  localStorage.setItem("decorpro_local_"+CODE,JSON.stringify(D));
-  if(!FIREBASE_READY){subscribeToProject(CODE);return;}
-  db.collection("projects").doc(code).set({
+  db.collection("projects").doc(CODE).set({
     projets:[],loueurs:[],depenses:[],
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(function(){subscribeToProject(CODE);});
+  }).then(function(){
+    subscribeToProject(CODE);
+  });
 };
 
 window.leaveProject=function(){
@@ -441,8 +430,7 @@ function R(){
   else if(V==="proj")h+=rProj();
   else if(V==="dec")h+=rDec();
   else if(V==="el")h+=rEl();
-  else if(V==="lou")h+=rLouer();
-  else if(V==="contacts")h+=rLou();
+  else if(V==="lou")h+=rLou();
   else if(V==="loud")h+=rLouD();
   else if(V==="dep")h+=rDep();
   else if(V==="acc")h+=rAcc();
@@ -459,7 +447,7 @@ function rLogin(){
   var h='<div class="login-screen">';
   h+='<div class="login-logo">🎬</div>';
   h+='<div class="login-title">Décor Pro</div>';
-  h+='<div class="login-sub">Gestion de décors collaborative'+(!FIREBASE_READY?' • mode local':'')+'</div>';
+  h+='<div class="login-sub">Gestion de décors collaborative</div>';
   h+='<div class="login-box">';
   h+='<div class="login-tabs">';
   h+='<div class="login-tab'+(LTAB==="join"?" on":"")+'" onclick="setLTab(\'join\')">Rejoindre</div>';
@@ -481,7 +469,7 @@ function rLogin(){
 
 function rHeader(){
   var syncClass = SYNCING?"syncing":(ONLINE?"online":"offline");
-  var syncText = !FIREBASE_READY?"Local":(SYNCING?"Sync...":(ONLINE?"Connecté":"Hors-ligne"));
+  var syncText = SYNCING?"Sync...":(ONLINE?"Connecté":"Hors-ligne");
   
   var h='<header class="hdr"><div class="hdr-top">';
   h+='<div class="logo"><em>🎬</em>Décor Pro</div>';
@@ -500,8 +488,7 @@ function rBread(){
   if(P){h+='<span onclick="go(\'proj\',\''+P.id+'\')"'+(V==="proj"?' class="current"':'')+'>'+P.nom+'</span>';}
   if(DC){h+='<i>›</i><span onclick="go(\'dec\',\''+DC.id+'\')"'+(V==="dec"?' class="current"':'')+'>'+DC.nom+'</span>';}
   if(EL){h+='<i>›</i><span class="current">'+EL.nom+'</span>';}
-  if(V==="lou"){h+='<span class="current">Louer</span>';}
-  if(V==="contacts"||V==="loud"){h+='<span class="current">Loueurs</span>';}
+  if(V==="lou"||V==="loud"){h+='<span class="current">Loueurs</span>';}
   if(V==="dep"){h+='<span class="current">Dépenses</span>';}
   if(V==="acc"){h+='<span class="current">Accessoires</span>';}
   h+='</div>';
@@ -513,7 +500,7 @@ function rNavbar(){
   h+='<div class="nav-item'+(V==="home"?" active":"")+'" onclick="go(\'home\')"><span class="icon">🏠</span><span class="label">Accueil</span></div>';
   h+='<div class="nav-item'+(V==="acc"?" active":"")+'" onclick="go(\'acc\')"><span class="icon">🎭</span><span class="label">Accessoires</span></div>';
   h+='<div class="nav-item'+(V==="dep"?" active":"")+'" onclick="go(\'dep\')"><span class="icon">💰</span><span class="label">Budget</span></div>';
-  h+='<div class="nav-item'+(V==="lou"?" active":"")+'" onclick="go(\'lou\')"><span class="icon">📦</span><span class="label">Louer</span></div>';
+  h+='<div class="nav-item'+(V==="lou"||V==="loud"?" active":"")+'" onclick="go(\'lou\')"><span class="icon">🏪</span><span class="label">Loueurs</span></div>';
   h+='</nav>';
   return h;
 }
@@ -614,33 +601,52 @@ function rDec(){
   var st=gsd(DC.statut);
   var h='<div class="page-title">'+DC.nom+'</div>';
   h+='<div class="page-sub"><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span>'+(DC.adresse?' • 📍'+DC.adresse:'')+'</div>';
-  h+='<div class="tabs"><div class="tab'+(TB==="rub"?" on":"")+'" onclick="setTab(\'rub\')">Rubriques</div><div class="tab'+(TB==="info"?" on":"")+'" onclick="setTab(\'info\')">Infos</div><div class="tab'+(TB==="ph"?" on":"")+'" onclick="setTab(\'ph\')">Photos</div><div class="tab'+(TB==="portfolio"?" on":"")+'" onclick="setTab(\'portfolio\')">Portfolio</div></div>';
+  
+  h+='<div class="tabs">';
+  h+='<div class="tab'+(TB==="rub"?" on":"")+'" onclick="setTab(\'rub\')">Rubriques</div>';
+  h+='<div class="tab'+(TB==="info"?" on":"")+'" onclick="setTab(\'info\')">Infos</div>';
+  h+='<div class="tab'+(TB==="ph"?" on":"")+'" onclick="setTab(\'ph\')">Photos</div>';
+  h+='</div>';
+  
   if(TB==="rub"){
     h+='<div class="rub-grid">';
-    for(var i=0;i<RUB.length;i++){var r=RUB[i],cnt=0,urg=0,phs=0;if(DC.elements)for(var j=0;j<DC.elements.length;j++){if(DC.elements[j].rubrique===r.id){cnt++;if(DC.elements[j].urgent)urg++;if(DC.elements[j].photos)phs+=DC.elements[j].photos.length;}}h+='<div class="rub-card'+(urg?' urgent':'')+'" onclick="modal(\'rub\',\''+r.id+'\')" style="border-left:3px solid '+r.c+'"><div class="icon">'+r.i+'</div><h4>'+r.n+'</h4><p>'+cnt+' él.'+(phs?' • '+phs+' 📷':'')+'</p>'+(cnt?'<div class="count">'+cnt+'</div>':'')+'</div>';}
+    for(var i=0;i<RUB.length;i++){
+      var r=RUB[i],cnt=0,urg=0,phs=0;
+      if(DC.elements)for(var j=0;j<DC.elements.length;j++){
+        if(DC.elements[j].rubrique===r.id){cnt++;if(DC.elements[j].urgent)urg++;if(DC.elements[j].photos)phs+=DC.elements[j].photos.length;}
+      }
+      h+='<div class="rub-card'+(urg?' urgent':'')+'" onclick="modal(\'rub\',\''+r.id+'\')" style="border-left:3px solid '+r.c+'">';
+      h+='<div class="icon">'+r.i+'</div>';
+      h+='<h4>'+r.n+'</h4>';
+      h+='<p>'+cnt+' él.'+(phs?' • '+phs+' 📷':'')+'</p>';
+      if(cnt)h+='<div class="count">'+cnt+'</div>';
+      h+='</div>';
+    }
     h+='</div>';
   }else if(TB==="info"){
-    h+='<div class="box"><div class="row"><span>Type</span><span>'+(DC.interieur?'Intérieur':'Extérieur')+' • '+(DC.studio?'Studio':'Naturel')+'</span></div>';
+    h+='<div class="box">';
+    h+='<div class="row"><span>Type</span><span>'+(DC.interieur?'Intérieur':'Extérieur')+' • '+(DC.studio?'Studio':'Naturel')+'</span></div>';
     if(DC.dateInstallation)h+='<div class="row"><span>Installation</span><span>'+fd(DC.dateInstallation)+'</span></div>';
     if(DC.dateTournage)h+='<div class="row"><span>Tournage</span><span>'+fd(DC.dateTournage)+'</span></div>';
     if(DC.notes)h+='<div class="row"><span>Notes</span><span>'+DC.notes+'</span></div>';
-    h+='</div><div class="acts"><div class="abtn p" onclick="edit(\'decor\',DC)">✏️ Modifier</div><div class="abtn d" onclick="delD()">🗑️ Supprimer</div></div>';
+    h+='</div>';
+    h+='<div class="acts"><div class="abtn p" onclick="edit(\'decor\',DC)">✏️ Modifier</div><div class="abtn d" onclick="delD()">🗑️ Supprimer</div></div>';
   }else if(TB==="ph"){
-    var phs=[];if(DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j],nom:e.nom});}
-    if(phs.length){h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';for(var i=0;i<phs.length;i++)h+='<img src="'+phs[i].data+'" onclick="openPh(getDecPhs(),'+i+')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer">';h+='</div>';}else{h+='<div class="empty"><div class="icon">📷</div><p>Aucune photo</p></div>';}
-  }else if(TB==="portfolio"){
-    var allGroups=getDecorPortfolio(DC),groups=allGroups.slice();if(PORTFOLIO_FILTER!=="all")groups=groups.filter(function(g){return g.rubrique.id===PORTFOLIO_FILTER;});
-    h+='<div class="acts" style="margin-bottom:10px"><div class="abtn'+(PORTFOLIO_FILTER==="all"?' p':'')+'" onclick="setPortfolioFilter(\'all\')">Toutes</div>';for(var gi=0;gi<allGroups.length;gi++)h+='<div class="abtn'+(PORTFOLIO_FILTER===allGroups[gi].rubrique.id?' p':'')+'" onclick="setPortfolioFilter(\''+allGroups[gi].rubrique.id+'\')">'+allGroups[gi].rubrique.i+' '+allGroups[gi].rubrique.n+'</div>';h+='</div>';
-    if(!groups.length){h+='<div class="empty"><div class="icon">🖼️</div><p>Aucun portfolio pour ce décor</p><p style="font-size:12px">Ajoutez des photos sur les éléments</p></div>';}
-    else{h+='<div class="gallery-grid">';for(var g=0;g<groups.length;g++){var grp=groups[g],cover=grp.photos[0];h+='<div class="gallery-card" onclick="openPortfolioGroup(\''+grp.rubrique.id+'\')"><div class="gallery-cover">'+(cover?'<img src="'+cover.data+'">':'<span style="font-size:32px">'+grp.rubrique.i+'</span>')+'</div><div class="gallery-info"><h4>'+grp.rubrique.n+'</h4><p>'+grp.items.length+' objet(s) • '+grp.photos.length+' photo(s)</p></div></div>'; }h+='</div>';}
+    var phs=[];
+    if(DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j],nom:e.nom});}
+    if(phs.length){
+      h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
+      for(var i=0;i<phs.length;i++)h+='<img src="'+phs[i].data+'" onclick="openPh(getDecPhs(),'+i+')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer">';
+      h+='</div>';
+    }else{
+      h+='<div class="empty"><div class="icon">📷</div><p>Aucune photo</p></div>';
+    }
   }
   h+='<button class="fab" onclick="modal(\'ne\')">+</button>';
   return h;
 }
 
 window.getDecPhs=function(){var phs=[];if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j],nom:e.nom});}return phs;};
-window.setPortfolioFilter=function(v){PORTFOLIO_FILTER=v;R();};
-window.openPortfolioGroup=function(rubId){var phs=[];if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.rubrique===rubId&&e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j],nom:e.nom});}if(phs.length)openPh(phs,0);};
 
 function rEl(){
   if(!EL)return"";
@@ -706,29 +712,8 @@ function rEl(){
   return h;
 }
 
-function rLouer(){
-  var items=getRentalItems();items.sort(function(a,b){return new Date(b.e.dateDepart||b.e.dateJeu||0)-new Date(a.e.dateDepart||a.e.dateJeu||0)});
-  var q=SQ?SQ.toLowerCase():"";if(q)items=items.filter(function(x){return x.e.nom.toLowerCase().indexOf(q)>=0||(x.d.nom||"").toLowerCase().indexOf(q)>=0||(x.p.nom||"").toLowerCase().indexOf(q)>=0||(x.lo&&x.lo.nom&&x.lo.nom.toLowerCase().indexOf(q)>=0);});
-  var total=items.length,totalCost=0,totalReturned=0;for(var i=0;i<items.length;i++){totalCost+=num(items[i].e.coutReel||items[i].e.coutLocation);if(items[i].e.statut==="restitue")totalReturned++;}
-  var h='<div class="page-title">📦 Louer</div><div class="page-sub">Objets loués par décor et par loueur</div>';
-  h+='<div class="acts"><div class="abtn" onclick="go(\'contacts\')">🏪 Voir les loueurs</div></div>';
-  h+='<div class="kpi-row"><div class="kpi"><strong>'+total+'</strong><span>Objets</span></div><div class="kpi"><strong>'+fm(totalCost)+'</strong><span>Montant</span></div><div class="kpi"><strong>'+totalReturned+'</strong><span>Restitués</span></div></div>';
-  h+='<div class="hdr-search" style="margin-bottom:12px"><input placeholder="Rechercher un objet, décor ou loueur..." value="'+SQ+'" oninput="setSQ(this.value)"></div>';
-  h+='<div class="segment"><button class="'+(RENTTAB==="decor"?'on':'')+'" onclick="setRentTab(\'decor\')">Par décor</button><button class="'+(RENTTAB==="loueur"?'on':'')+'" onclick="setRentTab(\'loueur\')">Par loueur</button></div>';
-  if(!items.length){h+='<div class="empty"><div class="icon">📦</div><p>Aucun objet loué</p><p style="font-size:12px">Renseignez un loueur ou une période de location sur vos éléments</p></div>';return h;}
-  if(RENTTAB==="decor"){
-    var groups={};for(var i=0;i<items.length;i++){var key=items[i].p.id+'__'+items[i].d.id;if(!groups[key])groups[key]={p:items[i].p,d:items[i].d,items:[]};groups[key].items.push(items[i]);}
-    for(var key in groups){var g=groups[key],sub=0;for(var j=0;j<g.items.length;j++)sub+=num(g.items[j].e.coutReel||g.items[j].e.coutLocation);h+='<div class="group-head"><span>'+g.p.nom+' › '+g.d.nom+'</span><strong style="color:#a5b4fc">'+g.items.length+' objet(s)</strong></div><div class="list-mini">';for(var j=0;j<g.items.length;j++){var x=g.items[j],st=gs(x.e.statut);h+='<div class="mini-row" onclick="goTo(\''+x.p.id+'\',\''+x.d.id+'\',\''+x.e.id+'\')"><div><h4>'+x.e.nom+'</h4><p>'+(x.lo?('🏪 '+x.lo.nom+' • '):'')+(x.e.dateRetour?('↩ '+fd(x.e.dateRetour)+' • '):'')+'<span style="color:'+st.c+'">'+st.l+'</span></p></div><strong>'+fm(num(x.e.coutReel||x.e.coutLocation))+'</strong></div>';}h+='</div><div class="box" style="margin-top:8px;font-size:12px;color:#94a3b8">Sous-total '+fm(sub)+'</div>';}
-  }else{
-    var groups2={};for(var i=0;i<items.length;i++){var name=items[i].lo&&items[i].lo.nom?items[i].lo.nom:'Sans loueur';if(!groups2[name])groups2[name]={lo:items[i].lo,items:[]};groups2[name].items.push(items[i]);}
-    var names=Object.keys(groups2).sort();for(var ni=0;ni<names.length;ni++){var nm=names[ni],g2=groups2[nm],sub2=0;for(var j=0;j<g2.items.length;j++)sub2+=num(g2.items[j].e.coutReel||g2.items[j].e.coutLocation);h+='<div class="group-head"><span>'+(g2.lo?g2.lo.nom:'Sans loueur')+'</span><strong style="color:#a5b4fc">'+g2.items.length+' objet(s)</strong></div><div class="list-mini">';for(var j=0;j<g2.items.length;j++){var y=g2.items[j],sty=gs(y.e.statut);h+='<div class="mini-row" onclick="goTo(\''+y.p.id+'\',\''+y.d.id+'\',\''+y.e.id+'\')"><div><h4>'+y.e.nom+'</h4><p>'+y.p.nom+' › '+y.d.nom+(y.e.dateRetour?(' • ↩ '+fd(y.e.dateRetour)):'')+' • <span style="color:'+sty.c+'">'+sty.l+'</span></p></div><strong>'+fm(num(y.e.coutReel||y.e.coutLocation))+'</strong></div>';}h+='</div><div class="box" style="margin-top:8px;font-size:12px;color:#94a3b8">Sous-total '+fm(sub2)+'</div>';}
-  }
-  return h;
-}
-window.setRentTab=function(v){RENTTAB=v;R();};
-
 function rLou(){
-  var h='<div class="page-title">🏪 Répertoire des loueurs</div>';
+  var h='<div class="page-title">🏪 Loueurs</div>';
   h+='<div class="page-sub">'+D.loueurs.length+' contacts</div>';
   if(!D.loueurs.length){h+='<div class="empty"><div class="icon">🏪</div><p>Aucun loueur</p></div>';}
   else{for(var i=0;i<D.loueurs.length;i++){var l=D.loueurs[i];h+='<div class="card" onclick="go(\'loud\',\''+l.id+'\')"><div class="card-icon">🏪</div><div class="card-info"><h3>'+l.nom+'</h3><p>'+(l.specialite||'Loueur')+'</p></div><div class="card-actions">';if(l.telephone)h+='<a href="tel:'+l.telephone+'" class="card-act view" onclick="event.stopPropagation()">📞</a>';h+='<div class="card-act edit" onclick="event.stopPropagation();edit(\'loueur\',D.loueurs['+i+'])">✏️</div></div></div>';}}
@@ -741,7 +726,7 @@ function rLouD(){
   var h='<div class="page-title">🏪 '+LO.nom+'</div>';
   if(LO.specialite)h+='<div class="page-sub">'+LO.specialite+'</div>';
   h+='<div class="acts">';if(LO.telephone)h+='<a href="tel:'+LO.telephone+'" class="abtn p" style="text-decoration:none">📞 Appeler</a>';if(LO.email)h+='<a href="mailto:'+LO.email+'" class="abtn" style="text-decoration:none">✉️ Email</a>';h+='<div class="abtn" onclick="edit(\'loueur\',LO)">✏️</div></div>';
-  h+='<div class="box">';if(LO.contact)h+='<div class="row"><span>Contact</span><span>'+LO.contact+'</span></div>';if(LO.telephone)h+='<div class="row"><span>Téléphone</span><span>'+LO.telephone+'</span></div>';if(LO.adresse)h+='<div class="row"><span>Adresse</span><span>'+LO.adresse+'</span></div>';if(LO.notes)h+='<div class="row"><span>Notes</span><span>'+LO.notes+'</span></div>';h+='</div>';var rented=getRentalItems().filter(function(x){return x.lo&&x.lo.id===LO.id});if(rented.length){h+='<div class="stit">Objets loués</div><div class="list-mini">';for(var ri=0;ri<rented.length;ri++){var x=rented[ri],stx=gs(x.e.statut);h+='<div class="mini-row" onclick="goTo(\''+x.p.id+'\',\''+x.d.id+'\',\''+x.e.id+'\')"><div><h4>'+x.e.nom+'</h4><p>'+x.p.nom+' › '+x.d.nom+' • <span style="color:'+stx.c+'">'+stx.l+'</span></p></div><strong>'+fm(num(x.e.coutReel||x.e.coutLocation))+'</strong></div>';}h+='</div>';}
+  h+='<div class="box">';if(LO.contact)h+='<div class="row"><span>Contact</span><span>'+LO.contact+'</span></div>';if(LO.telephone)h+='<div class="row"><span>Téléphone</span><span>'+LO.telephone+'</span></div>';if(LO.adresse)h+='<div class="row"><span>Adresse</span><span>'+LO.adresse+'</span></div>';if(LO.notes)h+='<div class="row"><span>Notes</span><span>'+LO.notes+'</span></div>';h+='</div>';
   h+='<div class="abtn d" style="width:100%" onclick="delL()">🗑️ Supprimer</div>';
   return h;
 }
