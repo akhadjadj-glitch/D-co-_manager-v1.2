@@ -98,169 +98,122 @@ button,input,select,textarea{font:inherit;font-size:16px;border:none;background:
 .vftr{padding:20px;padding-bottom:max(20px,calc(env(safe-area-inset-bottom)+12px))}
 .srch{position:relative;margin-bottom:14px}
 .srch input{width:100%;padding:10px 10px 10px 36px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05)}
-.srch::before{content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px}
+.srch:before{content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px}
 .alert{border-radius:12px;padding:12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;cursor:pointer}
-.alert:active{opacity:0.8}
 .alert.red{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3)}
-.alert.red .aicon{background:rgba(239,68,68,0.2);color:#ef4444}
 .alert.orange{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3)}
-.alert.orange .aicon{background:rgba(245,158,11,0.2);color:#f59e0b}
 .alert.blue{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3)}
-.alert.blue .aicon{background:rgba(59,130,246,0.2);color:#3b82f6}
 .alert.pink{background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.3)}
-.alert.pink .aicon{background:rgba(236,72,153,0.2);color:#ec4899}
 .aicon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.alert.red .aicon{background:rgba(239,68,68,0.2);color:#ef4444}
+.alert.orange .aicon{background:rgba(245,158,11,0.2);color:#f59e0b}
+.alert.blue .aicon{background:rgba(59,130,246,0.2);color:#3b82f6}
+.alert.pink .aicon{background:rgba(236,72,153,0.2);color:#ec4899}
 .alert h4{font-size:13px;font-weight:600;margin-bottom:2px}
-.alert p{font-size:11px;opacity:0.8}
-@media print{body{background:#fff!important;color:#000!important}.hdr,.fab,.acts,.tabs,.bk,.menu,.modal{display:none!important}.cnt{padding:10px}.pgrid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:8px!important}.pgrid>div{border:1px solid #ccc;padding:6px;text-align:center}.pgrid img{width:100%;height:80px;object-fit:cover}.pgrid p{font-size:9px;margin-top:4px}}
+@media print{body{background:#fff!important;color:#000!important}.hdr,.fab,.acts,.tabs,.bk,.menu,.modal{display:none!important}.cnt{padding:10px}.pgrid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:8px!important}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
 (function(){
-// === DATA ===
 var RUB=[{id:"mobilier",n:"Mobilier",i:"🪑",c:"#6366f1"},{id:"accessoires",n:"Accessoires",i:"🎭",c:"#ec4899"},{id:"regie",n:"Régie",i:"🏢",c:"#14b8a6"},{id:"luminaires",n:"Luminaires",i:"💡",c:"#f59e0b"},{id:"deco",n:"Déco",i:"🖼️",c:"#8b5cf6"},{id:"textiles",n:"Textiles",i:"🧵",c:"#ef4444"},{id:"consommables",n:"Consommables",i:"📦",c:"#64748b"}];
 var STAT=[{id:"a_sourcer",l:"À sourcer",c:"#64748b"},{id:"en_recherche",l:"En recherche",c:"#f59e0b"},{id:"valide",l:"Validé",c:"#3b82f6"},{id:"reserve",l:"Réservé",c:"#6366f1"},{id:"loue",l:"En location",c:"#ec4899"},{id:"livre",l:"Livré",c:"#14b8a6"},{id:"installe",l:"Installé",c:"#10b981"},{id:"restitue",l:"Restitué",c:"#22c55e"}];
 var STATD=[{id:"a_preparer",l:"À préparer",c:"#64748b"},{id:"en_cours",l:"En cours",c:"#f59e0b"},{id:"pret",l:"Prêt",c:"#10b981"},{id:"en_tournage",l:"En tournage",c:"#6366f1"},{id:"termine",l:"Terminé",c:"#22c55e"}];
 var TPROJ=[{id:"film",l:"Long-métrage",i:"🎬"},{id:"serie",l:"Série",i:"📺"},{id:"pub",l:"Publicité",i:"📢"},{id:"clip",l:"Clip",i:"🎵"}];
 var TDEP=[{id:"location",l:"Location"},{id:"achat",l:"Achat"},{id:"transport",l:"Transport"},{id:"autre",l:"Autre"}];
 
-// === STATE ===
-var D=JSON.parse(localStorage.getItem("dp8")||'{"projets":[],"loueurs":[],"depenses":[],"collaborateurs":[],"notifAuto":true}');
+var D=JSON.parse(localStorage.getItem("dp9")||'{"projets":[],"loueurs":[],"depenses":[],"collaborateurs":[],"notifAuto":false}');
 if(!D.depenses)D.depenses=[];
 if(!D.collaborateurs)D.collaborateurs=[];
-if(D.notifAuto===undefined)D.notifAuto=true;
+if(D.notifAuto===undefined)D.notifAuto=false;
+
 var V="home",P=null,DC=null,EL=null,LO=null,RB=null,M=null,MN=false,TB="rub",VW=null,FR="",FD="",SQ="",DS="date",PHS=[];
 
-function sv(){localStorage.setItem("dp8",JSON.stringify(D))}
-function gs(id){return STAT.find(function(s){return s.id===id})||STAT[0]}
-function gsd(id){return STATD.find(function(s){return s.id===id})||STATD[0]}
-function gr(id){return RUB.find(function(r){return r.id===id})}
-function gt(id){return TPROJ.find(function(t){return t.id===id})}
-function gl(id){return D.loueurs.find(function(l){return l.id===id})}
+function sv(){localStorage.setItem("dp9",JSON.stringify(D))}
+function gs(id){for(var i=0;i<STAT.length;i++)if(STAT[i].id===id)return STAT[i];return STAT[0]}
+function gsd(id){for(var i=0;i<STATD.length;i++)if(STATD[i].id===id)return STATD[i];return STATD[0]}
+function gr(id){for(var i=0;i<RUB.length;i++)if(RUB[i].id===id)return RUB[i];return null}
+function gt(id){for(var i=0;i<TPROJ.length;i++)if(TPROJ[i].id===id)return TPROJ[i];return null}
+function gl(id){for(var i=0;i<D.loueurs.length;i++)if(D.loueurs[i].id===id)return D.loueurs[i];return null}
 function fd(d){return d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):"-"}
 function fm(n){return new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(n||0)}
 
-// Fonction pour envoyer notification email
-function notifyCollab(type, details){
-  if(!D.notifAuto || !D.collaborateurs.length) return;
+function sendMail(type,detail){
+  if(!D.notifAuto||!D.collaborateurs.length)return;
+  var emails=[];
+  for(var i=0;i<D.collaborateurs.length;i++)emails.push(D.collaborateurs[i].email);
+  var to=emails.join(",");
+  var subj="",body="";
+  var pn=P?P.nom:"";
+  var dn=DC?DC.nom:"";
+  var dt=new Date().toLocaleDateString("fr-FR");
   
-  var emails = D.collaborateurs.map(function(c){return c.email}).join(",");
-  var subject = "";
-  var body = "";
-  var projet = P ? P.nom : "";
-  var decor = DC ? DC.nom : "";
-  var date = new Date().toLocaleDateString("fr-FR");
-  
-  if(type === "photo"){
-    subject = "🎬 Décor Pro - Nouvelle photo ajoutée";
-    body = "Bonjour,\\n\\nUne nouvelle photo a été ajoutée :\\n\\n";
-    body += "📁 Projet : " + projet + "\\n";
-    body += "🎭 Décor : " + decor + "\\n";
-    body += "📦 Élément : " + details + "\\n";
-    body += "📅 Date : " + date + "\\n\\n";
-    body += "Cordialement,\\nDécor Pro";
-  } else if(type === "element"){
-    subject = "🎬 Décor Pro - Nouvel élément créé";
-    body = "Bonjour,\\n\\nUn nouvel élément a été ajouté :\\n\\n";
-    body += "📁 Projet : " + projet + "\\n";
-    body += "🎭 Décor : " + decor + "\\n";
-    body += "📦 Élément : " + details + "\\n";
-    body += "📅 Date : " + date + "\\n\\n";
-    body += "Cordialement,\\nDécor Pro";
-  } else if(type === "decor"){
-    subject = "🎬 Décor Pro - Nouveau décor créé";
-    body = "Bonjour,\\n\\nUn nouveau décor a été créé :\\n\\n";
-    body += "📁 Projet : " + projet + "\\n";
-    body += "🎭 Décor : " + details + "\\n";
-    body += "📅 Date : " + date + "\\n\\n";
-    body += "Cordialement,\\nDécor Pro";
-  } else if(type === "projet"){
-    subject = "🎬 Décor Pro - Nouveau projet créé";
-    body = "Bonjour,\\n\\nUn nouveau projet a été créé :\\n\\n";
-    body += "📁 Projet : " + details + "\\n";
-    body += "📅 Date : " + date + "\\n\\n";
-    body += "Cordialement,\\nDécor Pro";
-  } else if(type === "statut"){
-    subject = "🎬 Décor Pro - Statut modifié";
-    body = "Bonjour,\\n\\nUn statut a été modifié :\\n\\n";
-    body += "📁 Projet : " + projet + "\\n";
-    body += "🎭 Décor : " + decor + "\\n";
-    body += "📦 Élément : " + details.nom + "\\n";
-    body += "✅ Nouveau statut : " + details.statut + "\\n";
-    body += "📅 Date : " + date + "\\n\\n";
-    body += "Cordialement,\\nDécor Pro";
+  if(type==="projet"){
+    subj="Décor Pro - Nouveau projet: "+detail;
+    body="Bonjour,\n\nUn nouveau projet a été créé:\n\nProjet: "+detail+"\nDate: "+dt+"\n\nCordialement";
+  }else if(type==="decor"){
+    subj="Décor Pro - Nouveau décor: "+detail;
+    body="Bonjour,\n\nUn nouveau décor a été créé:\n\nProjet: "+pn+"\nDécor: "+detail+"\nDate: "+dt+"\n\nCordialement";
+  }else if(type==="element"){
+    subj="Décor Pro - Nouvel élément: "+detail;
+    body="Bonjour,\n\nUn nouvel élément a été ajouté:\n\nProjet: "+pn+"\nDécor: "+dn+"\nÉlément: "+detail+"\nDate: "+dt+"\n\nCordialement";
+  }else if(type==="photo"){
+    subj="Décor Pro - Nouvelle photo: "+detail;
+    body="Bonjour,\n\nUne photo a été ajoutée:\n\nProjet: "+pn+"\nDécor: "+dn+"\nÉlément: "+detail+"\nDate: "+dt+"\n\nCordialement";
+  }else if(type==="statut"){
+    subj="Décor Pro - Statut modifié: "+detail.nom;
+    body="Bonjour,\n\nUn statut a été modifié:\n\nProjet: "+pn+"\nDécor: "+dn+"\nÉlément: "+detail.nom+"\nNouveau statut: "+detail.statut+"\nDate: "+dt+"\n\nCordialement";
   }
   
-  // Ouvrir l'app email
-  var mailUrl = "mailto:" + emails + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body.replace(/\\n/g, "\n"));
-  window.open(mailUrl);
+  var url="mailto:"+to+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);
+  window.location.href=url;
 }
 
-// Fonction pour obtenir les alertes accessoires
 function getAlerts(){
   var today=new Date();today.setHours(0,0,0,0);
   var tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
-  var in3days=new Date(today);in3days.setDate(in3days.getDate()+3);
+  var alerts={aujourdhui:[],demain:[],retards:[],nonPrets:[]};
   
-  var alerts={aujourdhui:[],demain:[],semaine:[],retards:[],manquants:[]};
-  
-  D.projets.forEach(function(p){
-    if(p.decors)p.decors.forEach(function(d){
-      if(d.elements)d.elements.forEach(function(e){
-        if(e.rubrique==="accessoires"||e.dateJeu){
-          var dateJeu=e.dateJeu?new Date(e.dateJeu):null;
-          if(dateJeu)dateJeu.setHours(0,0,0,0);
-          
-          // Accessoires du jour
-          if(dateJeu&&dateJeu.getTime()===today.getTime()){
-            alerts.aujourdhui.push({e:e,d:d,p:p});
-          }
-          // Accessoires de demain
-          else if(dateJeu&&dateJeu.getTime()===tomorrow.getTime()){
-            alerts.demain.push({e:e,d:d,p:p});
-          }
-          // Accessoires cette semaine
-          else if(dateJeu&&dateJeu>today&&dateJeu<=in3days){
-            alerts.semaine.push({e:e,d:d,p:p});
-          }
-          
-          // Accessoires non prêts pour aujourd'hui/demain
-          if(dateJeu&&dateJeu<=tomorrow&&e.statut!=="installe"&&e.statut!=="livre"&&e.statut!=="restitue"){
-            alerts.manquants.push({e:e,d:d,p:p});
-          }
+  for(var pi=0;pi<D.projets.length;pi++){
+    var p=D.projets[pi];
+    if(!p.decors)continue;
+    for(var di=0;di<p.decors.length;di++){
+      var d=p.decors[di];
+      if(!d.elements)continue;
+      for(var ei=0;ei<d.elements.length;ei++){
+        var e=d.elements[ei];
+        if(e.dateJeu){
+          var dj=new Date(e.dateJeu);dj.setHours(0,0,0,0);
+          if(dj.getTime()===today.getTime())alerts.aujourdhui.push({e:e,d:d,p:p});
+          else if(dj.getTime()===tomorrow.getTime())alerts.demain.push({e:e,d:d,p:p});
+          if(dj<=tomorrow&&e.statut!=="installe"&&e.statut!=="livre"&&e.statut!=="restitue")alerts.nonPrets.push({e:e,d:d,p:p});
         }
-        
-        // Retours en retard
         if(e.dateRetour){
-          var dateRetour=new Date(e.dateRetour);dateRetour.setHours(0,0,0,0);
-          if(dateRetour<today&&e.statut!=="restitue"){
-            alerts.retards.push({e:e,d:d,p:p});
-          }
+          var dr=new Date(e.dateRetour);dr.setHours(0,0,0,0);
+          if(dr<today&&e.statut!=="restitue")alerts.retards.push({e:e,d:d,p:p});
         }
-      });
-    });
-  });
-  
+      }
+    }
+  }
   return alerts;
 }
 
-// === GLOBAL FUNCTIONS ===
-window.go=function(v,data){
+window.go=function(v,id){
   if(v==="home"){V="home";P=null;DC=null;EL=null}
-  else if(v==="proj"&&data){P=D.projets.find(function(x){return x.id===data});V="proj"}
-  else if(v==="dec"&&data){DC=P.decors.find(function(x){return x.id===data});V="dec";TB="rub"}
-  else if(v==="el"&&data){EL=DC.elements.find(function(x){return x.id===data});V="el"}
+  else if(v==="proj"){for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===id){P=D.projets[i];break}V="proj"}
+  else if(v==="dec"){for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===id){DC=P.decors[i];break}V="dec";TB="rub"}
+  else if(v==="el"){for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===id){EL=DC.elements[i];break}V="el"}
   else if(v==="lou"){V="lou";LO=null}
-  else if(v==="loud"&&data){LO=D.loueurs.find(function(x){return x.id===data});V="loud"}
+  else if(v==="loud"){for(var i=0;i<D.loueurs.length;i++)if(D.loueurs[i].id===id){LO=D.loueurs[i];break}V="loud"}
   else if(v==="acc"){V="acc";FR="";FD="";SQ=""}
   else if(v==="dep"){V="dep"}
+  else if(v==="collab"){V="collab"}
   else if(v==="print"){V="print"}
   else if(v==="back"){
     if(V==="el"){V="dec";EL=null}
     else if(V==="dec"){V="proj";DC=null}
-    else if(V==="proj"){V="home";P=null}
+    else if(V==="proj"||V==="collab"){V="home";P=null}
     else if(V==="loud"){V="lou";LO=null}
     else if(V==="acc"||V==="dep"){V=P?"proj":"home"}
     else if(V==="print"){V="dec";TB="ph"}
@@ -268,7 +221,8 @@ window.go=function(v,data){
   }
   R();
 };
-window.modal=function(m,data){M=m;RB=data||null;PHS=[];R()};
+
+window.modal=function(m,id){M=m;RB=id||null;PHS=[];R()};
 window.menu=function(v){MN=v;R()};
 window.setTab=function(t){TB=t;R()};
 window.setFR=function(r){FR=r;R()};
@@ -276,16 +230,9 @@ window.setFD=function(d){FD=d;R()};
 window.setSQ=function(q){SQ=q;R()};
 window.setDS=function(s){DS=s;R()};
 window.setVW=function(i){VW=i;R()};
-window.setStat=function(s){
-  var oldStat=EL.statut;
-  EL.statut=s;
-  sv();
-  var st=gs(s);
-  notifyCollab("statut",{nom:EL.nom,statut:st.l});
-  R();
-};
+window.setStat=function(s){var old=EL.statut;EL.statut=s;sv();sendMail("statut",{nom:EL.nom,statut:gs(s).l});R()};
+window.toggleNotif=function(){D.notifAuto=!D.notifAuto;sv();R()};
 
-// === RENDER ===
 function R(){
   var h="";
   h+='<header class="hdr"><div class="logo"><em>🎬</em>Décor Pro</div><button class="hbtn" onclick="menu(true)">☰</button></header>';
@@ -298,8 +245,8 @@ function R(){
   else if(V==="loud")h+=rLouD();
   else if(V==="acc")h+=rAcc();
   else if(V==="dep")h+=rDep();
-  else if(V==="print")h+=rPrint();
   else if(V==="collab")h+=rCollab();
+  else if(V==="print")h+=rPrint();
   h+="</main>";
   if(M)h+=rModal();
   if(MN)h+=rMenu();
@@ -309,11 +256,15 @@ function R(){
 
 function rHome(){
   var np=D.projets.length,nd=0,ne=0,nl=D.loueurs.length;
-  var td=D.depenses.reduce(function(s,d){return s+(parseFloat(d.montant)||0)},0);
-  D.projets.forEach(function(p){nd+=p.decors?p.decors.length:0;if(p.decors)p.decors.forEach(function(d){ne+=d.elements?d.elements.length:0})});
+  var td=0;
+  for(var i=0;i<D.depenses.length;i++)td+=parseFloat(D.depenses[i].montant)||0;
+  for(var i=0;i<D.projets.length;i++){
+    var p=D.projets[i];
+    nd+=p.decors?p.decors.length:0;
+    if(p.decors)for(var j=0;j<p.decors.length;j++)ne+=p.decors[j].elements?p.decors[j].elements.length:0;
+  }
   
   var alerts=getAlerts();
-  
   var h='<div class="stats">';
   h+='<div class="stat"><strong>'+np+'</strong><small>Projets</small></div>';
   h+='<div class="stat"><strong>'+nd+'</strong><small>Décors</small></div>';
@@ -321,19 +272,10 @@ function rHome(){
   h+='<div class="stat"><strong>'+nl+'</strong><small>Loueurs</small></div>';
   h+="</div>";
   
-  // ALERTES
-  if(alerts.retards.length>0){
-    h+='<div class="alert red" onclick="P=null;V=\'acc\';R()"><div class="aicon">⚠️</div><div><h4>'+alerts.retards.length+' retour(s) en retard</h4><p>Éléments à restituer</p></div></div>';
-  }
-  if(alerts.manquants.length>0){
-    h+='<div class="alert orange" onclick="P=null;V=\'acc\';R()"><div class="aicon">🚨</div><div><h4>'+alerts.manquants.length+' accessoire(s) non prêt(s)</h4><p>À préparer pour aujourd\'hui ou demain</p></div></div>';
-  }
-  if(alerts.aujourdhui.length>0){
-    h+='<div class="alert pink" onclick="P=null;V=\'acc\';FD=new Date().toISOString().split(\'T\')[0];R()"><div class="aicon">🎬</div><div><h4>'+alerts.aujourdhui.length+' accessoire(s) aujourd\'hui</h4><p>Jeu prévu aujourd\'hui</p></div></div>';
-  }
-  if(alerts.demain.length>0){
-    h+='<div class="alert blue" onclick="P=null;V=\'acc\';var d=new Date();d.setDate(d.getDate()+1);FD=d.toISOString().split(\'T\')[0];R()"><div class="aicon">📅</div><div><h4>'+alerts.demain.length+' accessoire(s) demain</h4><p>Jeu prévu demain</p></div></div>';
-  }
+  if(alerts.retards.length>0)h+='<div class="alert red" onclick="go(\'acc\')"><div class="aicon">⚠️</div><div><h4>'+alerts.retards.length+' retour(s) en retard</h4></div></div>';
+  if(alerts.nonPrets.length>0)h+='<div class="alert orange" onclick="go(\'acc\')"><div class="aicon">🚨</div><div><h4>'+alerts.nonPrets.length+' accessoire(s) non prêt(s)</h4></div></div>';
+  if(alerts.aujourdhui.length>0)h+='<div class="alert pink" onclick="go(\'acc\')"><div class="aicon">🎬</div><div><h4>'+alerts.aujourdhui.length+' accessoire(s) aujourd\'hui</h4></div></div>';
+  if(alerts.demain.length>0)h+='<div class="alert blue" onclick="go(\'acc\')"><div class="aicon">📅</div><div><h4>'+alerts.demain.length+' accessoire(s) demain</h4></div></div>';
   
   if(td>0)h+='<div class="total"><span>💰 Total dépenses</span><strong>'+fm(td)+'</strong></div>';
   
@@ -341,13 +283,13 @@ function rHome(){
   if(!D.projets.length){
     h+='<div class="empty"><i>🎬</i>Aucun projet<br><small>Appuyez sur + pour créer</small></div>';
   }else{
-    D.projets.forEach(function(p){
-      var t=gt(p.type);
+    for(var i=0;i<D.projets.length;i++){
+      var p=D.projets[i],t=gt(p.type);
       h+='<div class="card" onclick="go(\'proj\',\''+p.id+'\')">';
       h+='<span class="cicon">'+(t?t.i:"📁")+'</span>';
       h+='<div class="cinfo"><h3>'+p.nom+'</h3><p>'+(p.decors?p.decors.length:0)+' décors'+(p.production?" • "+p.production:"")+'</p></div>';
       h+='<span style="color:#64748b">›</span></div>';
-    });
+    }
   }
   h+='<button class="fab" onclick="modal(\'np\')">+</button>';
   return h;
@@ -356,45 +298,19 @@ function rHome(){
 function rProj(){
   if(!P)return"";
   var t=gt(P.type);
-  var td=D.depenses.filter(function(d){return d.projetId===P.id}).reduce(function(s,d){return s+(parseFloat(d.montant)||0)},0);
-  
-  // Alertes pour ce projet
-  var today=new Date();today.setHours(0,0,0,0);
-  var tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
-  var accAuj=0,accDem=0,retards=0,nonPrets=0;
-  
-  if(P.decors)P.decors.forEach(function(d){
-    if(d.elements)d.elements.forEach(function(e){
-      if(e.dateJeu){
-        var dj=new Date(e.dateJeu);dj.setHours(0,0,0,0);
-        if(dj.getTime()===today.getTime())accAuj++;
-        else if(dj.getTime()===tomorrow.getTime())accDem++;
-        if(dj<=tomorrow&&e.statut!=="installe"&&e.statut!=="livre"&&e.statut!=="restitue")nonPrets++;
-      }
-      if(e.dateRetour){
-        var dr=new Date(e.dateRetour);dr.setHours(0,0,0,0);
-        if(dr<today&&e.statut!=="restitue")retards++;
-      }
-    });
-  });
+  var td=0;
+  for(var i=0;i<D.depenses.length;i++)if(D.depenses[i].projetId===P.id)td+=parseFloat(D.depenses[i].montant)||0;
   
   var h='<button class="bk" onclick="go(\'back\')">← Retour</button>';
-  h+='<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:12px">';
+  h+='<div style="display:flex;gap:10px;margin-bottom:12px">';
   h+='<span style="font-size:32px">'+(t?t.i:"📁")+'</span>';
   h+='<div><div class="ttl">'+P.nom+'</div><div class="sub">'+(t?t.l:"")+(P.production?" • "+P.production:"")+'</div></div></div>';
-  
-  // Afficher alertes projet
-  if(retards>0)h+='<div class="alert red" onclick="go(\'acc\')"><div class="aicon">⚠️</div><div><h4>'+retards+' retour(s) en retard</h4></div></div>';
-  if(nonPrets>0)h+='<div class="alert orange" onclick="go(\'acc\')"><div class="aicon">🚨</div><div><h4>'+nonPrets+' accessoire(s) non prêt(s)</h4></div></div>';
-  if(accAuj>0)h+='<div class="alert pink" onclick="go(\'acc\')"><div class="aicon">🎬</div><div><h4>'+accAuj+' accessoire(s) aujourd\'hui</h4></div></div>';
-  if(accDem>0)h+='<div class="alert blue" onclick="go(\'acc\')"><div class="aicon">📅</div><div><h4>'+accDem+' accessoire(s) demain</h4></div></div>';
   
   if(td>0)h+='<div class="total"><span>💰 Budget</span><strong>'+fm(td)+'</strong></div>';
   
   h+='<div class="acts">';
   h+='<button class="abtn" onclick="go(\'dep\')">💰 Dépenses</button>';
   h+='<button class="abtn" onclick="go(\'acc\')">🎭 Accessoires</button>';
-  h+='<button class="abtn" onclick="modal(\'ep\')">✏️</button>';
   h+='<button class="abtn d" onclick="delP()">🗑️</button>';
   h+='</div>';
   
@@ -402,13 +318,13 @@ function rProj(){
   if(!P.decors||!P.decors.length){
     h+='<div class="empty"><i>🎭</i>Aucun décor</div>';
   }else{
-    P.decors.forEach(function(d){
-      var st=gsd(d.statut);
+    for(var i=0;i<P.decors.length;i++){
+      var d=P.decors[i],st=gsd(d.statut);
       h+='<div class="card" onclick="go(\'dec\',\''+d.id+'\')">';
       h+='<span class="cicon">'+(d.interieur?"🏠":"🌳")+'</span>';
       h+='<div class="cinfo"><h3>'+d.nom+'</h3><p><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span> '+(d.elements?d.elements.length:0)+' éléments</p></div>';
       h+='<span style="color:#64748b">›</span></div>';
-    });
+    }
   }
   h+='<button class="fab" onclick="modal(\'nd\')">+</button>';
   return h;
@@ -417,7 +333,6 @@ function rProj(){
 function rDec(){
   if(!DC)return"";
   var st=gsd(DC.statut);
-  
   var h='<button class="bk" onclick="go(\'back\')">← '+P.nom+'</button>';
   h+='<div class="ttl">'+DC.nom+'</div>';
   h+='<div class="sub"><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span>'+(DC.adresse?" 📍 "+DC.adresse:"")+'</div>';
@@ -429,31 +344,33 @@ function rDec(){
   h+='</div>';
   
   if(TB==="rub"){
-    RUB.forEach(function(r){
-      var els=DC.elements?DC.elements.filter(function(e){return e.rubrique===r.id}):[];
+    for(var i=0;i<RUB.length;i++){
+      var r=RUB[i],cnt=0;
+      if(DC.elements)for(var j=0;j<DC.elements.length;j++)if(DC.elements[j].rubrique===r.id)cnt++;
       h+='<div class="card" onclick="modal(\'rub\',\''+r.id+'\')">';
       h+='<div style="width:40px;height:40px;background:'+r.c+'20;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">'+r.i+'</div>';
-      h+='<div class="cinfo"><h3>'+r.n+'</h3><p>'+els.length+' éléments</p></div>';
+      h+='<div class="cinfo"><h3>'+r.n+'</h3><p>'+cnt+' éléments</p></div>';
       h+='<span style="color:#64748b">›</span></div>';
-    });
+    }
   }else if(TB==="info"){
     h+='<div class="box">';
     h+='<div class="row"><span>Type</span><span>'+(DC.interieur?"Intérieur":"Extérieur")+" • "+(DC.studio?"Studio":"Naturel")+'</span></div>';
     if(DC.dateInstallation)h+='<div class="row"><span>Installation</span><span>'+fd(DC.dateInstallation)+'</span></div>';
     if(DC.dateTournage)h+='<div class="row"><span>Tournage</span><span>'+fd(DC.dateTournage)+'</span></div>';
     h+='</div>';
-    h+='<div class="acts"><button class="abtn" onclick="modal(\'ed\')">✏️ Modifier</button><button class="abtn d" onclick="delD()">🗑️</button></div>';
+    h+='<button class="abtn d" onclick="delD()">🗑️ Supprimer ce décor</button>';
   }else if(TB==="ph"){
     var phs=[];
-    if(DC.elements)DC.elements.forEach(function(e){if(e.photos)e.photos.forEach(function(p){phs.push({d:p.data,n:e.nom})})});
-    h+='<div class="acts"><button class="abtn p" onclick="go(\'print\')">🖨️ Imprimer vignettes</button></div>';
+    if(DC.elements)for(var i=0;i<DC.elements.length;i++){
+      var e=DC.elements[i];
+      if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({d:e.photos[j].data,n:e.nom});
+    }
+    h+='<div class="acts"><button class="abtn p" onclick="go(\'print\')">🖨️ Imprimer</button></div>';
     if(phs.length){
       h+='<div class="phgrid">';
-      phs.forEach(function(p){h+='<div style="position:relative"><img src="'+p.d+'"><div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.8));padding:4px;font-size:8px;color:#fff">'+p.n+'</div></div>'});
+      for(var i=0;i<phs.length;i++)h+='<img src="'+phs[i].d+'" title="'+phs[i].n+'">';
       h+='</div>';
-    }else{
-      h+='<div class="empty"><i>📷</i>Aucune photo</div>';
-    }
+    }else h+='<div class="empty"><i>📷</i>Aucune photo</div>';
   }
   h+='<button class="fab" onclick="modal(\'ne\')">+</button>';
   return h;
@@ -461,20 +378,19 @@ function rDec(){
 
 function rEl(){
   if(!EL)return"";
-  var st=gs(EL.statut);
-  var rb=gr(EL.rubrique);
-  var lo=EL.loueurId?gl(EL.loueurId):null;
-  
+  var st=gs(EL.statut),rb=gr(EL.rubrique),lo=EL.loueurId?gl(EL.loueurId):null;
   var h='<button class="bk" onclick="go(\'back\')">← '+DC.nom+'</button>';
   
   if(EL.photos&&EL.photos.length){
     h+='<div class="phmain"><img src="'+EL.photos[0].data+'"></div>';
-    h+='<div class="phrow">';
-    EL.photos.forEach(function(p,i){h+='<div onclick="setVW('+i+')"><img src="'+p.data+'"></div>'});
-    h+='<div style="background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center" onclick="addPh()">+</div>';
-    h+='</div>';
+    if(EL.photos.length>1){
+      h+='<div class="phrow">';
+      for(var i=0;i<EL.photos.length;i++)h+='<div onclick="setVW('+i+')"><img src="'+EL.photos[i].data+'"></div>';
+      h+='<div style="background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center" onclick="addPh()">+</div>';
+      h+='</div>';
+    }
   }else{
-    h+='<div class="phmain" style="cursor:pointer" onclick="addPh()"><div style="text-align:center;color:#64748b"><i style="font-size:40px;font-style:normal;display:block;margin-bottom:8px">📷</i>Ajouter des photos</div></div>';
+    h+='<div class="phmain" style="cursor:pointer" onclick="addPh()"><div style="text-align:center;color:#64748b"><i style="font-size:40px;font-style:normal;display:block;margin-bottom:8px">📷</i>Ajouter photos</div></div>';
   }
   
   h+='<div class="ttl">'+EL.nom+'</div>';
@@ -485,72 +401,95 @@ function rEl(){
   h+='</div>';
   
   h+='<div class="fld"><label>Statut</label><select onchange="setStat(this.value)" style="background:'+st.c+'20;color:'+st.c+';border-color:'+st.c+'">';
-  STAT.forEach(function(s){h+='<option value="'+s.id+'"'+(s.id===EL.statut?" selected":"")+'>'+s.l+'</option>'});
+  for(var i=0;i<STAT.length;i++)h+='<option value="'+STAT[i].id+'"'+(STAT[i].id===EL.statut?" selected":"")+'>'+STAT[i].l+'</option>';
   h+='</select></div>';
   
   h+='<div class="box">';
-  if(EL.description)h+='<div style="margin-bottom:10px"><small style="color:#64748b">Description</small><p style="margin-top:4px">'+EL.description+'</p></div>';
+  if(EL.description)h+='<p style="margin-bottom:10px">'+EL.description+'</p>';
   if(EL.dimensions)h+='<div class="row"><span>Dimensions</span><span>'+EL.dimensions+'</span></div>';
   if(EL.couleur)h+='<div class="row"><span>Couleur</span><span>'+EL.couleur+'</span></div>';
   if(EL.quantite)h+='<div class="row"><span>Quantité</span><span>'+EL.quantite+'</span></div>';
   h+='</div>';
   
-  if(lo){
-    h+='<div class="box" style="background:rgba(99,102,241,0.1)">';
-    h+='<div style="display:flex;align-items:center;gap:10px"><span style="font-size:24px">🏪</span><div><div style="font-weight:600;color:#a5b4fc">'+lo.nom+'</div>'+(lo.telephone?'<a href="tel:'+lo.telephone+'" style="color:#64748b;font-size:12px">📞 '+lo.telephone+'</a>':"")+'</div></div></div>';
-  }
+  if(lo)h+='<div class="box" style="background:rgba(99,102,241,0.1)"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:24px">🏪</span><div><strong style="color:#a5b4fc">'+lo.nom+'</strong>'+(lo.telephone?'<br><a href="tel:'+lo.telephone+'" style="color:#64748b;font-size:12px">📞 '+lo.telephone+'</a>':"")+'</div></div></div>';
   
   if(EL.dateDepart||EL.dateRetour||EL.coutLocation){
-    h+='<div class="box"><div style="font-weight:600;margin-bottom:8px">📦 Location</div>';
+    h+='<div class="box"><strong style="display:block;margin-bottom:8px">📦 Location</strong>';
     if(EL.dateDepart)h+='<div class="row"><span>Départ</span><span>'+fd(EL.dateDepart)+'</span></div>';
     if(EL.dateRetour)h+='<div class="row"><span>Retour</span><span>'+fd(EL.dateRetour)+'</span></div>';
     if(EL.coutLocation)h+='<div class="row"><span>Coût</span><span>'+fm(EL.coutLocation)+'</span></div>';
     h+='</div>';
   }
   
-  h+='<div class="acts"><button class="abtn" onclick="modal(\'ee\')">✏️ Modifier</button><button class="abtn d" onclick="delE()">🗑️</button></div>';
+  h+='<button class="abtn d" onclick="delE()" style="width:100%">🗑️ Supprimer</button>';
   return h;
 }
 
 function rAcc(){
   var items=[];
-  D.projets.forEach(function(p){if(p.decors)p.decors.forEach(function(d){if(d.elements)d.elements.filter(function(e){return e.rubrique==="accessoires"}).forEach(function(e){items.push({e:e,d:d,p:p})})})});
-  if(P)items=items.filter(function(x){return x.p.id===P.id});
+  for(var pi=0;pi<D.projets.length;pi++){
+    var p=D.projets[pi];
+    if(P&&p.id!==P.id)continue;
+    if(!p.decors)continue;
+    for(var di=0;di<p.decors.length;di++){
+      var d=p.decors[di];
+      if(!d.elements)continue;
+      for(var ei=0;ei<d.elements.length;ei++){
+        var e=d.elements[ei];
+        if(e.rubrique==="accessoires")items.push({e:e,d:d,p:p});
+      }
+    }
+  }
   
-  var roles=[];items.forEach(function(x){if(x.e.role&&roles.indexOf(x.e.role)<0)roles.push(x.e.role)});
-  if(FR)items=items.filter(function(x){return x.e.role===FR});
-  if(FD)items=items.filter(function(x){return x.e.dateJeu===FD});
-  if(SQ){var q=SQ.toLowerCase();items=items.filter(function(x){return(x.e.nom&&x.e.nom.toLowerCase().indexOf(q)>=0)||(x.e.role&&x.e.role.toLowerCase().indexOf(q)>=0)})}
+  var roles=[];
+  for(var i=0;i<items.length;i++)if(items[i].e.role&&roles.indexOf(items[i].e.role)<0)roles.push(items[i].e.role);
+  
+  var filtered=[];
+  for(var i=0;i<items.length;i++){
+    var x=items[i];
+    if(FR&&x.e.role!==FR)continue;
+    if(FD&&x.e.dateJeu!==FD)continue;
+    if(SQ){
+      var q=SQ.toLowerCase();
+      if((x.e.nom||"").toLowerCase().indexOf(q)<0&&(x.e.role||"").toLowerCase().indexOf(q)<0)continue;
+    }
+    filtered.push(x);
+  }
   
   var h='<button class="bk" onclick="go(\'back\')">← Retour</button>';
   h+='<div class="ttl">🎭 Accessoires</div>';
-  h+='<div class="sub">'+items.length+' accessoires</div>';
+  h+='<div class="sub">'+filtered.length+' accessoires</div>';
   
   h+='<div class="srch"><input placeholder="Rechercher..." value="'+SQ+'" oninput="setSQ(this.value)"></div>';
   h+='<div class="fltr"><button class="'+(FR===""?"on":"")+'" onclick="setFR(\'\')">Tous</button>';
-  roles.forEach(function(r){h+='<button class="'+(FR===r?"on":"")+'" onclick="setFR(\''+r+'\')">👤 '+r+'</button>'});
+  for(var i=0;i<roles.length;i++)h+='<button class="'+(FR===roles[i]?"on":"")+'" onclick="setFR(\''+roles[i]+'\')">👤 '+roles[i]+'</button>';
   h+='</div>';
   h+='<div class="fld"><label>Date de jeu</label><input type="date" value="'+FD+'" onchange="setFD(this.value)"></div>';
   
-  if(!items.length){
+  if(!filtered.length){
     h+='<div class="empty"><i>🎭</i>Aucun accessoire</div>';
   }else{
-    items.forEach(function(x){
-      var e=x.e,st=gs(e.statut);
-      h+='<div class="card" onclick="P=D.projets.find(function(p){return p.id===\''+x.p.id+'\'});DC=P.decors.find(function(d){return d.id===\''+x.d.id+'\'});EL=DC.elements.find(function(el){return el.id===\''+e.id+'\'});V=\'el\';R()">';
+    for(var i=0;i<filtered.length;i++){
+      var x=filtered[i],e=x.e,st=gs(e.statut);
+      h+='<div class="card" onclick="P=null;for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===\''+x.p.id+'\')P=D.projets[i];DC=null;for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===\''+x.d.id+'\')DC=P.decors[i];EL=null;for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===\''+e.id+'\')EL=DC.elements[i];V=\'el\';R()">';
       if(e.photos&&e.photos.length)h+='<img src="'+e.photos[0].data+'" style="width:44px;height:44px;object-fit:cover;border-radius:8px">';
       else h+='<div style="width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center">🎭</div>';
       h+='<div class="cinfo"><h3>'+e.nom+'</h3><p>'+(e.role?"👤 "+e.role:"")+(e.dateJeu?" 📅 "+fd(e.dateJeu):"")+'</p></div></div>';
-    });
+    }
   }
   return h;
 }
 
 function rDep(){
-  var deps=D.depenses.filter(function(d){return!P||d.projetId===P.id});
-  var total=deps.reduce(function(s,d){return s+(parseFloat(d.montant)||0)},0);
+  var deps=[];
+  for(var i=0;i<D.depenses.length;i++){
+    if(!P||D.depenses[i].projetId===P.id)deps.push(D.depenses[i]);
+  }
+  var total=0;
+  for(var i=0;i<deps.length;i++)total+=parseFloat(deps[i].montant)||0;
+  
   if(DS==="date")deps.sort(function(a,b){return new Date(b.date||0)-new Date(a.date||0)});
-  else if(DS==="montant")deps.sort(function(a,b){return(b.montant||0)-(a.montant||0)});
+  else deps.sort(function(a,b){return(b.montant||0)-(a.montant||0)});
   
   var h='<button class="bk" onclick="go(\'back\')">← Retour</button>';
   h+='<div class="ttl">💰 Dépenses</div>';
@@ -561,25 +500,40 @@ function rDep(){
   if(!deps.length){
     h+='<div class="empty"><i>💰</i>Aucune dépense</div>';
   }else{
-    deps.forEach(function(d){
-      var t=TDEP.find(function(x){return x.id===d.type})||TDEP[3];
-      h+='<div class="dep"><div><h4>'+(d.description||t.l)+'</h4><p>'+fd(d.date)+(d.fournisseur?" • "+d.fournisseur:"")+'</p></div><strong>'+fm(d.montant)+'</strong></div>';
-    });
+    for(var i=0;i<deps.length;i++){
+      var d=deps[i],tp="Autre";
+      for(var j=0;j<TDEP.length;j++)if(TDEP[j].id===d.type)tp=TDEP[j].l;
+      h+='<div class="dep"><div><h4>'+(d.description||tp)+'</h4><p>'+fd(d.date)+(d.fournisseur?" • "+d.fournisseur:"")+'</p></div><strong>'+fm(d.montant)+'</strong></div>';
+    }
   }
   h+='<button class="fab" onclick="modal(\'ndep\')">+</button>';
   return h;
 }
 
-function rPrint(){
-  if(!DC)return"";
-  var phs=[];
-  if(DC.elements)DC.elements.forEach(function(e){if(e.photos)e.photos.forEach(function(p){phs.push({d:p.data,n:e.nom})})});
+function rCollab(){
+  var h='<button class="bk" onclick="go(\'back\')">← Retour</button>';
+  h+='<div class="ttl">👥 Collaborateurs</div>';
+  h+='<div class="sub">'+D.collaborateurs.length+' collaborateur(s)</div>';
   
-  var h='<div style="text-align:center;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid rgba(255,255,255,0.2)"><h2 style="margin:0">'+P.nom+' - '+DC.nom+'</h2><p style="color:#64748b;margin-top:4px">'+phs.length+' photos</p></div>';
-  h+='<div class="acts"><button class="abtn" onclick="go(\'back\')">← Retour</button><button class="abtn p" onclick="window.print()">🖨️ Imprimer</button></div>';
-  h+='<div class="pgrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
-  phs.forEach(function(p){h+='<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;text-align:center"><img src="'+p.d+'" style="width:100%;height:80px;object-fit:cover;border-radius:6px"><p style="font-size:10px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.n+'</p></div>'});
-  h+='</div>';
+  h+='<div class="box" style="background:rgba(99,102,241,0.1)">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center">';
+  h+='<div><strong>📧 Notifications auto</strong><br><small style="color:#94a3b8">Email à chaque modification</small></div>';
+  h+='<button onclick="toggleNotif()" style="padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;'+(D.notifAuto?'background:#10b981;color:#fff':'background:rgba(255,255,255,0.1);color:#64748b')+'">'+(D.notifAuto?"ON":"OFF")+'</button>';
+  h+='</div></div>';
+  
+  if(!D.collaborateurs.length){
+    h+='<div class="empty"><i>👥</i>Aucun collaborateur</div>';
+  }else{
+    for(var i=0;i<D.collaborateurs.length;i++){
+      var c=D.collaborateurs[i];
+      h+='<div class="card" style="cursor:default">';
+      h+='<div style="width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600">'+c.nom.charAt(0).toUpperCase()+'</div>';
+      h+='<div class="cinfo"><h3>'+c.nom+'</h3><p>'+c.email+'</p></div>';
+      h+='<button style="width:36px;height:36px;background:rgba(239,68,68,0.2);border-radius:8px;color:#ef4444;cursor:pointer" onclick="delCollab('+i+')">🗑️</button>';
+      h+='</div>';
+    }
+  }
+  h+='<button class="fab" onclick="modal(\'nc\')">+</button>';
   return h;
 }
 
@@ -590,13 +544,14 @@ function rLou(){
   if(!D.loueurs.length){
     h+='<div class="empty"><i>🏪</i>Aucun loueur</div>';
   }else{
-    D.loueurs.forEach(function(l){
+    for(var i=0;i<D.loueurs.length;i++){
+      var l=D.loueurs[i];
       h+='<div class="card" onclick="go(\'loud\',\''+l.id+'\')">';
       h+='<div style="width:40px;height:40px;background:rgba(99,102,241,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center">🏪</div>';
       h+='<div class="cinfo"><h3>'+l.nom+'</h3>'+(l.specialite?'<p>'+l.specialite+'</p>':'')+'</div>';
       if(l.telephone)h+='<a href="tel:'+l.telephone+'" onclick="event.stopPropagation()" style="width:36px;height:36px;background:rgba(16,185,129,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none">📞</a>';
       h+='</div>';
-    });
+    }
   }
   h+='<button class="fab" onclick="modal(\'nl\')">+</button>';
   return h;
@@ -616,7 +571,22 @@ function rLouD(){
   if(LO.telephone)h+='<div class="row"><span>Téléphone</span><span>'+LO.telephone+'</span></div>';
   if(LO.adresse)h+='<div class="row"><span>Adresse</span><span>'+LO.adresse+'</span></div>';
   h+='</div>';
-  h+='<div class="acts"><button class="abtn" onclick="modal(\'el\')">✏️</button><button class="abtn d" onclick="delL()">🗑️</button></div>';
+  h+='<button class="abtn d" onclick="delL()" style="width:100%">🗑️ Supprimer</button>';
+  return h;
+}
+
+function rPrint(){
+  if(!DC)return"";
+  var phs=[];
+  if(DC.elements)for(var i=0;i<DC.elements.length;i++){
+    var e=DC.elements[i];
+    if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({d:e.photos[j].data,n:e.nom});
+  }
+  var h='<div style="text-align:center;margin-bottom:20px"><h2>'+P.nom+' - '+DC.nom+'</h2><p style="color:#64748b">'+phs.length+' photos</p></div>';
+  h+='<div class="acts"><button class="abtn" onclick="go(\'back\')">← Retour</button><button class="abtn p" onclick="window.print()">🖨️ Imprimer</button></div>';
+  h+='<div class="pgrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+  for(var i=0;i<phs.length;i++)h+='<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;text-align:center"><img src="'+phs[i].d+'" style="width:100%;height:80px;object-fit:cover;border-radius:6px"><p style="font-size:10px;margin-top:4px">'+phs[i].n+'</p></div>';
+  h+='</div>';
   return h;
 }
 
@@ -625,53 +595,20 @@ function rMenu(){
   h+='<h3 style="margin:0 0 20px">⚙️ Menu</h3>';
   h+='<div class="mitm" onclick="go(\'home\');menu(false)">🏠 Tableau de bord</div>';
   h+='<div class="mitm" onclick="go(\'lou\');menu(false)">🏪 Loueurs</div>';
-  h+='<div class="mitm" onclick="P=null;go(\'dep\');menu(false)">💰 Toutes les dépenses</div>';
-  h+='<div class="mitm" onclick="V=\'collab\';menu(false);R()">👥 Collaborateurs <span style="background:rgba(99,102,241,0.3);padding:2px 8px;border-radius:10px;font-size:11px;margin-left:auto">'+D.collaborateurs.length+'</span></div>';
+  h+='<div class="mitm" onclick="P=null;go(\'dep\');menu(false)">💰 Toutes dépenses</div>';
+  h+='<div class="mitm" onclick="go(\'collab\');menu(false)">👥 Collaborateurs <span style="margin-left:auto;background:rgba(99,102,241,0.3);padding:2px 8px;border-radius:10px;font-size:11px">'+D.collaborateurs.length+'</span></div>';
   h+='<div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1)">';
-  h+='<div class="mitm" onclick="toggleNotif()" style="justify-content:space-between">📧 Notifications auto <span style="color:'+(D.notifAuto?"#10b981":"#64748b")+'">'+(D.notifAuto?"ON":"OFF")+'</span></div>';
-  h+='<div class="mitm" onclick="expD()">💾 Exporter</div>';
-  h+='<label class="mitm" style="cursor:pointer">📥 Importer<input type="file" accept=".json" style="display:none" onchange="impD(event)"></label>';
+  h+='<div class="mitm" onclick="expData()">💾 Exporter</div>';
+  h+='<label class="mitm" style="cursor:pointer">📥 Importer<input type="file" accept=".json" style="display:none" onchange="impData(event)"></label>';
   h+='</div></div></div>';
   return h;
 }
 
-function rCollab(){
-  var h='<button class="bk" onclick="go(\'home\')">← Retour</button>';
-  h+='<div class="ttl">👥 Collaborateurs</div>';
-  h+='<div class="sub">'+D.collaborateurs.length+' collaborateur(s) • Notifications '+(D.notifAuto?'<span style="color:#10b981">activées</span>':'<span style="color:#ef4444">désactivées</span>')+'</div>';
-  
-  h+='<div class="box" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">';
-  h+='<div style="font-size:13px;color:#a5b4fc;margin-bottom:8px">📧 <strong>Notifications par email</strong></div>';
-  h+='<p style="font-size:12px;color:#94a3b8;line-height:1.5">Les collaborateurs recevront un email à chaque :</p>';
-  h+='<ul style="font-size:12px;color:#94a3b8;margin:8px 0 0 16px;line-height:1.8">';
-  h+='<li>Création de projet ou décor</li>';
-  h+='<li>Ajout d\'élément</li>';
-  h+='<li>Ajout de photo</li>';
-  h+='<li>Changement de statut</li>';
-  h+='</ul></div>';
-  
-  if(!D.collaborateurs.length){
-    h+='<div class="empty"><i>👥</i>Aucun collaborateur<br><small>Ajoutez des emails pour notifier votre équipe</small></div>';
-  }else{
-    D.collaborateurs.forEach(function(c,i){
-      h+='<div class="card" style="cursor:default">';
-      h+='<div style="width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600">'+c.nom.charAt(0).toUpperCase()+'</div>';
-      h+='<div class="cinfo"><h3>'+c.nom+'</h3><p>'+c.email+'</p></div>';
-      h+='<button style="width:36px;height:36px;background:rgba(239,68,68,0.2);border-radius:8px;color:#ef4444;cursor:pointer" onclick="delCollab('+i+')">🗑️</button>';
-      h+='</div>';
-    });
-  }
-  
-  h+='<button class="fab" onclick="modal(\'nc\')">+</button>';
-  return h;
-}
-
 function rView(){
-  var phs=EL&&EL.photos?EL.photos:[];
-  if(!phs[VW])return"";
+  if(!EL||!EL.photos||!EL.photos[VW])return"";
   var h='<div class="view">';
-  h+='<div class="vhdr"><button style="background:none;border:none;color:#fff;cursor:pointer" onclick="setVW(null)">✕ Fermer</button><span style="color:#64748b">'+(VW+1)+'/'+phs.length+'</span></div>';
-  h+='<div class="vbody"><img src="'+phs[VW].data+'"></div>';
+  h+='<div class="vhdr"><button style="background:none;border:none;color:#fff;cursor:pointer" onclick="setVW(null)">✕ Fermer</button><span style="color:#64748b">'+(VW+1)+'/'+EL.photos.length+'</span></div>';
+  h+='<div class="vbody"><img src="'+EL.photos[VW].data+'"></div>';
   h+='<div class="vftr"><button class="btn d" onclick="delPh()">🗑️ Supprimer</button></div>';
   h+='</div>';
   return h;
@@ -679,37 +616,47 @@ function rView(){
 
 function rModal(){
   var c="";
-  var rb=RB?RUB.find(function(r){return r.id===RB}):null;
   
   if(M==="np"){
     c='<div class="mbar"></div><div class="mtit">🎬 Nouveau projet</div>';
     c+='<div class="fld"><label>Nom *</label><input id="f1"></div>';
-    c+='<div class="fld"><label>Type</label><select id="f2">';TPROJ.forEach(function(t){c+='<option value="'+t.id+'">'+t.i+' '+t.l+'</option>'});c+='</select></div>';
+    c+='<div class="fld"><label>Type</label><select id="f2">';
+    for(var i=0;i<TPROJ.length;i++)c+='<option value="'+TPROJ[i].id+'">'+TPROJ[i].i+' '+TPROJ[i].l+'</option>';
+    c+='</select></div>';
     c+='<div class="fld"><label>Production</label><input id="f3"></div>';
     c+='<div class="cols"><div class="fld"><label>Réalisateur</label><input id="f4"></div><div class="fld"><label>Chef déco</label><input id="f5"></div></div>';
-    c+='<div class="cols"><div class="fld"><label>Début</label><input type="date" id="f6"></div><div class="fld"><label>Fin</label><input type="date" id="f7"></div></div>';
     c+='<button class="btn p" onclick="saveP()">Créer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }else if(M==="nd"){
     c='<div class="mbar"></div><div class="mtit">🎭 Nouveau décor</div>';
     c+='<div class="fld"><label>Nom *</label><input id="f1"></div>';
     c+='<div class="fld"><label>Adresse</label><input id="f2"></div>';
     c+='<div class="cols"><div class="fld"><label>Type</label><select id="f3"><option value="1">🏠 Intérieur</option><option value="0">🌳 Extérieur</option></select></div><div class="fld"><label>Nature</label><select id="f4"><option value="0">🏡 Naturel</option><option value="1">🎬 Studio</option></select></div></div>';
-    c+='<div class="fld"><label>Statut</label><select id="f5">';STATD.forEach(function(s){c+='<option value="'+s.id+'">'+s.l+'</option>'});c+='</select></div>';
+    c+='<div class="fld"><label>Statut</label><select id="f5">';
+    for(var i=0;i<STATD.length;i++)c+='<option value="'+STATD[i].id+'">'+STATD[i].l+'</option>';
+    c+='</select></div>';
     c+='<div class="cols"><div class="fld"><label>Installation</label><input type="date" id="f6"></div><div class="fld"><label>Tournage</label><input type="date" id="f7"></div></div>';
     c+='<button class="btn p" onclick="saveDC()">Créer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }else if(M==="ne"){
+    var rb=RB?gr(RB):null;
     c='<div class="mbar"></div><div class="mtit">📦 Nouvel élément</div>';
-    c+='<div class="drop" onclick="document.getElementById(\'phi\').click()"><div id="phpr"></div><div id="phpl"><i>📸</i><strong>Photos</strong><br><small style="color:#64748b">Plusieurs possibles</small></div><input type="file" accept="image/*" multiple id="phi" style="display:none" onchange="prvPh(event)"></div>';
+    c+='<div class="drop" onclick="document.getElementById(\'phi\').click()"><div id="phpr"></div><div id="phpl"><i>📸</i><strong>Photos</strong></div><input type="file" accept="image/*" multiple id="phi" style="display:none" onchange="prvPh(event)"></div>';
     c+='<div class="fld"><label>Nom *</label><input id="f1"></div>';
-    c+='<div class="cols"><div class="fld"><label>Rubrique</label><select id="f2">';RUB.forEach(function(r){c+='<option value="'+r.id+'"'+(rb&&rb.id===r.id?" selected":"")+'>'+r.i+' '+r.n+'</option>'});c+='</select></div><div class="fld"><label>Statut</label><select id="f3">';STAT.forEach(function(s){c+='<option value="'+s.id+'">'+s.l+'</option>'});c+='</select></div></div>';
+    c+='<div class="cols"><div class="fld"><label>Rubrique</label><select id="f2">';
+    for(var i=0;i<RUB.length;i++)c+='<option value="'+RUB[i].id+'"'+(rb&&rb.id===RUB[i].id?" selected":"")+'>'+RUB[i].i+' '+RUB[i].n+'</option>';
+    c+='</select></div><div class="fld"><label>Statut</label><select id="f3">';
+    for(var i=0;i<STAT.length;i++)c+='<option value="'+STAT[i].id+'">'+STAT[i].l+'</option>';
+    c+='</select></div></div>';
     c+='<div class="fld"><label>Description</label><textarea id="f4"></textarea></div>';
-    c+='<div class="cols"><div class="fld"><label>Dimensions</label><input id="f5" placeholder="L x l x H"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="1"></div></div>';
+    c+='<div class="cols"><div class="fld"><label>Dimensions</label><input id="f5"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="1"></div></div>';
     c+='<div class="cols"><div class="fld"><label>Couleur</label><input id="f7"></div><div class="fld"><label>Matière</label><input id="f8"></div></div>';
-    c+='<div class="accbox"><h4>🎭 Accessoire de jeu</h4><div class="cols"><div class="fld" style="margin:0"><label>Rôle</label><input id="f9" placeholder="Personnage"></div><div class="fld" style="margin:0"><label>Date jeu</label><input type="date" id="f10"></div></div></div>';
-    if(D.loueurs.length){c+='<div class="fld"><label>Loueur</label><select id="f11"><option value="">Aucun</option>';D.loueurs.forEach(function(l){c+='<option value="'+l.id+'">'+l.nom+'</option>'});c+='</select></div>';}
-    c+='<div class="cols"><div class="fld"><label>Coût (€)</label><input type="number" id="f12"></div><div class="fld"><label>Caution (€)</label><input type="number" id="f13"></div></div>';
+    c+='<div class="accbox"><h4>🎭 Accessoire de jeu</h4><div class="cols"><div class="fld" style="margin:0"><label>Rôle</label><input id="f9"></div><div class="fld" style="margin:0"><label>Date jeu</label><input type="date" id="f10"></div></div></div>';
+    if(D.loueurs.length){
+      c+='<div class="fld"><label>Loueur</label><select id="f11"><option value="">Aucun</option>';
+      for(var i=0;i<D.loueurs.length;i++)c+='<option value="'+D.loueurs[i].id+'">'+D.loueurs[i].nom+'</option>';
+      c+='</select></div>';
+    }
+    c+='<div class="cols"><div class="fld"><label>Coût €</label><input type="number" id="f12"></div><div class="fld"><label>Caution €</label><input type="number" id="f13"></div></div>';
     c+='<div class="cols"><div class="fld"><label>Départ</label><input type="date" id="f14"></div><div class="fld"><label>Retour</label><input type="date" id="f15"></div></div>';
-    c+='<div class="fld"><label>Notes</label><textarea id="f16"></textarea></div>';
     c+='<button class="btn p" onclick="saveEl()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }else if(M==="nl"){
     c='<div class="mbar"></div><div class="mtit">🏪 Nouveau loueur</div>';
@@ -721,40 +668,44 @@ function rModal(){
     c+='<button class="btn p" onclick="saveLo()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }else if(M==="ndep"){
     c='<div class="mbar"></div><div class="mtit">💰 Nouvelle dépense</div>';
-    c+='<div class="fld"><label>Type</label><select id="f1">';TDEP.forEach(function(t){c+='<option value="'+t.id+'">'+t.l+'</option>'});c+='</select></div>';
+    c+='<div class="fld"><label>Type</label><select id="f1">';
+    for(var i=0;i<TDEP.length;i++)c+='<option value="'+TDEP[i].id+'">'+TDEP[i].l+'</option>';
+    c+='</select></div>';
     c+='<div class="fld"><label>Description</label><input id="f2"></div>';
-    c+='<div class="cols"><div class="fld"><label>Montant (€) *</label><input type="number" step="0.01" id="f3"></div><div class="fld"><label>Date</label><input type="date" id="f4" value="'+new Date().toISOString().split("T")[0]+'"></div></div>';
+    c+='<div class="cols"><div class="fld"><label>Montant € *</label><input type="number" step="0.01" id="f3"></div><div class="fld"><label>Date</label><input type="date" id="f4" value="'+new Date().toISOString().split("T")[0]+'"></div></div>';
     c+='<div class="fld"><label>Fournisseur</label><input id="f5"></div>';
     c+='<button class="btn p" onclick="saveDep()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
-  }else if(M==="rub"&&rb){
-    var els=DC&&DC.elements?DC.elements.filter(function(e){return e.rubrique===rb.id}):[];
+  }else if(M==="nc"){
+    c='<div class="mbar"></div><div class="mtit">👥 Nouveau collaborateur</div>';
+    c+='<div class="fld"><label>Nom *</label><input id="f1"></div>';
+    c+='<div class="fld"><label>Email *</label><input type="email" id="f2"></div>';
+    c+='<button class="btn p" onclick="saveCollab()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
+  }else if(M==="rub"){
+    var rb=gr(RB);
+    if(!rb)return"";
+    var els=[];
+    if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].rubrique===rb.id)els.push(DC.elements[i]);
     c='<div class="mbar"></div>';
     c+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:44px;height:44px;background:'+rb.c+'20;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px">'+rb.i+'</div><div><h3 style="margin:0">'+rb.n+'</h3><small style="color:#64748b">'+els.length+' éléments</small></div></div>';
     if(!els.length){
       c+='<div class="empty"><i>📦</i>Aucun élément</div>';
     }else{
       c+='<div style="max-height:50vh;overflow-y:auto">';
-      els.forEach(function(e){
-        var st=gs(e.statut);
-        c+='<div class="card" onclick="EL=DC.elements.find(function(x){return x.id===\''+e.id+'\'});M=null;V=\'el\';R()">';
+      for(var i=0;i<els.length;i++){
+        var e=els[i],st=gs(e.statut);
+        c+='<div class="card" onclick="for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===\''+e.id+'\')EL=DC.elements[i];M=null;V=\'el\';R()">';
         if(e.photos&&e.photos.length)c+='<img src="'+e.photos[0].data+'" style="width:44px;height:44px;object-fit:cover;border-radius:8px">';
         else c+='<div style="width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center">📷</div>';
         c+='<div class="cinfo"><h3>'+e.nom+'</h3><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span></div></div>';
-      });
+      }
       c+='</div>';
     }
     c+='<button class="btn p" style="margin-top:16px" onclick="modal(\'ne\')">➕ Ajouter</button>';
-  }else if(M==="nc"){
-    c='<div class="mbar"></div><div class="mtit">👥 Nouveau collaborateur</div>';
-    c+='<div class="fld"><label>Nom *</label><input id="f1" placeholder="Ex: Marie Dupont"></div>';
-    c+='<div class="fld"><label>Email *</label><input type="email" id="f2" placeholder="marie@production.com"></div>';
-    c+='<button class="btn p" onclick="saveCollab()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
   
   return '<div class="modal" onclick="modal(null)"><div class="mpan" onclick="event.stopPropagation()">'+c+'</div></div>';
 }
 
-// === ACTIONS ===
 window.prvPh=function(e){
   var files=e.target.files;
   for(var i=0;i<files.length;i++){
@@ -770,8 +721,8 @@ function updPh(){
   var pr=document.getElementById("phpr"),pl=document.getElementById("phpl");
   if(pr&&pl){
     if(PHS.length){
-      var h="";PHS.forEach(function(d){h+='<img src="'+d+'" style="width:50px;height:50px;object-fit:cover;border-radius:6px;margin:2px">'});
-      h+='<div style="width:50px;height:50px;background:rgba(255,255,255,0.1);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;margin:2px">+</div>';
+      var h="";
+      for(var i=0;i<PHS.length;i++)h+='<img src="'+PHS[i]+'" style="width:50px;height:50px;object-fit:cover;border-radius:6px;margin:2px">';
       pr.innerHTML=h;pl.style.display="none";
     }else{pr.innerHTML="";pl.style.display="block";}
   }
@@ -782,38 +733,31 @@ window.addPh=function(){
   i.type="file";i.accept="image/*";i.multiple=true;
   i.onchange=function(e){
     var files=e.target.files;
-    var count=files.length;
     for(var j=0;j<files.length;j++){
-      (function(file,isLast){
+      (function(file,last){
         var r=new FileReader();
         r.onload=function(ev){
           if(!EL.photos)EL.photos=[];
           EL.photos.push({data:ev.target.result});
           sv();
-          if(isLast){
-            notifyCollab("photo",EL.nom);
-          }
+          if(last)sendMail("photo",EL.nom);
           R();
         };
         r.readAsDataURL(file);
-      })(files[j],j===count-1);
+      })(files[j],j===files.length-1);
     }
   };
   i.click();
 };
 
-window.delPh=function(){
-  if(confirm("Supprimer cette photo?")){
-    EL.photos.splice(VW,1);sv();VW=null;R();
-  }
-};
+window.delPh=function(){if(confirm("Supprimer?")){EL.photos.splice(VW,1);sv();VW=null;R()}};
 
 window.saveP=function(){
   var n=document.getElementById("f1").value.trim();
   if(!n)return alert("Nom requis");
-  D.projets.push({id:Date.now().toString(),nom:n,type:document.getElementById("f2").value,production:document.getElementById("f3").value,realisateur:document.getElementById("f4").value,chefDeco:document.getElementById("f5").value,dateDebut:document.getElementById("f6").value,dateFin:document.getElementById("f7").value,decors:[]});
-  sv();M=null;
-  notifyCollab("projet",n);
+  var p={id:Date.now().toString(),nom:n,type:document.getElementById("f2").value,production:document.getElementById("f3").value,realisateur:document.getElementById("f4").value,chefDeco:document.getElementById("f5").value,decors:[]};
+  D.projets.push(p);sv();M=null;
+  sendMail("projet",n);
   R();
 };
 
@@ -821,9 +765,9 @@ window.saveDC=function(){
   var n=document.getElementById("f1").value.trim();
   if(!n)return alert("Nom requis");
   if(!P.decors)P.decors=[];
-  P.decors.push({id:Date.now().toString(),nom:n,adresse:document.getElementById("f2").value,interieur:document.getElementById("f3").value==="1",studio:document.getElementById("f4").value==="1",statut:document.getElementById("f5").value,dateInstallation:document.getElementById("f6").value,dateTournage:document.getElementById("f7").value,elements:[],photos:[]});
+  P.decors.push({id:Date.now().toString(),nom:n,adresse:document.getElementById("f2").value,interieur:document.getElementById("f3").value==="1",studio:document.getElementById("f4").value==="1",statut:document.getElementById("f5").value,dateInstallation:document.getElementById("f6").value,dateTournage:document.getElementById("f7").value,elements:[]});
   sv();M=null;
-  notifyCollab("decor",n);
+  sendMail("decor",n);
   R();
 };
 
@@ -831,11 +775,10 @@ window.saveEl=function(){
   var n=document.getElementById("f1").value.trim();
   if(!n)return alert("Nom requis");
   if(!DC.elements)DC.elements=[];
-  var el={id:Date.now().toString(),nom:n,rubrique:document.getElementById("f2").value,statut:document.getElementById("f3").value,description:document.getElementById("f4").value,dimensions:document.getElementById("f5").value,quantite:document.getElementById("f6").value,couleur:document.getElementById("f7").value,matiere:document.getElementById("f8").value,role:document.getElementById("f9")?document.getElementById("f9").value:"",dateJeu:document.getElementById("f10")?document.getElementById("f10").value:"",loueurId:document.getElementById("f11")?document.getElementById("f11").value:"",coutLocation:document.getElementById("f12").value,caution:document.getElementById("f13").value,dateDepart:document.getElementById("f14").value,dateRetour:document.getElementById("f15").value,notes:document.getElementById("f16").value,photos:[]};
-  PHS.forEach(function(d){el.photos.push({data:d})});
-  DC.elements.push(el);
-  sv();M=null;PHS=[];
-  notifyCollab("element",n);
+  var el={id:Date.now().toString(),nom:n,rubrique:document.getElementById("f2").value,statut:document.getElementById("f3").value,description:document.getElementById("f4").value,dimensions:document.getElementById("f5").value,quantite:document.getElementById("f6").value,couleur:document.getElementById("f7").value,matiere:document.getElementById("f8").value,role:document.getElementById("f9")?document.getElementById("f9").value:"",dateJeu:document.getElementById("f10")?document.getElementById("f10").value:"",loueurId:document.getElementById("f11")?document.getElementById("f11").value:"",coutLocation:document.getElementById("f12")?document.getElementById("f12").value:"",caution:document.getElementById("f13")?document.getElementById("f13").value:"",dateDepart:document.getElementById("f14")?document.getElementById("f14").value:"",dateRetour:document.getElementById("f15")?document.getElementById("f15").value:"",photos:[]};
+  for(var i=0;i<PHS.length;i++)el.photos.push({data:PHS[i]});
+  DC.elements.push(el);sv();M=null;PHS=[];
+  sendMail("element",n);
   R();
 };
 
@@ -857,51 +800,37 @@ window.saveCollab=function(){
   var n=document.getElementById("f1").value.trim();
   var e=document.getElementById("f2").value.trim();
   if(!n||!e)return alert("Nom et email requis");
-  if(e.indexOf("@")<1)return alert("Email invalide");
   D.collaborateurs.push({id:Date.now().toString(),nom:n,email:e});
   sv();M=null;R();
 };
 
-window.delCollab=function(i){
-  if(confirm("Supprimer ce collaborateur?")){
-    D.collaborateurs.splice(i,1);
-    sv();R();
-  }
-};
+window.delCollab=function(i){if(confirm("Supprimer?")){D.collaborateurs.splice(i,1);sv();R()}};
+window.delP=function(){if(confirm("Supprimer ce projet?")){for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===P.id){D.projets.splice(i,1);break}sv();P=null;V="home";R()}};
+window.delD=function(){if(confirm("Supprimer ce décor?")){for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===DC.id){P.decors.splice(i,1);break}sv();DC=null;V="proj";R()}};
+window.delE=function(){if(confirm("Supprimer?")){for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===EL.id){DC.elements.splice(i,1);break}sv();EL=null;V="dec";R()}};
+window.delL=function(){if(confirm("Supprimer?")){for(var i=0;i<D.loueurs.length;i++)if(D.loueurs[i].id===LO.id){D.loueurs.splice(i,1);break}sv();LO=null;V="lou";R()}};
 
-window.toggleNotif=function(){
-  D.notifAuto=!D.notifAuto;
-  sv();R();
-};
-
-window.delP=function(){if(confirm("Supprimer ce projet?")){D.projets=D.projets.filter(function(p){return p.id!==P.id});D.depenses=D.depenses.filter(function(d){return d.projetId!==P.id});sv();P=null;V="home";R()}};
-window.delD=function(){if(confirm("Supprimer ce décor?")){P.decors=P.decors.filter(function(d){return d.id!==DC.id});sv();DC=null;V="proj";R()}};
-window.delE=function(){if(confirm("Supprimer?")){DC.elements=DC.elements.filter(function(e){return e.id!==EL.id});sv();EL=null;V="dec";R()}};
-window.delL=function(){if(confirm("Supprimer?")){D.loueurs=D.loueurs.filter(function(l){return l.id!==LO.id});sv();LO=null;V="lou";R()}};
-
-window.expD=function(){
+window.expData=function(){
   var b=new Blob([JSON.stringify(D,null,2)],{type:"application/json"});
   var a=document.createElement("a");
   a.href=URL.createObjectURL(b);
   a.download="decor-pro-"+new Date().toISOString().split("T")[0]+".json";
-  a.click();
-  MN=false;R();
+  a.click();MN=false;R();
 };
 
-window.impD=function(e){
+window.impData=function(e){
   var f=e.target.files[0];
   if(!f)return;
   var r=new FileReader();
   r.onload=function(ev){
     try{
       var d=JSON.parse(ev.target.result);
-      if(d.projets){D=d;if(!D.depenses)D.depenses=[];sv();MN=false;alert("Importé!");R();}
+      if(d.projets){D=d;if(!D.depenses)D.depenses=[];if(!D.collaborateurs)D.collaborateurs=[];sv();MN=false;alert("Importé!");R();}
     }catch(err){alert("Erreur");}
   };
   r.readAsText(f);
 };
 
-// === INIT ===
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 R();
 })();
