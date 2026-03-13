@@ -413,13 +413,25 @@ function rEl(){
   if(!EL)return"";
   var st=gs(EL.statut),rb=gr(EL.rubrique);
   var h='';
-  if(EL.photos&&EL.photos.length){h+='<div class="photo-main" onclick="openPh(EL.photos,0)"><img src="'+EL.photos[0]+'"></div>';}
-  else{h+='<div class="photo-main" onclick="addPh()"><span style="font-size:32px">📷</span></div>';}
+  if(EL.photos&&EL.photos.length){
+    h+='<div class="photo-main" onclick="openPh(EL.photos,0)"><img src="'+EL.photos[0]+'"></div>';
+    h+='<div class="photo-row">';
+    for(var i=0;i<EL.photos.length;i++)h+='<div class="photo-thumb'+(i===0?' active':'')+'" onclick="openPh(EL.photos,'+i+')"><img src="'+EL.photos[i]+'"></div>';
+    h+='<div class="photo-thumb photo-add" onclick="addPh()">+</div>';
+    h+='</div>';
+  }else{
+    h+='<div class="photo-main" onclick="addPh()" style="flex-direction:column;gap:8px"><span style="font-size:40px">📷</span><span style="font-size:14px;color:#a5b4fc">Ajouter des photos</span></div>';
+  }
   h+='<div class="page-title">'+EL.nom+(EL.urgent?' 🚨':'')+'</div>';
-  h+='<div class="chips">';if(rb)h+='<div class="chip purple">'+rb.i+' '+rb.n+'</div>';if(EL.scene)h+='<div class="chip">🎬 Sc.'+EL.scene+'</div>';h+='</div>';
-  h+='<div class="acts"><div class="abtn p" onclick="edit(\'element\',EL)">✏️</div><div class="abtn'+(EL.urgent?' d':'')+'" onclick="toggleUrg()">'+(EL.urgent?'🚨':'⚡')+' Urgent</div><div class="abtn d" onclick="delE()">🗑️</div></div>';
-  h+='<div class="fld"><label>Statut</label><select onchange="setStat(this.value)">';for(var i=0;i<STAT.length;i++)h+='<option value="'+STAT[i].id+'"'+(STAT[i].id===EL.statut?' selected':'')+'>'+STAT[i].l+'</option>';h+='</select></div>';
-  h+='<div class="box">';if(EL.description)h+='<p style="font-size:13px;margin-bottom:8px">'+EL.description+'</p>';h+='</div>';
+  h+='<div class="chips">';
+  if(rb)h+='<div class="chip purple">'+rb.i+' '+rb.n+'</div>';
+  if(EL.scene)h+='<div class="chip">🎬 Sc.'+EL.scene+'</div>';
+  if(EL.role)h+='<div class="chip pink">👤 '+EL.role+'</div>';
+  if(EL.dateJeu)h+='<div class="chip">📅 '+fd(EL.dateJeu)+'</div>';
+  h+='</div>';
+  h+='<div class="acts"><div class="abtn p" onclick="edit(\'element\',EL)">✏️</div><div class="abtn'+(EL.urgent?' d':'')+'" onclick="toggleUrg()">'+(EL.urgent?'🚨':'⚡')+' Urgent</div><div class="abtn" onclick="dupEl()">📋</div><div class="abtn d" onclick="delE()">🗑️</div></div>';
+  h+='<div class="fld"><label>Statut</label><select onchange="setStat(this.value)" style="background:'+st.c+'20;border-color:'+st.c+'">';for(var i=0;i<STAT.length;i++)h+='<option value="'+STAT[i].id+'"'+(STAT[i].id===EL.statut?' selected':'')+'>'+STAT[i].l+'</option>';h+='</select></div>';
+  if(EL.description){h+='<div class="box"><p style="font-size:13px">'+EL.description+'</p></div>';}
   return h;
 }
 
@@ -520,16 +532,25 @@ function rModal(){
   }
   else if(M==="ne"){
     c='<div class="mbar"></div><div class="mtit">📦 Nouvel élément</div>';
+    c+='<div class="drop" onclick="document.getElementById(\'phi\').click()"><div id="phpr"></div><div id="phpl"><span class="icon">📸</span><p>Ajouter photos</p></div><input type="file" accept="image/*" multiple id="phi" style="display:none" onchange="prvPh(event)"></div>';
     c+='<div class="fld"><label>Nom *</label><input id="f1" placeholder="Vase bleu"></div>';
     c+='<div class="fld-row"><div class="fld"><label>Rubrique</label><select id="f2">';for(var i=0;i<RUB.length;i++)c+='<option value="'+RUB[i].id+'"'+(RB===RUB[i].id?' selected':'')+'>'+RUB[i].i+' '+RUB[i].n+'</option>';c+='</select></div><div class="fld"><label>Statut</label><select id="f3">';for(var i=0;i<STAT.length;i++)c+='<option value="'+STAT[i].id+'">'+STAT[i].l+'</option>';c+='</select></div></div>';
+    c+='<div class="toggle-more" onclick="toggleMore()">'+(MORE?'▲ Moins':'▼ Plus d\'options')+'</div>';
+    c+='<div class="'+(MORE?'':'hidden')+'">';
     c+='<div class="fld"><label>Description</label><textarea id="f4"></textarea></div>';
-    c+='<button class="btn p" onclick="saveEl()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
+    c+='<div class="fld-row"><div class="fld"><label>Scène</label><input id="f5" placeholder="12"></div><div class="fld"><label>Personnage</label><input id="f6" placeholder="Marie"></div></div>';
+    c+='<div class="fld"><label>Date de jeu</label><input type="date" id="f7"></div>';
+    c+='</div>';
+    c+='<div id="upload-status"></div>';
+    c+='<button class="btn p" id="save-btn" onclick="saveEl()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
   else if(M==="edit_element"&&EDIT){
     c='<div class="mbar"></div><div class="mtit">✏️ Modifier élément</div>';
     c+='<div class="fld"><label>Nom *</label><input id="f1" value="'+EDIT.nom+'"></div>';
     c+='<div class="fld-row"><div class="fld"><label>Rubrique</label><select id="f2">';for(var i=0;i<RUB.length;i++)c+='<option value="'+RUB[i].id+'"'+(RUB[i].id===EDIT.rubrique?' selected':'')+'>'+RUB[i].i+' '+RUB[i].n+'</option>';c+='</select></div><div class="fld"><label>Statut</label><select id="f3">';for(var i=0;i<STAT.length;i++)c+='<option value="'+STAT[i].id+'"'+(STAT[i].id===EDIT.statut?' selected':'')+'>'+STAT[i].l+'</option>';c+='</select></div></div>';
     c+='<div class="fld"><label>Description</label><textarea id="f4">'+(EDIT.description||"")+'</textarea></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Scène</label><input id="f5" value="'+(EDIT.scene||"")+'"></div><div class="fld"><label>Personnage</label><input id="f6" value="'+(EDIT.role||"")+'"></div></div>';
+    c+='<div class="fld"><label>Date de jeu</label><input type="date" id="f7" value="'+(EDIT.dateJeu||"")+'"></div>';
     c+='<button class="btn p" onclick="updateEl()">Enregistrer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
   else if(M==="nl"){
@@ -579,8 +600,30 @@ window.saveP=function(){var n=gv("f1");if(!n)return alert("Nom requis");D.projet
 window.updateP=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.type=gv("f2");EDIT.production=gv("f3");sv();M=null;R();};
 window.saveDC=function(){var n=gv("f1");if(!n)return alert("Nom requis");if(!P.decors)P.decors=[];P.decors.push({id:uid(),nom:n,interieur:gv("f2")==="1",statut:gv("f3")||"a_preparer",elements:[]});sv();M=null;R();};
 window.updateDC=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.interieur=gv("f2")==="1";EDIT.statut=gv("f3");sv();M=null;R();};
-window.saveEl=function(){var n=gv("f1");if(!n)return alert("Nom requis");if(!DC.elements)DC.elements=[];DC.elements.push({id:uid(),nom:n,rubrique:gv("f2")||"mobilier",statut:gv("f3")||"a_sourcer",description:gv("f4"),photos:[]});sv();M=null;R();};
-window.updateEl=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.rubrique=gv("f2");EDIT.statut=gv("f3");EDIT.description=gv("f4");sv();M=null;R();};
+window.saveEl=function(){
+  var n=gv("f1");if(!n)return alert("Nom requis");
+  var btn=document.getElementById("save-btn");if(btn)btn.disabled=true;
+  if(!DC.elements)DC.elements=[];
+  var el={id:uid(),nom:n,rubrique:gv("f2")||"mobilier",statut:gv("f3")||"a_sourcer",description:gv("f4"),scene:gv("f5"),role:gv("f6"),dateJeu:gv("f7"),photos:[]};
+  
+  if(!PENDING_FILES||PENDING_FILES.length===0){
+    DC.elements.push(el);sv();M=null;PENDING_FILES=[];R();return;
+  }
+  
+  var status=document.getElementById("upload-status");
+  var uploaded=0;var total=PENDING_FILES.length;
+  if(status)status.innerHTML='<div class="upload-progress"><div style="font-size:12px">Upload... 0/'+total+'</div><div class="upload-bar"><div class="upload-fill" style="width:0%"></div></div></div>';
+  
+  for(var i=0;i<PENDING_FILES.length;i++){
+    uploadPhoto(PENDING_FILES[i],function(url){
+      uploaded++;
+      if(url)el.photos.push(url);
+      if(status)status.innerHTML='<div class="upload-progress"><div style="font-size:12px">Upload... '+uploaded+'/'+total+'</div><div class="upload-bar"><div class="upload-fill" style="width:'+Math.round(uploaded/total*100)+'%"></div></div></div>';
+      if(uploaded===total){DC.elements.push(el);sv();M=null;PENDING_FILES=[];R();}
+    });
+  }
+};
+window.updateEl=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.rubrique=gv("f2");EDIT.statut=gv("f3");EDIT.description=gv("f4");EDIT.scene=gv("f5");EDIT.role=gv("f6");EDIT.dateJeu=gv("f7");sv();M=null;R();};
 window.saveLo=function(){var n=gv("f1");if(!n)return alert("Nom requis");D.loueurs.push({id:uid(),nom:n,specialite:gv("f2"),telephone:gv("f3"),email:gv("f4")});sv();M=null;R();};
 window.updateLo=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.specialite=gv("f2");EDIT.telephone=gv("f3");EDIT.email=gv("f4");sv();M=null;R();};
 window.saveDep=function(){var m=gv("f2");if(!m)return alert("Montant requis");D.depenses.push({id:uid(),projetId:P?P.id:null,description:gv("f1"),montant:parseFloat(m),date:gv("f3")});sv();M=null;R();};
@@ -589,14 +632,34 @@ window.delDep=function(){if(!confirm("Supprimer?"))return;D.depenses=D.depenses.
 window.delP=function(){if(!confirm("Supprimer?"))return;D.projets=D.projets.filter(function(p){return p.id!==P.id;});sv();P=null;V="home";R();};
 window.delD=function(){if(!confirm("Supprimer?"))return;P.decors=P.decors.filter(function(d){return d.id!==DC.id;});sv();DC=null;V="proj";R();};
 window.delE=function(){if(!confirm("Supprimer?"))return;DC.elements=DC.elements.filter(function(e){return e.id!==EL.id;});sv();EL=null;V="dec";R();};
+window.dupEl=function(){if(!confirm("Dupliquer cet élément?"))return;var c=JSON.parse(JSON.stringify(EL));c.id=uid();c.nom+=" (copie)";c.photos=[];DC.elements.push(c);sv();alert("Élément dupliqué!");R();};
 window.delL=function(){if(!confirm("Supprimer?"))return;D.loueurs=D.loueurs.filter(function(l){return l.id!==LO.id;});sv();LO=null;V="lou";R();};
 
+var PENDING_FILES=[];
+window.prvPh=function(e){
+  var files=e.target.files;PENDING_FILES=[];
+  for(var i=0;i<files.length;i++)PENDING_FILES.push(files[i]);
+  var pr=document.getElementById("phpr"),pl=document.getElementById("phpl");
+  if(pr&&pl&&PENDING_FILES.length){pr.innerHTML='<div style="color:#a5b4fc;font-size:13px">📷 '+PENDING_FILES.length+' photo(s) sélectionnée(s)</div>';pl.style.display="none";}
+};
+
 window.addPh=function(){
-  var inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.multiple=true;
+  var inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.multiple=true;inp.capture="environment";
   inp.onchange=function(e){
     var files=e.target.files;
+    if(!files.length)return;
+    var uploaded=0;var total=files.length;var success=0;
+    alert("⏳ Upload de "+total+" photo(s)...");
     for(var i=0;i<files.length;i++){
-      uploadPhoto(files[i],function(url){if(url){if(!EL.photos)EL.photos=[];EL.photos.push(url);sv();R();}});
+      uploadPhoto(files[i],function(url){
+        uploaded++;
+        if(url){if(!EL.photos)EL.photos=[];EL.photos.push(url);success++;}
+        if(uploaded===total){
+          sv();R();
+          if(success===total)alert("✅ "+success+" photo(s) ajoutée(s)!");
+          else alert("⚠️ "+success+"/"+total+" photo(s) uploadée(s)");
+        }
+      });
     }
   };
   inp.click();
