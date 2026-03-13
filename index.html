@@ -11,138 +11,192 @@
 <title>Décor Pro</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+body{font-family:-apple-system,system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding-bottom:90px}
 button,input,select,textarea{font:inherit;font-size:16px;border:none;background:none;color:inherit}
-.hdr{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1)}
-.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-.logo em{font-style:normal;width:36px;height:36px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center}
-.hbtn{width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:10px;font-size:18px;cursor:pointer}
-.cnt{padding:16px;padding-bottom:100px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
-.stat{background:rgba(255,255,255,0.05);border-radius:12px;padding:12px 6px;text-align:center}
-.stat strong{display:block;font-size:20px;background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Header avec recherche intégrée */
+.hdr{position:sticky;top:0;z-index:100;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1)}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px}
+.logo em{font-style:normal;width:32px;height:32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.hdr-search{position:relative}
+.hdr-search input{width:100%;padding:10px 12px 10px 36px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);font-size:14px}
+.hdr-search:before{content:"🔍";position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px}
+
+/* Fil d'Ariane */
+.bread{display:flex;align-items:center;gap:6px;padding:8px 16px;font-size:12px;color:#64748b;overflow-x:auto;white-space:nowrap}
+.bread span{cursor:pointer;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,0.05)}
+.bread span:hover{background:rgba(255,255,255,0.1)}
+.bread span.current{color:#a5b4fc;background:rgba(99,102,241,0.2)}
+.bread i{font-style:normal;color:#475569}
+
+/* Barre de navigation en bas */
+.navbar{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;align-items:center;padding:8px 0;padding-bottom:max(8px,env(safe-area-inset-bottom));background:rgba(15,23,42,0.98);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.1)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;border-radius:10px;cursor:pointer;transition:all 0.2s;min-width:60px}
+.nav-item:active{transform:scale(0.95)}
+.nav-item.active{background:rgba(99,102,241,0.2)}
+.nav-item .icon{font-size:22px}
+.nav-item .label{font-size:10px;color:#64748b}
+.nav-item.active .label{color:#a5b4fc}
+
+/* Contenu principal */
+.cnt{padding:16px;padding-bottom:20px}
+
+/* Stats compactes */
+.stats{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.stat{flex-shrink:0;background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 14px;text-align:center;min-width:70px}
+.stat strong{display:block;font-size:18px;color:#a5b4fc}
 .stat small{font-size:9px;color:#64748b;text-transform:uppercase}
-.stit{font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;margin-bottom:12px;letter-spacing:0.5px}
-.card{background:rgba(255,255,255,0.05);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;position:relative}
-.card:active{background:rgba(255,255,255,0.1)}
+
+/* Alertes compactes */
+.alerts{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px}
+.alert-chip{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer}
+.alert-chip.red{background:rgba(239,68,68,0.2);color:#fca5a5}
+.alert-chip.orange{background:rgba(245,158,11,0.2);color:#fcd34d}
+.alert-chip.pink{background:rgba(236,72,153,0.2);color:#f9a8d4}
+.alert-chip.blue{background:rgba(59,130,246,0.2);color:#93c5fd}
+
+/* Section title */
+.stit{font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;margin:16px 0 10px;letter-spacing:0.5px;display:flex;justify-content:space-between;align-items:center}
+.stit button{font-size:11px;color:#6366f1;background:none;cursor:pointer}
+
+/* Cards avec actions rapides */
+.card{background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden}
 .card.urgent{border-left:3px solid #ef4444}
-.cicon{font-size:26px;width:44px;text-align:center}
-.cinfo{flex:1;min-width:0}
-.cinfo h3{font-size:15px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cinfo p{font-size:12px;color:#64748b}
-.badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600}
-.tag{display:inline-block;padding:2px 6px;border-radius:8px;font-size:9px;background:rgba(99,102,241,0.2);color:#a5b4fc;margin-right:4px}
-.fab{position:fixed;bottom:max(20px,calc(env(safe-area-inset-bottom)+12px));right:20px;width:56px;height:56px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px;font-size:32px;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,0.5);z-index:90;display:flex;align-items:center;justify-content:center}
+.card-icon{font-size:24px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border-radius:10px;flex-shrink:0}
+.card-info{flex:1;min-width:0}
+.card-info h3{font-size:14px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-info p{font-size:11px;color:#64748b}
+.card-actions{display:flex;gap:4px}
+.card-act{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;background:rgba(255,255,255,0.05)}
+.card-act:active{background:rgba(255,255,255,0.1)}
+.card-act.edit{color:#6366f1}
+.card-act.del{color:#ef4444}
+.card-act.view{color:#10b981}
+
+/* Badges */
+.badge{display:inline-block;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:600}
+
+/* FAB amélioré */
+.fab{position:fixed;bottom:max(80px,calc(env(safe-area-inset-bottom)+72px));right:16px;width:52px;height:52px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:14px;font-size:28px;cursor:pointer;box-shadow:0 4px 20px rgba(99,102,241,0.4);z-index:90;display:flex;align-items:center;justify-content:center}
 .fab:active{transform:scale(0.95)}
-.empty{text-align:center;padding:50px 20px;color:#64748b}
-.empty i{font-size:48px;font-style:normal;display:block;margin-bottom:10px;opacity:0.5}
-.bk{display:inline-flex;align-items:center;gap:4px;color:#6366f1;font-size:14px;cursor:pointer;margin-bottom:12px;background:none}
-.ttl{font-size:22px;font-weight:700;margin-bottom:4px}
-.sub{font-size:13px;color:#64748b;margin-bottom:16px}
-.box{background:rgba(255,255,255,0.05);border-radius:14px;padding:14px;margin-bottom:16px}
-.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+
+/* Titre de page */
+.page-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.page-sub{font-size:12px;color:#64748b;margin-bottom:16px}
+
+/* Box info */
+.box{background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px}
 .row:last-child{border:none}
-.row span:first-child{color:#64748b;font-size:13px}
-.row span:last-child{font-size:13px;font-weight:500}
-.acts{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.abtn{flex:1;min-width:60px;padding:12px 8px;border-radius:10px;background:rgba(255,255,255,0.05);font-size:13px;text-align:center;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.row span:first-child{color:#64748b}
+
+/* Actions horizontales */
+.acts{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
+.abtn{flex-shrink:0;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.05);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .abtn:active{background:rgba(255,255,255,0.1)}
 .abtn.p{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
 .abtn.d{background:rgba(239,68,68,0.15);color:#ef4444}
-.abtn.w{background:rgba(245,158,11,0.15);color:#f59e0b}
-.tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto}
-.tab{padding:8px 14px;border-radius:8px;background:rgba(255,255,255,0.05);color:#94a3b8;font-size:13px;cursor:pointer;white-space:nowrap}
-.tab.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:12px;background:rgba(255,255,255,0.03);padding:4px;border-radius:10px}
+.tab{flex:1;padding:8px;border-radius:8px;text-align:center;font-size:12px;color:#94a3b8;cursor:pointer}
+.tab.on{background:rgba(99,102,241,0.3);color:#fff}
+
+/* Portfolio rubrique */
+.rub-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+.rub-card{background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;cursor:pointer;position:relative}
+.rub-card:active{background:rgba(255,255,255,0.08)}
+.rub-card .icon{font-size:28px;margin-bottom:6px}
+.rub-card h4{font-size:13px;font-weight:600;margin-bottom:2px}
+.rub-card p{font-size:11px;color:#64748b}
+.rub-card .count{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:10px;font-size:11px}
+.rub-card.urgent{border:1px solid rgba(239,68,68,0.3)}
+
+/* Photos */
+.photo-main{width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;margin-bottom:10px;background:#1e293b;cursor:pointer}
+.photo-main img{width:100%;height:100%;object-fit:cover}
+.photo-row{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px}
+.photo-thumb{width:56px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;cursor:pointer;border:2px solid transparent}
+.photo-thumb.active{border-color:#6366f1}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-add{background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:20px;color:#64748b}
+
+/* Chips/Tags */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{padding:4px 10px;border-radius:12px;font-size:11px;background:rgba(255,255,255,0.1)}
+.chip.purple{background:rgba(99,102,241,0.2);color:#a5b4fc}
+.chip.pink{background:rgba(236,72,153,0.2);color:#f9a8d4}
+
+/* Modal simplifié */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:flex-end;justify-content:center;z-index:200}
 .mpan{background:#1e293b;border-radius:20px 20px 0 0;padding:20px;padding-bottom:max(20px,calc(env(safe-area-inset-bottom)+12px));width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
 .mbar{width:36px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 16px}
-.mtit{font-size:18px;font-weight:700;text-align:center;margin-bottom:16px}
-.fld{margin-bottom:14px}
-.fld label{display:block;font-size:12px;color:#94a3b8;margin-bottom:4px}
-.fld input,.fld select,.fld textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);color:#f1f5f9}
-.fld textarea{min-height:70px;resize:none}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{width:100%;padding:14px;border-radius:12px;font-weight:600;cursor:pointer;margin-bottom:10px;text-align:center}
+.mtit{font-size:17px;font-weight:700;text-align:center;margin-bottom:16px}
+
+/* Formulaire simplifié */
+.form-section{margin-bottom:16px}
+.form-section-title{font-size:11px;color:#64748b;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.form-section-title button{font-size:11px;color:#6366f1;margin-left:auto}
+.fld{margin-bottom:10px}
+.fld label{display:block;font-size:11px;color:#94a3b8;margin-bottom:4px}
+.fld input,.fld select,.fld textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);font-size:14px}
+.fld textarea{min-height:60px;resize:none}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{width:100%;padding:12px;border-radius:10px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:center;font-size:14px}
 .btn.p{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
 .btn.s{background:rgba(255,255,255,0.05);color:#94a3b8}
 .btn.d{background:rgba(239,68,68,0.15);color:#ef4444}
-.drop{border:2px dashed rgba(99,102,241,0.4);border-radius:14px;padding:24px;text-align:center;cursor:pointer;margin-bottom:14px;background:rgba(99,102,241,0.05)}
-.drop i{font-size:28px;font-style:normal;display:block;margin-bottom:6px}
-.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-.phgrid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer}
-.phmain{border-radius:14px;overflow:hidden;margin-bottom:14px;aspect-ratio:4/3;background:#1e293b;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.phmain img{width:100%;height:100%;object-fit:cover}
-.phrow{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
-.phrow>div{width:60px;height:60px;border-radius:10px;overflow:hidden;flex-shrink:0;cursor:pointer;border:2px solid transparent}
-.phrow>div.act{border-color:#6366f1}
-.phrow img{width:100%;height:100%;object-fit:cover}
-.phadd{background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:24px;color:#64748b}
-.chip{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;background:rgba(255,255,255,0.1);margin-right:6px;margin-bottom:6px}
+
+/* Toggle pour options avancées */
+.toggle-more{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;color:#6366f1;font-size:12px;cursor:pointer;margin-bottom:12px}
+.hidden{display:none}
+
+/* Photo drop */
+.drop{border:2px dashed rgba(99,102,241,0.3);border-radius:12px;padding:20px;text-align:center;cursor:pointer;margin-bottom:12px;background:rgba(99,102,241,0.05)}
+.drop .icon{font-size:24px;margin-bottom:4px}
+.drop p{font-size:12px;color:#64748b}
+
+/* Visionneuse photo */
+.viewer{position:fixed;inset:0;background:rgba(0,0,0,0.98);z-index:250;display:flex;flex-direction:column}
+.viewer-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top))}
+.viewer-hdr button{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px}
+.viewer-body{flex:1;display:flex;align-items:center;justify-content:center;padding:16px}
+.viewer-body img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.viewer-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);color:#fff;font-size:20px;cursor:pointer;border:none}
+.viewer-nav.l{left:0;border-radius:0 8px 8px 0}
+.viewer-nav.r{right:0;border-radius:8px 0 0 8px}
+.viewer-ftr{padding:12px;text-align:center;color:#94a3b8;font-size:13px}
+
+/* Menu latéral */
 .menu{position:fixed;inset:0;z-index:150}
-.mbg{position:absolute;inset:0;background:rgba(0,0,0,0.6)}
-.mpnl{position:absolute;top:0;right:0;bottom:0;width:280px;background:#1e293b;padding:20px;padding-top:max(20px,env(safe-area-inset-top));overflow-y:auto}
-.mitm{display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;margin-bottom:6px;cursor:pointer;background:rgba(255,255,255,0.03)}
-.mitm:active{background:rgba(255,255,255,0.08)}
-.total{background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(139,92,246,0.2));border-radius:14px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.total span{color:#a5b4fc;font-size:13px}
-.total strong{font-size:22px}
-.accbox{background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.2);border-radius:12px;padding:12px;margin-bottom:14px}
-.accbox h4{color:#ec4899;font-size:13px;margin-bottom:10px;font-weight:600}
-.fltr{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
-.fltr button{padding:6px 12px;border-radius:16px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;white-space:nowrap}
-.fltr button.on{background:#6366f1;color:#fff;border-color:#6366f1}
-.dep{background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.dep>div{flex:1}
-.dep h4{font-size:14px;font-weight:600;margin-bottom:2px}
-.dep p{font-size:11px;color:#64748b}
-.dep strong{font-size:18px;color:#10b981}
-.view{position:fixed;inset:0;background:rgba(0,0,0,0.98);z-index:250;display:flex;flex-direction:column}
-.vhdr{display:flex;justify-content:space-between;align-items:center;padding:16px;padding-top:max(16px,env(safe-area-inset-top))}
-.vhdr button{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer}
-.vbody{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden}
-.vbody img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
-.vftr{padding:16px;padding-bottom:max(16px,calc(env(safe-area-inset-bottom)+12px));text-align:center}
-.vnav{position:absolute;top:50%;transform:translateY(-50%);width:50px;height:100px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);color:#fff;font-size:24px;cursor:pointer;border:none}
-.vnav.l{left:0;border-radius:0 10px 10px 0}
-.vnav.r{right:0;border-radius:10px 0 0 10px}
-.srch{position:relative;margin-bottom:14px}
-.srch input{width:100%;padding:12px 12px 12px 40px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05)}
-.srch:before{content:"🔍";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px}
-.alert{border-radius:12px;padding:12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;cursor:pointer}
-.alert.red{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3)}
-.alert.orange{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3)}
-.alert.blue{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3)}
-.alert.pink{background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.3)}
-.aicon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.alert.red .aicon{background:rgba(239,68,68,0.2)}
-.alert.orange .aicon{background:rgba(245,158,11,0.2)}
-.alert.blue .aicon{background:rgba(59,130,246,0.2)}
-.alert.pink .aicon{background:rgba(236,72,153,0.2)}
-.alert h4{font-size:13px;font-weight:600}
-.hist{font-size:11px;color:#64748b;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;margin-top:10px}
-.hist div{padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.menu-bg{position:absolute;inset:0;background:rgba(0,0,0,0.6)}
+.menu-panel{position:absolute;top:0;right:0;bottom:0;width:280px;background:#1e293b;padding:20px;padding-top:max(20px,env(safe-area-inset-top));overflow-y:auto}
+.menu-item{display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;margin-bottom:4px;cursor:pointer;font-size:14px}
+.menu-item:active{background:rgba(255,255,255,0.05)}
+
+/* Empty state */
+.empty{text-align:center;padding:40px 20px;color:#64748b}
+.empty .icon{font-size:40px;margin-bottom:8px;opacity:0.5}
+
+/* Dépenses */
+.dep-item{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.dep-item h4{font-size:13px;font-weight:600}
+.dep-item p{font-size:11px;color:#64748b}
+.dep-item strong{font-size:16px;color:#10b981}
+
+/* Total box */
+.total-box{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));border-radius:12px;padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.total-box span{color:#a5b4fc;font-size:12px}
+.total-box strong{font-size:20px}
+
+/* Historique */
+.hist{font-size:11px;color:#64748b;padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;margin-top:8px}
+.hist div{padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
 .hist div:last-child{border:none}
-.check{display:flex;align-items:center;gap:10px;padding:10px 0}
-.check input{width:20px;height:20px;accent-color:#6366f1}
-.editbtn{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:14px;border-radius:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;margin-bottom:16px}
-.portfolio{margin:16px 0}
-.portfolio-title{display:flex;align-items:center;justify-content:space-between;padding:12px;background:rgba(255,255,255,0.05);border-radius:12px 12px 0 0;cursor:pointer}
-.portfolio-title h4{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
-.portfolio-title span{font-size:12px;color:#64748b}
-.portfolio-title .arrow{transition:transform 0.3s;font-size:12px}
-.portfolio-title.open .arrow{transform:rotate(180deg)}
-.portfolio-content{background:rgba(255,255,255,0.03);border-radius:0 0 12px 12px;overflow:hidden;max-height:0;transition:max-height 0.3s ease-out}
-.portfolio-content.open{max-height:500px;overflow-y:auto}
-.portfolio-scroll{display:flex;gap:8px;padding:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.portfolio-scroll::-webkit-scrollbar{height:6px}
-.portfolio-scroll::-webkit-scrollbar-track{background:rgba(255,255,255,0.05);border-radius:3px}
-.portfolio-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:3px}
-.portfolio-item{flex-shrink:0;width:100px;text-align:center}
-.portfolio-item img{width:100px;height:100px;object-fit:cover;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s,transform 0.2s}
-.portfolio-item img:hover{border-color:#6366f1;transform:scale(1.02)}
-.portfolio-item p{font-size:10px;color:#94a3b8;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.portfolio-empty{padding:20px;text-align:center;color:#64748b;font-size:13px}
-@media print{body{background:#fff!important;color:#000!important}.hdr,.fab,.acts,.tabs,.bk,.menu,.modal,.view{display:none!important}.cnt{padding:10px}}
+
+/* Print */
+@media print{.hdr,.navbar,.fab,.modal,.viewer,.menu{display:none!important}body{background:#fff!important;color:#000!important;padding:10px}}
 </style>
 </head>
 <body>
@@ -150,491 +204,709 @@ button,input,select,textarea{font:inherit;font-size:16px;border:none;background:
 <script>
 (function(){
 var RUB=[{id:"mobilier",n:"Mobilier",i:"🪑",c:"#6366f1"},{id:"accessoires",n:"Accessoires",i:"🎭",c:"#ec4899"},{id:"regie",n:"Régie",i:"🏢",c:"#14b8a6"},{id:"luminaires",n:"Luminaires",i:"💡",c:"#f59e0b"},{id:"deco",n:"Déco",i:"🖼️",c:"#8b5cf6"},{id:"textiles",n:"Textiles",i:"🧵",c:"#ef4444"},{id:"graphiques",n:"Graphiques",i:"📋",c:"#06b6d4"},{id:"consommables",n:"Consommables",i:"📦",c:"#64748b"}];
-var STAT=[{id:"a_sourcer",l:"À sourcer",c:"#64748b"},{id:"en_recherche",l:"En recherche",c:"#f59e0b"},{id:"valide",l:"Validé",c:"#3b82f6"},{id:"reserve",l:"Réservé",c:"#6366f1"},{id:"loue",l:"En location",c:"#ec4899"},{id:"livre",l:"Livré",c:"#14b8a6"},{id:"installe",l:"Installé",c:"#10b981"},{id:"restitue",l:"Restitué",c:"#22c55e"}];
+var STAT=[{id:"a_sourcer",l:"À sourcer",c:"#64748b"},{id:"en_recherche",l:"En recherche",c:"#f59e0b"},{id:"valide",l:"Validé",c:"#3b82f6"},{id:"reserve",l:"Réservé",c:"#6366f1"},{id:"loue",l:"Loué",c:"#ec4899"},{id:"livre",l:"Livré",c:"#14b8a6"},{id:"installe",l:"Installé",c:"#10b981"},{id:"restitue",l:"Restitué",c:"#22c55e"}];
 var STATD=[{id:"a_preparer",l:"À préparer",c:"#64748b"},{id:"en_cours",l:"En cours",c:"#f59e0b"},{id:"pret",l:"Prêt",c:"#10b981"},{id:"en_tournage",l:"En tournage",c:"#6366f1"},{id:"termine",l:"Terminé",c:"#22c55e"}];
-var TPROJ=[{id:"film",l:"Long-métrage",i:"🎬"},{id:"serie",l:"Série",i:"📺"},{id:"pub",l:"Publicité",i:"📢"},{id:"clip",l:"Clip",i:"🎵"},{id:"autre",l:"Autre",i:"📁"}];
+var TPROJ=[{id:"film",l:"Film",i:"🎬"},{id:"serie",l:"Série",i:"📺"},{id:"pub",l:"Pub",i:"📢"},{id:"clip",l:"Clip",i:"🎵"},{id:"autre",l:"Autre",i:"📁"}];
 var TDEP=[{id:"location",l:"Location"},{id:"achat",l:"Achat"},{id:"transport",l:"Transport"},{id:"fabrication",l:"Fabrication"},{id:"autre",l:"Autre"}];
 
-var D=JSON.parse(localStorage.getItem("dp12")||'{"projets":[],"loueurs":[],"depenses":[],"collaborateurs":[],"notifAuto":false}');
-if(!D.depenses)D.depenses=[];if(!D.collaborateurs)D.collaborateurs=[];if(D.notifAuto===undefined)D.notifAuto=false;
+var D=JSON.parse(localStorage.getItem("dp13")||'{"projets":[],"loueurs":[],"depenses":[],"collaborateurs":[],"notifAuto":false}');
+if(!D.depenses)D.depenses=[];if(!D.collaborateurs)D.collaborateurs=[];
 
-var V="home",P=null,DC=null,EL=null,LO=null,RB=null,M=null,MN=false,TB="rub",VW=null,VWC=null,VWI=0,FR="",FD="",SQ="",DS="date",PHS=[],EDIT=null,GSQ="",OPENPORT={};
+var V="home",P=null,DC=null,EL=null,LO=null,RB=null,M=null,MN=false,TB="rub",VW=null,VWC=null,VWI=0,SQ="",GSQ="",PHS=[],EDIT=null,MORE=false;
 
-function sv(){localStorage.setItem("dp12",JSON.stringify(D))}
+function sv(){localStorage.setItem("dp13",JSON.stringify(D))}
 function gs(id){for(var i=0;i<STAT.length;i++)if(STAT[i].id===id)return STAT[i];return STAT[0]}
 function gsd(id){for(var i=0;i<STATD.length;i++)if(STATD[i].id===id)return STATD[i];return STATD[0]}
 function gr(id){for(var i=0;i<RUB.length;i++)if(RUB[i].id===id)return RUB[i];return null}
-function gt(id){for(var i=0;i<TPROJ.length;i++)if(TPROJ[i].id===id)return TPROJ[i];return null}
+function gt(id){for(var i=0;i<TPROJ.length;i++)if(TPROJ[i].id===id)return TPROJ[i];return TPROJ[0]}
 function gl(id){for(var i=0;i<D.loueurs.length;i++)if(D.loueurs[i].id===id)return D.loueurs[i];return null}
 function fd(d){return d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}):"-"}
-function fdt(d){return d?new Date(d).toLocaleDateString("fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"-"}
 function fm(n){return new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(n||0)}
-function uid(){return Date.now().toString()+Math.random().toString(36).substr(2,5)}
-
-function addHist(obj,action){if(!obj.historique)obj.historique=[];obj.historique.push({date:new Date().toISOString(),action:action});if(obj.historique.length>20)obj.historique.shift();}
-
-function sendMail(type,detail){
-  if(!D.notifAuto||!D.collaborateurs.length)return;
-  var emails=[];for(var i=0;i<D.collaborateurs.length;i++)emails.push(D.collaborateurs[i].email);
-  var to=emails.join(","),subj="",body="",pn=P?P.nom:"",dn=DC?DC.nom:"",dt=new Date().toLocaleDateString("fr-FR");
-  if(type==="projet"){subj="Décor Pro - Nouveau projet";body="Projet: "+detail+"\nDate: "+dt}
-  else if(type==="decor"){subj="Décor Pro - Nouveau décor";body="Projet: "+pn+"\nDécor: "+detail+"\nDate: "+dt}
-  else if(type==="element"){subj="Décor Pro - Nouvel élément";body="Projet: "+pn+"\nDécor: "+dn+"\nÉlément: "+detail+"\nDate: "+dt}
-  var url="mailto:"+to+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);
-  window.location.href=url;
-}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5)}
 
 function getAlerts(){
-  var today=new Date();today.setHours(0,0,0,0);var tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
-  var alerts={aujourdhui:[],demain:[],retards:[],nonPrets:[],urgents:[]};
-  for(var pi=0;pi<D.projets.length;pi++){var p=D.projets[pi];if(!p.decors)continue;
-    for(var di=0;di<p.decors.length;di++){var d=p.decors[di];if(!d.elements)continue;
-      for(var ei=0;ei<d.elements.length;ei++){var e=d.elements[ei];
-        if(e.urgent)alerts.urgents.push({e:e,d:d,p:p});
-        if(e.dateJeu){var dj=new Date(e.dateJeu);dj.setHours(0,0,0,0);if(dj.getTime()===today.getTime())alerts.aujourdhui.push({e:e,d:d,p:p});else if(dj.getTime()===tomorrow.getTime())alerts.demain.push({e:e,d:d,p:p});if(dj<=tomorrow&&e.statut!=="installe"&&e.statut!=="livre"&&e.statut!=="restitue")alerts.nonPrets.push({e:e,d:d,p:p});}
-        if(e.dateRetour){var dr=new Date(e.dateRetour);dr.setHours(0,0,0,0);if(dr<today&&e.statut!=="restitue")alerts.retards.push({e:e,d:d,p:p});}}}}
-  return alerts;
+  var today=new Date();today.setHours(0,0,0,0);
+  var tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
+  var a={urgents:[],retards:[],nonPrets:[],aujourdhui:[],demain:[]};
+  for(var i=0;i<D.projets.length;i++){var p=D.projets[i];if(!p.decors)continue;
+    for(var j=0;j<p.decors.length;j++){var d=p.decors[j];if(!d.elements)continue;
+      for(var k=0;k<d.elements.length;k++){var e=d.elements[k];
+        if(e.urgent)a.urgents.push({e:e,d:d,p:p});
+        if(e.dateJeu){var dj=new Date(e.dateJeu);dj.setHours(0,0,0,0);
+          if(dj.getTime()===today.getTime())a.aujourdhui.push({e:e,d:d,p:p});
+          else if(dj.getTime()===tomorrow.getTime())a.demain.push({e:e,d:d,p:p});
+          if(dj<=tomorrow&&e.statut!=="installe"&&e.statut!=="livre")a.nonPrets.push({e:e,d:d,p:p});}
+        if(e.dateRetour){var dr=new Date(e.dateRetour);dr.setHours(0,0,0,0);
+          if(dr<today&&e.statut!=="restitue")a.retards.push({e:e,d:d,p:p});}}}}
+  return a;
 }
 
-function globalSearch(q){
-  if(!q||q.length<2)return[];q=q.toLowerCase();var results=[];
-  for(var pi=0;pi<D.projets.length;pi++){var p=D.projets[pi];if(p.nom.toLowerCase().indexOf(q)>=0)results.push({type:"projet",item:p});if(!p.decors)continue;
-    for(var di=0;di<p.decors.length;di++){var d=p.decors[di];if(d.nom.toLowerCase().indexOf(q)>=0)results.push({type:"decor",item:d,p:p});if(!d.elements)continue;
-      for(var ei=0;ei<d.elements.length;ei++){var e=d.elements[ei];if(e.nom.toLowerCase().indexOf(q)>=0||(e.description&&e.description.toLowerCase().indexOf(q)>=0)||(e.tags&&e.tags.toLowerCase().indexOf(q)>=0)||(e.role&&e.role.toLowerCase().indexOf(q)>=0))results.push({type:"element",item:e,d:d,p:p});}}}
-  for(var i=0;i<D.loueurs.length;i++){var l=D.loueurs[i];if(l.nom.toLowerCase().indexOf(q)>=0)results.push({type:"loueur",item:l});}
-  return results.slice(0,20);
+function search(q){
+  if(!q||q.length<2)return[];q=q.toLowerCase();var r=[];
+  for(var i=0;i<D.projets.length;i++){var p=D.projets[i];
+    if(p.nom.toLowerCase().indexOf(q)>=0)r.push({t:"projet",item:p});
+    if(p.decors)for(var j=0;j<p.decors.length;j++){var d=p.decors[j];
+      if(d.nom.toLowerCase().indexOf(q)>=0)r.push({t:"decor",item:d,p:p});
+      if(d.elements)for(var k=0;k<d.elements.length;k++){var e=d.elements[k];
+        if(e.nom.toLowerCase().indexOf(q)>=0||(e.tags&&e.tags.toLowerCase().indexOf(q)>=0))r.push({t:"element",item:e,d:d,p:p});}}}
+  for(var i=0;i<D.loueurs.length;i++)if(D.loueurs[i].nom.toLowerCase().indexOf(q)>=0)r.push({t:"loueur",item:D.loueurs[i]});
+  return r.slice(0,15);
 }
 
-function getPhotosByRub(rubId){
-  var photos=[];if(!DC||!DC.elements)return photos;
-  for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.rubrique===rubId&&e.photos){for(var j=0;j<e.photos.length;j++)photos.push({data:e.photos[j].data,nom:e.nom,elId:e.id});}}
-  return photos;
-}
-
-window.go=function(v,id){GSQ="";VW=null;VWC=null;
+window.go=function(v,id){
+  VW=null;VWC=null;GSQ="";
   if(v==="home"){V="home";P=null;DC=null;EL=null}
-  else if(v==="proj"){for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===id){P=D.projets[i];break}V="proj"}
-  else if(v==="dec"){for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===id){DC=P.decors[i];break}V="dec";TB="rub";OPENPORT={}}
-  else if(v==="el"){for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===id){EL=DC.elements[i];break}V="el"}
+  else if(v==="proj"){for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===id){P=D.projets[i];break}V="proj";DC=null;EL=null}
+  else if(v==="dec"){if(P&&P.decors)for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===id){DC=P.decors[i];break}V="dec";EL=null;TB="rub"}
+  else if(v==="el"){if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===id){EL=DC.elements[i];break}V="el"}
   else if(v==="lou"){V="lou";LO=null}
   else if(v==="loud"){for(var i=0;i<D.loueurs.length;i++)if(D.loueurs[i].id===id){LO=D.loueurs[i];break}V="loud"}
-  else if(v==="acc"){V="acc";FR="";FD="";SQ=""}
   else if(v==="dep"){V="dep"}
-  else if(v==="collab"){V="collab"}
+  else if(v==="acc"){V="acc";SQ=""}
   else if(v==="search"){V="search"}
-  else if(v==="print"){V="print"}
-  else if(v==="back"){if(V==="el"){V="dec";EL=null}else if(V==="dec"){V="proj";DC=null}else if(V==="proj"||V==="collab"||V==="search"){V="home";P=null}else if(V==="loud"){V="lou";LO=null}else if(V==="acc"||V==="dep"){V=P?"proj":"home"}else if(V==="print"){V="dec";TB="ph"}else{V="home"}}
   R();
 };
-
-window.modal=function(m,id){M=m;RB=id||null;PHS=[];EDIT=null;R()};
-window.edit=function(type,obj){M="edit_"+type;EDIT=obj;R()};
+window.goTo=function(pId,dId,eId){
+  for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===pId){P=D.projets[i];break}
+  if(dId&&P.decors)for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===dId){DC=P.decors[i];break}
+  if(eId&&DC&&DC.elements)for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===eId){EL=DC.elements[i];break}
+  V=eId?"el":(dId?"dec":"proj");R();
+};
+window.modal=function(m,id){M=m;RB=id||null;PHS=[];EDIT=null;MORE=false;R()};
+window.edit=function(t,o){M="edit_"+t;EDIT=o;MORE=true;R()};
 window.menu=function(v){MN=v;R()};
 window.setTab=function(t){TB=t;R()};
-window.setFR=function(r){FR=r;R()};
-window.setFD=function(d){FD=d;R()};
-window.setSQ=function(q){SQ=q;R()};
-window.setDS=function(s){DS=s;R()};
 window.setGSQ=function(q){GSQ=q;R()};
-window.togglePort=function(rubId){OPENPORT[rubId]=!OPENPORT[rubId];R()};
-window.openPhoto=function(collection,index){VWC=collection;VWI=index;VW=true;R()};
-window.closePhoto=function(){VW=null;VWC=null;R()};
-window.navPhoto=function(dir){if(VWC){VWI+=dir;if(VWI<0)VWI=VWC.length-1;if(VWI>=VWC.length)VWI=0;R();}};
-window.setStat=function(s){var old=gs(EL.statut).l;EL.statut=s;addHist(EL,"Statut: "+old+" → "+gs(s).l);sv();R()};
-window.toggleUrgent=function(){EL.urgent=!EL.urgent;addHist(EL,EL.urgent?"Marqué urgent":"Urgent retiré");sv();R()};
-window.toggleNotif=function(){D.notifAuto=!D.notifAuto;sv();R()};
+window.setSQ=function(q){SQ=q;R()};
+window.toggleMore=function(){MORE=!MORE;R()};
+window.openPh=function(c,i){VWC=c;VWI=i;VW=true;R()};
+window.closePh=function(){VW=null;VWC=null;R()};
+window.navPh=function(d){if(VWC){VWI+=d;if(VWI<0)VWI=VWC.length-1;if(VWI>=VWC.length)VWI=0;R();}};
+window.setStat=function(s){if(EL){EL.statut=s;sv();R();}};
+window.toggleUrg=function(){if(EL){EL.urgent=!EL.urgent;sv();R();}};
 
 function R(){
-  var h='<header class="hdr"><div class="logo"><em>🎬</em>Décor Pro</div><div style="display:flex;gap:8px"><button class="hbtn" onclick="go(\'search\')">🔍</button><button class="hbtn" onclick="menu(true)">☰</button></div></header><main class="cnt">';
-  if(V==="home")h+=rHome();else if(V==="proj")h+=rProj();else if(V==="dec")h+=rDec();else if(V==="el")h+=rEl();else if(V==="lou")h+=rLou();else if(V==="loud")h+=rLouD();else if(V==="acc")h+=rAcc();else if(V==="dep")h+=rDep();else if(V==="collab")h+=rCollab();else if(V==="search")h+=rSearch();else if(V==="print")h+=rPrint();
-  h+="</main>";if(M)h+=rModal();if(MN)h+=rMenu();if(VW&&VWC&&VWC.length)h+=rPhotoView();
+  var h=rHeader();
+  h+='<main class="cnt">';
+  if(V==="home")h+=rHome();
+  else if(V==="proj")h+=rProj();
+  else if(V==="dec")h+=rDec();
+  else if(V==="el")h+=rEl();
+  else if(V==="lou")h+=rLou();
+  else if(V==="loud")h+=rLouD();
+  else if(V==="dep")h+=rDep();
+  else if(V==="acc")h+=rAcc();
+  else if(V==="search")h+=rSearch();
+  h+='</main>';
+  h+=rNavbar();
+  if(M)h+=rModal();
+  if(MN)h+=rMenu();
+  if(VW&&VWC)h+=rViewer();
   document.getElementById("app").innerHTML=h;
 }
 
-function rPhotoView(){
-  var ph=VWC[VWI];
-  var h='<div class="view"><div class="vhdr"><button onclick="closePhoto()">✕ Fermer</button><span style="color:#94a3b8">'+(VWI+1)+' / '+VWC.length+'</span><button onclick="delCurPh()" style="background:rgba(239,68,68,0.2);color:#ef4444">🗑️</button></div>';
-  if(VWC.length>1)h+='<button class="vnav l" onclick="navPhoto(-1)">‹</button><button class="vnav r" onclick="navPhoto(1)">›</button>';
-  h+='<div class="vbody"><img src="'+(ph.data||ph)+'"></div>';
-  if(ph.nom)h+='<div class="vftr"><strong style="color:#fff">'+ph.nom+'</strong></div>';
-  h+='</div>';return h;
+function rHeader(){
+  var h='<header class="hdr"><div class="hdr-top"><div class="logo"><em>🎬</em>Décor Pro</div>';
+  h+='<button onclick="menu(true)" style="font-size:20px;padding:6px">☰</button></div>';
+  h+='<div class="hdr-search"><input placeholder="Rechercher partout..." value="'+GSQ+'" oninput="setGSQ(this.value)" onfocus="go(\'search\')"></div></header>';
+  if(V!=="home"&&V!=="search")h+=rBread();
+  return h;
 }
 
-window.delCurPh=function(){
-  if(!confirm("Supprimer cette photo?"))return;
-  if(EL&&EL.photos&&VWC===EL.photos){EL.photos.splice(VWI,1);addHist(EL,"Photo supprimée");sv();if(VWI>=EL.photos.length)VWI=Math.max(0,EL.photos.length-1);if(!EL.photos.length){VW=null;VWC=null;}R();}
-  else{VW=null;VWC=null;R();}
-};
+function rBread(){
+  var h='<div class="bread">';
+  h+='<span onclick="go(\'home\')">🏠</span><i>›</i>';
+  if(P){h+='<span onclick="go(\'proj\',\''+P.id+'\')"'+(V==="proj"?' class="current"':'')+'>'+P.nom+'</span>';}
+  if(DC){h+='<i>›</i><span onclick="go(\'dec\',\''+DC.id+'\')"'+(V==="dec"?' class="current"':'')+'>'+DC.nom+'</span>';}
+  if(EL){h+='<i>›</i><span class="current">'+EL.nom+'</span>';}
+  if(V==="lou"||V==="loud"){h+='<span class="current">Loueurs</span>';}
+  if(V==="dep"){h+='<span class="current">Dépenses</span>';}
+  if(V==="acc"){h+='<span class="current">Accessoires</span>';}
+  h+='</div>';
+  return h;
+}
+
+function rNavbar(){
+  var h='<nav class="navbar">';
+  h+='<div class="nav-item'+(V==="home"?" active":"")+'" onclick="go(\'home\')"><span class="icon">🏠</span><span class="label">Accueil</span></div>';
+  h+='<div class="nav-item'+(V==="acc"?" active":"")+'" onclick="go(\'acc\')"><span class="icon">🎭</span><span class="label">Accessoires</span></div>';
+  h+='<div class="nav-item'+(V==="dep"?" active":"")+'" onclick="go(\'dep\')"><span class="icon">💰</span><span class="label">Budget</span></div>';
+  h+='<div class="nav-item'+(V==="lou"||V==="loud"?" active":"")+'" onclick="go(\'lou\')"><span class="icon">🏪</span><span class="label">Loueurs</span></div>';
+  h+='</nav>';
+  return h;
+}
 
 function rHome(){
-  var np=D.projets.length,nd=0,ne=0,nl=D.loueurs.length,td=0;
-  for(var i=0;i<D.depenses.length;i++)td+=parseFloat(D.depenses[i].montant)||0;
+  var np=D.projets.length,nd=0,ne=0,td=0;
   for(var i=0;i<D.projets.length;i++){var p=D.projets[i];nd+=p.decors?p.decors.length:0;if(p.decors)for(var j=0;j<p.decors.length;j++)ne+=p.decors[j].elements?p.decors[j].elements.length:0;}
-  var alerts=getAlerts();
-  var h='<div class="stats"><div class="stat"><strong>'+np+'</strong><small>Projets</small></div><div class="stat"><strong>'+nd+'</strong><small>Décors</small></div><div class="stat"><strong>'+ne+'</strong><small>Éléments</small></div><div class="stat"><strong>'+nl+'</strong><small>Loueurs</small></div></div>';
-  if(alerts.urgents.length>0)h+='<div class="alert red" onclick="go(\'acc\')"><div class="aicon">🚨</div><div><h4>'+alerts.urgents.length+' élément(s) urgent(s)</h4></div></div>';
-  if(alerts.retards.length>0)h+='<div class="alert red" onclick="go(\'acc\')"><div class="aicon">⚠️</div><div><h4>'+alerts.retards.length+' retour(s) en retard</h4></div></div>';
-  if(alerts.nonPrets.length>0)h+='<div class="alert orange" onclick="go(\'acc\')"><div class="aicon">📦</div><div><h4>'+alerts.nonPrets.length+' accessoire(s) non prêt(s)</h4></div></div>';
-  if(alerts.aujourdhui.length>0)h+='<div class="alert pink" onclick="go(\'acc\')"><div class="aicon">🎬</div><div><h4>'+alerts.aujourdhui.length+' accessoire(s) aujourd\'hui</h4></div></div>';
-  if(alerts.demain.length>0)h+='<div class="alert blue" onclick="go(\'acc\')"><div class="aicon">📅</div><div><h4>'+alerts.demain.length+' accessoire(s) demain</h4></div></div>';
-  if(td>0)h+='<div class="total"><span>💰 Total dépenses</span><strong>'+fm(td)+'</strong></div>';
-  h+='<div class="stit">Projets</div>';
-  if(!D.projets.length){h+='<div class="empty"><i>🎬</i>Aucun projet<br><small>Appuyez sur + pour créer</small></div>';}
-  else{for(var i=0;i<D.projets.length;i++){var p=D.projets[i],t=gt(p.type);h+='<div class="card" onclick="go(\'proj\',\''+p.id+'\')"><span class="cicon">'+(t?t.i:"📁")+'</span><div class="cinfo"><h3>'+p.nom+'</h3><p>'+(p.decors?p.decors.length:0)+' décors'+(p.production?" • "+p.production:"")+'</p></div><span style="color:#64748b">›</span></div>';}}
-  h+='<button class="fab" onclick="modal(\'np\')">+</button>';return h;
+  for(var i=0;i<D.depenses.length;i++)td+=parseFloat(D.depenses[i].montant)||0;
+  var al=getAlerts();
+  
+  var h='<div class="stats">';
+  h+='<div class="stat"><strong>'+np+'</strong><small>Projets</small></div>';
+  h+='<div class="stat"><strong>'+nd+'</strong><small>Décors</small></div>';
+  h+='<div class="stat"><strong>'+ne+'</strong><small>Éléments</small></div>';
+  h+='<div class="stat"><strong>'+fm(td).replace("€","")+'</strong><small>Budget</small></div>';
+  h+='</div>';
+  
+  if(al.urgents.length||al.retards.length||al.nonPrets.length||al.aujourdhui.length||al.demain.length){
+    h+='<div class="alerts">';
+    if(al.urgents.length)h+='<div class="alert-chip red" onclick="go(\'acc\')">🚨 '+al.urgents.length+' urgent</div>';
+    if(al.retards.length)h+='<div class="alert-chip red" onclick="go(\'acc\')">⚠️ '+al.retards.length+' retard</div>';
+    if(al.nonPrets.length)h+='<div class="alert-chip orange" onclick="go(\'acc\')">📦 '+al.nonPrets.length+' non prêts</div>';
+    if(al.aujourdhui.length)h+='<div class="alert-chip pink" onclick="go(\'acc\')">🎬 '+al.aujourdhui.length+' aujourd\'hui</div>';
+    if(al.demain.length)h+='<div class="alert-chip blue" onclick="go(\'acc\')">📅 '+al.demain.length+' demain</div>';
+    h+='</div>';
+  }
+  
+  h+='<div class="stit">Mes projets <button onclick="modal(\'np\')">+ Nouveau</button></div>';
+  
+  if(!D.projets.length){
+    h+='<div class="empty"><div class="icon">🎬</div><p>Aucun projet</p><p style="font-size:12px">Créez votre premier projet</p></div>';
+  }else{
+    for(var i=0;i<D.projets.length;i++){
+      var p=D.projets[i],t=gt(p.type),ndc=p.decors?p.decors.length:0;
+      h+='<div class="card" onclick="go(\'proj\',\''+p.id+'\')">';
+      h+='<div class="card-icon">'+t.i+'</div>';
+      h+='<div class="card-info"><h3>'+p.nom+'</h3><p>'+ndc+' décors'+(p.production?' • '+p.production:'')+'</p></div>';
+      h+='<div class="card-actions"><div class="card-act edit" onclick="event.stopPropagation();edit(\'projet\',D.projets['+i+'])">✏️</div></div>';
+      h+='</div>';
+    }
+  }
+  h+='<button class="fab" onclick="modal(\'np\')">+</button>';
+  return h;
 }
 
 function rProj(){
-  if(!P)return"";var t=gt(P.type),td=0;for(var i=0;i<D.depenses.length;i++)if(D.depenses[i].projetId===P.id)td+=parseFloat(D.depenses[i].montant)||0;
-  var h='<button class="bk" onclick="go(\'back\')">← Retour</button><div style="display:flex;gap:10px;margin-bottom:12px"><span style="font-size:32px">'+(t?t.i:"📁")+'</span><div><div class="ttl">'+P.nom+'</div><div class="sub">'+(t?t.l:"")+(P.production?" • "+P.production:"")+'</div></div></div>';
-  if(td>0)h+='<div class="total"><span>💰 Budget</span><strong>'+fm(td)+'</strong></div>';
-  h+='<div class="acts"><button class="abtn" onclick="go(\'dep\')">💰 Dépenses</button><button class="abtn" onclick="go(\'acc\')">🎭 Accessoires</button></div>';
-  h+='<div class="acts"><button class="abtn p" onclick="edit(\'projet\',P)">✏️ Modifier</button><button class="abtn d" onclick="delP()">🗑️</button></div>';
-  h+='<div class="stit">Décors ('+(P.decors?P.decors.length:0)+')</div>';
-  if(!P.decors||!P.decors.length){h+='<div class="empty"><i>🎭</i>Aucun décor</div>';}
-  else{for(var i=0;i<P.decors.length;i++){var d=P.decors[i],st=gsd(d.statut);h+='<div class="card" onclick="go(\'dec\',\''+d.id+'\')"><span class="cicon">'+(d.interieur?"🏠":"🌳")+'</span><div class="cinfo"><h3>'+d.nom+'</h3><p><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span> '+(d.elements?d.elements.length:0)+' él.</p></div><span style="color:#64748b">›</span></div>';}}
-  h+='<button class="fab" onclick="modal(\'nd\')">+</button>';return h;
+  if(!P)return"";
+  var t=gt(P.type),nd=P.decors?P.decors.length:0;
+  var td=0;for(var i=0;i<D.depenses.length;i++)if(D.depenses[i].projetId===P.id)td+=parseFloat(D.depenses[i].montant)||0;
+  
+  var h='<div class="page-title">'+t.i+' '+P.nom+'</div>';
+  h+='<div class="page-sub">'+(P.production||t.l)+' • '+nd+' décors</div>';
+  
+  if(td>0)h+='<div class="total-box"><span>Budget projet</span><strong>'+fm(td)+'</strong></div>';
+  
+  h+='<div class="acts">';
+  h+='<div class="abtn p" onclick="modal(\'nd\')">+ Décor</div>';
+  h+='<div class="abtn" onclick="edit(\'projet\',P)">✏️ Modifier</div>';
+  h+='<div class="abtn d" onclick="delP()">🗑️</div>';
+  h+='</div>';
+  
+  h+='<div class="stit">Décors</div>';
+  if(!P.decors||!P.decors.length){
+    h+='<div class="empty"><div class="icon">🎭</div><p>Aucun décor</p></div>';
+  }else{
+    for(var i=0;i<P.decors.length;i++){
+      var d=P.decors[i],st=gsd(d.statut),nel=d.elements?d.elements.length:0;
+      h+='<div class="card" onclick="go(\'dec\',\''+d.id+'\')">';
+      h+='<div class="card-icon">'+(d.interieur?'🏠':'🌳')+'</div>';
+      h+='<div class="card-info"><h3>'+d.nom+'</h3><p><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span> '+nel+' él.</p></div>';
+      h+='<div class="card-actions"><div class="card-act edit" onclick="event.stopPropagation();DC=P.decors['+i+'];edit(\'decor\',DC)">✏️</div></div>';
+      h+='</div>';
+    }
+  }
+  h+='<button class="fab" onclick="modal(\'nd\')">+</button>';
+  return h;
 }
 
 function rDec(){
-  if(!DC)return"";var st=gsd(DC.statut);
-  var h='<button class="bk" onclick="go(\'back\')">← '+P.nom+'</button><div class="ttl">'+DC.nom+'</div><div class="sub"><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span>'+(DC.adresse?" 📍 "+DC.adresse:"")+'</div>';
-  h+='<div class="tabs"><button class="tab'+(TB==="rub"?" on":"")+'" onclick="setTab(\'rub\')">Rubriques</button><button class="tab'+(TB==="info"?" on":"")+'" onclick="setTab(\'info\')">Infos</button><button class="tab'+(TB==="ph"?" on":"")+'" onclick="setTab(\'ph\')">📷 Photos</button></div>';
+  if(!DC)return"";
+  var st=gsd(DC.statut);
+  var h='<div class="page-title">'+DC.nom+'</div>';
+  h+='<div class="page-sub"><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span>'+(DC.adresse?' • 📍'+DC.adresse:'')+'</div>';
+  
+  h+='<div class="tabs">';
+  h+='<div class="tab'+(TB==="rub"?" on":"")+'" onclick="setTab(\'rub\')">Rubriques</div>';
+  h+='<div class="tab'+(TB==="info"?" on":"")+'" onclick="setTab(\'info\')">Infos</div>';
+  h+='<div class="tab'+(TB==="ph"?" on":"")+'" onclick="setTab(\'ph\')">Photos</div>';
+  h+='</div>';
   
   if(TB==="rub"){
+    h+='<div class="rub-grid">';
     for(var i=0;i<RUB.length;i++){
-      var r=RUB[i],cnt=0,urg=0,photos=getPhotosByRub(r.id);
-      if(DC.elements)for(var j=0;j<DC.elements.length;j++){if(DC.elements[j].rubrique===r.id){cnt++;if(DC.elements[j].urgent)urg++;}}
-      var isOpen=OPENPORT[r.id];
-      h+='<div class="portfolio">';
-      h+='<div class="portfolio-title'+(isOpen?" open":"")+'" onclick="togglePort(\''+r.id+'\')" style="background:'+r.c+'15">';
-      h+='<h4><span style="font-size:20px">'+r.i+'</span> '+r.n+' <span style="font-size:12px;color:#64748b">('+cnt+')</span></h4>';
-      h+='<div style="display:flex;align-items:center;gap:10px">';
-      if(photos.length)h+='<span style="font-size:11px;color:'+r.c+'">📷 '+photos.length+'</span>';
-      if(urg)h+='<span style="font-size:11px;color:#ef4444">🚨 '+urg+'</span>';
-      h+='<span class="arrow">▼</span></div></div>';
-      h+='<div class="portfolio-content'+(isOpen?" open":"")+'">';
-      if(photos.length){
-        h+='<div class="portfolio-scroll">';
-        for(var j=0;j<photos.length;j++){
-          h+='<div class="portfolio-item" onclick="event.stopPropagation();openRubPhoto(\''+r.id+'\','+j+')">';
-          h+='<img src="'+photos[j].data+'">';
-          h+='<p>'+photos[j].nom+'</p></div>';
-        }
-        h+='</div>';
-      }else{h+='<div class="portfolio-empty">Aucune photo dans cette rubrique</div>';}
-      h+='<button class="btn p" style="margin:12px;width:calc(100% - 24px)" onclick="event.stopPropagation();modal(\'rub\',\''+r.id+'\')">📋 Voir les '+cnt+' éléments</button>';
-      h+='</div></div>';
+      var r=RUB[i],cnt=0,urg=0,phs=0;
+      if(DC.elements)for(var j=0;j<DC.elements.length;j++){
+        if(DC.elements[j].rubrique===r.id){cnt++;if(DC.elements[j].urgent)urg++;if(DC.elements[j].photos)phs+=DC.elements[j].photos.length;}
+      }
+      h+='<div class="rub-card'+(urg?' urgent':'')+'" onclick="modal(\'rub\',\''+r.id+'\')" style="border-left:3px solid '+r.c+'">';
+      h+='<div class="icon">'+r.i+'</div>';
+      h+='<h4>'+r.n+'</h4>';
+      h+='<p>'+cnt+' él.'+(phs?' • '+phs+' 📷':'')+'</p>';
+      if(cnt)h+='<div class="count">'+cnt+'</div>';
+      h+='</div>';
     }
+    h+='</div>';
   }else if(TB==="info"){
-    h+='<div class="box"><div class="row"><span>Type</span><span>'+(DC.interieur?"Intérieur":"Extérieur")+" • "+(DC.studio?"Studio":"Naturel")+'</span></div>';
+    h+='<div class="box">';
+    h+='<div class="row"><span>Type</span><span>'+(DC.interieur?'Intérieur':'Extérieur')+' • '+(DC.studio?'Studio':'Naturel')+'</span></div>';
     if(DC.dateInstallation)h+='<div class="row"><span>Installation</span><span>'+fd(DC.dateInstallation)+'</span></div>';
     if(DC.dateTournage)h+='<div class="row"><span>Tournage</span><span>'+fd(DC.dateTournage)+'</span></div>';
-    if(DC.notes)h+='<div class="row"><span>Notes</span><span>'+DC.notes+'</span></div>';h+='</div>';
-    h+='<button class="editbtn" onclick="edit(\'decor\',DC)">✏️ Modifier ce décor</button>';
-    h+='<button class="abtn d" style="width:100%" onclick="delD()">🗑️ Supprimer</button>';
+    if(DC.notes)h+='<div class="row"><span>Notes</span><span>'+DC.notes+'</span></div>';
+    h+='</div>';
+    h+='<div class="acts"><div class="abtn p" onclick="edit(\'decor\',DC)">✏️ Modifier</div><div class="abtn d" onclick="delD()">🗑️ Supprimer</div></div>';
   }else if(TB==="ph"){
-    var phs=[];if(DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j].data,nom:e.nom});}
-    h+='<div class="acts"><button class="abtn p" onclick="go(\'print\')">🖨️ Imprimer vignettes</button></div>';
-    if(phs.length){h+='<div class="phgrid">';for(var i=0;i<phs.length;i++)h+='<img src="'+phs[i].data+'" onclick="openPhoto(getPhs(),'+i+')">';h+='</div>';}
-    else h+='<div class="empty"><i>📷</i>Aucune photo</div>';
+    var phs=[];
+    if(DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j].data,nom:e.nom});}
+    if(phs.length){
+      h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
+      for(var i=0;i<phs.length;i++)h+='<img src="'+phs[i].data+'" onclick="openPh(getDecPhs(),'+i+')" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer">';
+      h+='</div>';
+    }else{
+      h+='<div class="empty"><div class="icon">📷</div><p>Aucune photo</p></div>';
+    }
   }
-  h+='<button class="fab" onclick="modal(\'ne\')">+</button>';return h;
+  h+='<button class="fab" onclick="modal(\'ne\')">+</button>';
+  return h;
 }
 
-window.openRubPhoto=function(rubId,idx){var photos=getPhotosByRub(rubId);if(photos.length)openPhoto(photos,idx);};
-window.getPhs=function(){var phs=[];if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j].data,nom:e.nom});}return phs;};
+window.getDecPhs=function(){var phs=[];if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j].data,nom:e.nom});}return phs;};
 
 function rEl(){
-  if(!EL)return"";var st=gs(EL.statut),rb=gr(EL.rubrique),lo=EL.loueurId?gl(EL.loueurId):null;
-  var h='<button class="bk" onclick="go(\'back\')">← '+DC.nom+'</button>';
+  if(!EL)return"";
+  var st=gs(EL.statut),rb=gr(EL.rubrique);
+  
+  var h='';
   if(EL.photos&&EL.photos.length){
-    h+='<div class="phmain" onclick="openPhoto(EL.photos,0)"><img src="'+EL.photos[0].data+'"></div>';
-    h+='<div class="phrow">';for(var i=0;i<EL.photos.length;i++)h+='<div onclick="openPhoto(EL.photos,'+i+')"><img src="'+EL.photos[i].data+'"></div>';
-    h+='<div class="phadd" onclick="addPh()">+</div></div>';
-  }else{h+='<div class="phmain" onclick="addPh()"><div style="text-align:center;color:#64748b"><i style="font-size:40px;font-style:normal;display:block;margin-bottom:8px">📷</i>Ajouter photos</div></div>';}
-  h+='<div style="display:flex;justify-content:space-between;align-items:start"><div class="ttl">'+EL.nom+'</div>';if(EL.urgent)h+='<span style="color:#ef4444;font-size:20px">🚨</span>';h+='</div>';
-  h+='<div style="margin-bottom:12px">';if(rb)h+='<span class="chip">'+rb.i+' '+rb.n+'</span>';if(EL.scene)h+='<span class="chip">🎬 Sc.'+EL.scene+'</span>';if(EL.role)h+='<span class="chip">👤 '+EL.role+'</span>';if(EL.dateJeu)h+='<span class="chip">📅 '+fd(EL.dateJeu)+'</span>';if(EL.tags){var tags=EL.tags.split(",");for(var i=0;i<tags.length;i++)if(tags[i].trim())h+='<span class="tag">'+tags[i].trim()+'</span>';}h+='</div>';
-  h+='<button class="editbtn" onclick="edit(\'element\',EL)">✏️ Modifier cet élément</button>';
-  h+='<div class="fld"><label>Statut</label><select onchange="setStat(this.value)" style="background:'+st.c+'20;color:'+st.c+';border-color:'+st.c+'">';for(var i=0;i<STAT.length;i++)h+='<option value="'+STAT[i].id+'"'+(STAT[i].id===EL.statut?" selected":"")+'>'+STAT[i].l+'</option>';h+='</select></div>';
-  h+='<div class="box">';if(EL.description)h+='<p style="margin-bottom:10px">'+EL.description+'</p>';if(EL.dimensions)h+='<div class="row"><span>Dimensions</span><span>'+EL.dimensions+'</span></div>';if(EL.couleur)h+='<div class="row"><span>Couleur</span><span>'+EL.couleur+'</span></div>';if(EL.matiere)h+='<div class="row"><span>Matière</span><span>'+EL.matiere+'</span></div>';if(EL.quantite)h+='<div class="row"><span>Quantité</span><span>'+EL.quantite+'</span></div>';if(EL.continuity)h+='<div class="row"><span>📋 Continuité</span><span>'+EL.continuity+'</span></div>';h+='</div>';
-  if(lo)h+='<div class="box" style="background:rgba(99,102,241,0.1)"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:24px">🏪</span><div><strong style="color:#a5b4fc">'+lo.nom+'</strong>'+(lo.telephone?'<br><a href="tel:'+lo.telephone+'" style="color:#64748b;font-size:12px">📞 '+lo.telephone+'</a>':"")+'</div></div></div>';
-  if(EL.dateDepart||EL.dateRetour||EL.coutLocation||EL.coutReel){h+='<div class="box"><strong style="display:block;margin-bottom:8px">📦 Location</strong>';if(EL.dateDepart)h+='<div class="row"><span>Départ</span><span>'+fd(EL.dateDepart)+'</span></div>';if(EL.dateRetour)h+='<div class="row"><span>Retour</span><span>'+fd(EL.dateRetour)+'</span></div>';if(EL.coutLocation)h+='<div class="row"><span>Estimé</span><span>'+fm(EL.coutLocation)+'</span></div>';if(EL.coutReel)h+='<div class="row"><span>Réel</span><span style="color:#10b981">'+fm(EL.coutReel)+'</span></div>';h+='</div>';}
-  if(EL.historique&&EL.historique.length){h+='<div class="stit">Historique</div><div class="hist">';for(var i=EL.historique.length-1;i>=Math.max(0,EL.historique.length-5);i--)h+='<div>'+fdt(EL.historique[i].date)+' - '+EL.historique[i].action+'</div>';h+='</div>';}
-  h+='<div class="acts" style="margin-top:16px"><button class="abtn'+(EL.urgent?" w":"")+'" onclick="toggleUrgent()">'+(EL.urgent?"🚨 Urgent":"⚡ Urgent")+'</button><button class="abtn" onclick="dupEl()">📋 Dupliquer</button><button class="abtn d" onclick="delE()">🗑️</button></div>';
+    h+='<div class="photo-main" onclick="openPh(EL.photos,0)"><img src="'+EL.photos[0].data+'"></div>';
+    h+='<div class="photo-row">';
+    for(var i=0;i<EL.photos.length;i++)h+='<div class="photo-thumb'+(i===0?' active':'')+'" onclick="openPh(EL.photos,'+i+')"><img src="'+EL.photos[i].data+'"></div>';
+    h+='<div class="photo-thumb photo-add" onclick="addPh()">+</div>';
+    h+='</div>';
+  }else{
+    h+='<div class="photo-main" onclick="addPh()" style="display:flex;align-items:center;justify-content:center;flex-direction:column;color:#64748b"><span style="font-size:32px">📷</span><span style="font-size:12px;margin-top:4px">Ajouter photos</span></div>';
+  }
+  
+  h+='<div class="page-title">'+EL.nom+(EL.urgent?' 🚨':'')+'</div>';
+  
+  h+='<div class="chips">';
+  if(rb)h+='<div class="chip purple">'+rb.i+' '+rb.n+'</div>';
+  if(EL.scene)h+='<div class="chip">🎬 Sc.'+EL.scene+'</div>';
+  if(EL.role)h+='<div class="chip pink">👤 '+EL.role+'</div>';
+  if(EL.dateJeu)h+='<div class="chip">📅 '+fd(EL.dateJeu)+'</div>';
+  h+='</div>';
+  
+  h+='<div class="acts">';
+  h+='<div class="abtn p" onclick="edit(\'element\',EL)">✏️ Modifier</div>';
+  h+='<div class="abtn'+(EL.urgent?' d':'')+'" onclick="toggleUrg()">'+(EL.urgent?'🚨 Urgent':'⚡ Urgent')+'</div>';
+  h+='<div class="abtn" onclick="dupEl()">📋</div>';
+  h+='<div class="abtn d" onclick="delE()">🗑️</div>';
+  h+='</div>';
+  
+  h+='<div class="fld"><label>Statut</label><select onchange="setStat(this.value)" style="background:'+st.c+'20;color:'+st.c+';border-color:'+st.c+'">';
+  for(var i=0;i<STAT.length;i++)h+='<option value="'+STAT[i].id+'"'+(STAT[i].id===EL.statut?' selected':'')+'>'+STAT[i].l+'</option>';
+  h+='</select></div>';
+  
+  h+='<div class="box">';
+  if(EL.description)h+='<p style="margin-bottom:8px;font-size:13px">'+EL.description+'</p>';
+  if(EL.dimensions)h+='<div class="row"><span>Dimensions</span><span>'+EL.dimensions+'</span></div>';
+  if(EL.couleur)h+='<div class="row"><span>Couleur</span><span>'+EL.couleur+'</span></div>';
+  if(EL.matiere)h+='<div class="row"><span>Matière</span><span>'+EL.matiere+'</span></div>';
+  if(EL.quantite&&EL.quantite>1)h+='<div class="row"><span>Quantité</span><span>'+EL.quantite+'</span></div>';
+  h+='</div>';
+  
+  var lo=EL.loueurId?gl(EL.loueurId):null;
+  if(lo){
+    h+='<div class="box" style="background:rgba(99,102,241,0.1)">';
+    h+='<div style="display:flex;align-items:center;gap:10px">';
+    h+='<span style="font-size:20px">🏪</span>';
+    h+='<div><strong style="color:#a5b4fc">'+lo.nom+'</strong>';
+    if(lo.telephone)h+='<br><a href="tel:'+lo.telephone+'" style="color:#64748b;font-size:12px">📞 '+lo.telephone+'</a>';
+    h+='</div></div></div>';
+  }
+  
+  if(EL.coutLocation||EL.coutReel||EL.dateDepart||EL.dateRetour){
+    h+='<div class="box"><div style="font-weight:600;margin-bottom:6px;font-size:13px">📦 Location</div>';
+    if(EL.dateDepart)h+='<div class="row"><span>Départ</span><span>'+fd(EL.dateDepart)+'</span></div>';
+    if(EL.dateRetour)h+='<div class="row"><span>Retour</span><span>'+fd(EL.dateRetour)+'</span></div>';
+    if(EL.coutLocation)h+='<div class="row"><span>Estimé</span><span>'+fm(EL.coutLocation)+'</span></div>';
+    if(EL.coutReel)h+='<div class="row"><span>Réel</span><span style="color:#10b981">'+fm(EL.coutReel)+'</span></div>';
+    h+='</div>';
+  }
+  
   return h;
-}
-
-function rAcc(){
-  var items=[];
-  for(var pi=0;pi<D.projets.length;pi++){var p=D.projets[pi];if(P&&p.id!==P.id)continue;if(!p.decors)continue;
-    for(var di=0;di<p.decors.length;di++){var d=p.decors[di];if(!d.elements)continue;
-      for(var ei=0;ei<d.elements.length;ei++){var e=d.elements[ei];if(e.rubrique==="accessoires")items.push({e:e,d:d,p:p});}}}
-  var roles=[];for(var i=0;i<items.length;i++)if(items[i].e.role&&roles.indexOf(items[i].e.role)<0)roles.push(items[i].e.role);
-  var filtered=[];for(var i=0;i<items.length;i++){var x=items[i];if(FR&&x.e.role!==FR)continue;if(FD&&x.e.dateJeu!==FD)continue;if(SQ){var q=SQ.toLowerCase();if((x.e.nom||"").toLowerCase().indexOf(q)<0&&(x.e.role||"").toLowerCase().indexOf(q)<0)continue;}filtered.push(x);}
-  var h='<button class="bk" onclick="go(\'back\')">← Retour</button><div class="ttl">🎭 Accessoires</div><div class="sub">'+filtered.length+' accessoires</div>';
-  h+='<div class="srch"><input placeholder="Rechercher..." value="'+SQ+'" oninput="setSQ(this.value)"></div>';
-  h+='<div class="fltr"><button class="'+(FR===""?"on":"")+'" onclick="setFR(\'\')">Tous</button>';for(var i=0;i<roles.length;i++)h+='<button class="'+(FR===roles[i]?"on":"")+'" onclick="setFR(\''+roles[i]+'\')">👤 '+roles[i]+'</button>';h+='</div>';
-  h+='<div class="fld"><label>Date de jeu</label><input type="date" value="'+FD+'" onchange="setFD(this.value)"></div>';
-  if(!filtered.length){h+='<div class="empty"><i>🎭</i>Aucun accessoire</div>';}
-  else{for(var i=0;i<filtered.length;i++){var x=filtered[i],e=x.e,st=gs(e.statut);
-    h+='<div class="card'+(e.urgent?" urgent":"")+'" onclick="goToEl(\''+x.p.id+'\',\''+x.d.id+'\',\''+e.id+'\')">';
-    if(e.photos&&e.photos.length)h+='<img src="'+e.photos[0].data+'" style="width:44px;height:44px;object-fit:cover;border-radius:8px">';
-    else h+='<div style="width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center">🎭</div>';
-    h+='<div class="cinfo"><h3>'+e.nom+(e.urgent?' 🚨':'')+'</h3><p>'+(e.role?"👤 "+e.role:"")+(e.dateJeu?" 📅 "+fd(e.dateJeu):"")+'</p></div><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span></div>';}}
-  return h;
-}
-
-window.goToEl=function(pId,dId,eId){
-  for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===pId){P=D.projets[i];break;}
-  for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===dId){DC=P.decors[i];break;}
-  for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===eId){EL=DC.elements[i];break;}
-  V="el";R();
-};
-
-function rDep(){
-  var deps=[];for(var i=0;i<D.depenses.length;i++){if(!P||D.depenses[i].projetId===P.id)deps.push(D.depenses[i]);}
-  var total=0,estim=0;for(var i=0;i<deps.length;i++){total+=parseFloat(deps[i].montant)||0;estim+=parseFloat(deps[i].estime)||0;}
-  if(DS==="date")deps.sort(function(a,b){return new Date(b.date||0)-new Date(a.date||0)});else deps.sort(function(a,b){return(b.montant||0)-(a.montant||0)});
-  var h='<button class="bk" onclick="go(\'back\')">← Retour</button><div class="ttl">💰 Dépenses</div><div class="sub">'+deps.length+' dépenses</div>';
-  h+='<div class="total"><span>Total réel</span><strong>'+fm(total)+'</strong></div>';
-  if(estim>0)h+='<div class="box" style="display:flex;justify-content:space-between"><span>Estimé: '+fm(estim)+'</span><span style="color:'+(total>estim?'#ef4444':'#10b981')+'">Écart: '+fm(total-estim)+'</span></div>';
-  h+='<div class="fltr"><button class="'+(DS==="date"?"on":"")+'" onclick="setDS(\'date\')">📅 Date</button><button class="'+(DS==="montant"?"on":"")+'" onclick="setDS(\'montant\')">💶 Montant</button></div>';
-  if(!deps.length){h+='<div class="empty"><i>💰</i>Aucune dépense</div>';}
-  else{for(var i=0;i<deps.length;i++){var d=deps[i],tp="Autre";for(var j=0;j<TDEP.length;j++)if(TDEP[j].id===d.type)tp=TDEP[j].l;
-    h+='<div class="dep" onclick="editDep(\''+d.id+'\')"><div><h4>'+(d.description||tp)+'</h4><p>'+fd(d.date)+(d.fournisseur?" • "+d.fournisseur:"")+'</p></div><strong>'+fm(d.montant)+'</strong></div>';}}
-  h+='<button class="fab" onclick="modal(\'ndep\')">+</button>';return h;
-}
-
-window.editDep=function(id){for(var i=0;i<D.depenses.length;i++)if(D.depenses[i].id===id){EDIT=D.depenses[i];break;}M="edit_depense";R();};
-
-function rCollab(){
-  var h='<button class="bk" onclick="go(\'back\')">← Retour</button><div class="ttl">👥 Collaborateurs</div><div class="sub">'+D.collaborateurs.length+' collaborateur(s)</div>';
-  h+='<div class="box" style="background:rgba(99,102,241,0.1)"><div style="display:flex;justify-content:space-between;align-items:center"><div><strong>📧 Notifications auto</strong><br><small style="color:#94a3b8">Email à chaque modification</small></div><button onclick="toggleNotif()" style="padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;'+(D.notifAuto?'background:#10b981;color:#fff':'background:rgba(255,255,255,0.1);color:#64748b')+'">'+(D.notifAuto?"ON":"OFF")+'</button></div></div>';
-  if(!D.collaborateurs.length){h+='<div class="empty"><i>👥</i>Aucun collaborateur</div>';}
-  else{for(var i=0;i<D.collaborateurs.length;i++){var c=D.collaborateurs[i];h+='<div class="card" style="cursor:default"><div style="width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600">'+c.nom.charAt(0).toUpperCase()+'</div><div class="cinfo"><h3>'+c.nom+'</h3><p>'+c.email+'</p></div><button style="width:36px;height:36px;background:rgba(239,68,68,0.2);border-radius:8px;color:#ef4444;cursor:pointer;border:none" onclick="delCollab('+i+')">🗑️</button></div>';}}
-  h+='<button class="fab" onclick="modal(\'nc\')">+</button>';return h;
 }
 
 function rLou(){
-  var h='<button class="bk" onclick="go(\'home\')">← Retour</button><div class="ttl">🏪 Loueurs</div><div class="sub">'+D.loueurs.length+' loueurs</div>';
-  if(!D.loueurs.length){h+='<div class="empty"><i>🏪</i>Aucun loueur</div>';}
-  else{for(var i=0;i<D.loueurs.length;i++){var l=D.loueurs[i];h+='<div class="card" onclick="go(\'loud\',\''+l.id+'\')"><div style="width:40px;height:40px;background:rgba(99,102,241,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center">🏪</div><div class="cinfo"><h3>'+l.nom+'</h3>'+(l.specialite?'<p>'+l.specialite+'</p>':'')+'</div>';if(l.telephone)h+='<a href="tel:'+l.telephone+'" onclick="event.stopPropagation()" style="width:36px;height:36px;background:rgba(16,185,129,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none">📞</a>';h+='</div>';}}
-  h+='<button class="fab" onclick="modal(\'nl\')">+</button>';return h;
+  var h='<div class="page-title">🏪 Loueurs</div>';
+  h+='<div class="page-sub">'+D.loueurs.length+' contacts</div>';
+  
+  if(!D.loueurs.length){
+    h+='<div class="empty"><div class="icon">🏪</div><p>Aucun loueur</p></div>';
+  }else{
+    for(var i=0;i<D.loueurs.length;i++){
+      var l=D.loueurs[i];
+      h+='<div class="card" onclick="go(\'loud\',\''+l.id+'\')">';
+      h+='<div class="card-icon">🏪</div>';
+      h+='<div class="card-info"><h3>'+l.nom+'</h3><p>'+(l.specialite||'Loueur')+'</p></div>';
+      h+='<div class="card-actions">';
+      if(l.telephone)h+='<a href="tel:'+l.telephone+'" class="card-act view" onclick="event.stopPropagation()">📞</a>';
+      h+='<div class="card-act edit" onclick="event.stopPropagation();edit(\'loueur\',D.loueurs['+i+'])">✏️</div>';
+      h+='</div></div>';
+    }
+  }
+  h+='<button class="fab" onclick="modal(\'nl\')">+</button>';
+  return h;
 }
 
 function rLouD(){
   if(!LO)return"";
-  var h='<button class="bk" onclick="go(\'lou\')">← Loueurs</button><div class="ttl">🏪 '+LO.nom+'</div>';
-  if(LO.specialite)h+='<div class="sub">'+LO.specialite+'</div>';
-  h+='<div class="acts">';if(LO.telephone)h+='<a href="tel:'+LO.telephone+'" class="abtn p" style="text-decoration:none">📞 Appeler</a>';if(LO.email)h+='<a href="mailto:'+LO.email+'" class="abtn" style="text-decoration:none">✉️ Email</a>';h+='</div>';
-  h+='<button class="editbtn" onclick="edit(\'loueur\',LO)">✏️ Modifier ce loueur</button>';
-  h+='<div class="box">';if(LO.contact)h+='<div class="row"><span>Contact</span><span>'+LO.contact+'</span></div>';if(LO.telephone)h+='<div class="row"><span>Téléphone</span><span>'+LO.telephone+'</span></div>';if(LO.adresse)h+='<div class="row"><span>Adresse</span><span>'+LO.adresse+'</span></div>';if(LO.notes)h+='<div class="row"><span>Notes</span><span>'+LO.notes+'</span></div>';h+='</div>';
-  h+='<button class="abtn d" style="width:100%" onclick="delL()">🗑️ Supprimer</button>';return h;
-}
-
-function rSearch(){
-  var results=globalSearch(GSQ);
-  var h='<button class="bk" onclick="go(\'back\')">← Retour</button><div class="ttl">🔍 Recherche</div>';
-  h+='<div class="srch"><input placeholder="Rechercher partout..." value="'+GSQ+'" oninput="setGSQ(this.value)" autofocus></div>';
-  if(!GSQ||GSQ.length<2){h+='<div class="empty"><i>🔍</i>Tapez au moins 2 caractères</div>';}
-  else if(!results.length){h+='<div class="empty"><i>😕</i>Aucun résultat</div>';}
-  else{h+='<div class="sub">'+results.length+' résultat(s)</div>';
-    for(var i=0;i<results.length;i++){var r=results[i];
-      if(r.type==="projet")h+='<div class="card" onclick="go(\'proj\',\''+r.item.id+'\')"><span class="cicon">📁</span><div class="cinfo"><h3>'+r.item.nom+'</h3><p>Projet</p></div></div>';
-      else if(r.type==="decor")h+='<div class="card" onclick="goToDec(\''+r.p.id+'\',\''+r.item.id+'\')"><span class="cicon">🎭</span><div class="cinfo"><h3>'+r.item.nom+'</h3><p>Décor • '+r.p.nom+'</p></div></div>';
-      else if(r.type==="element"){h+='<div class="card" onclick="goToEl(\''+r.p.id+'\',\''+r.d.id+'\',\''+r.item.id+'\')">';if(r.item.photos&&r.item.photos.length)h+='<img src="'+r.item.photos[0].data+'" style="width:44px;height:44px;object-fit:cover;border-radius:8px">';else h+='<span class="cicon">📦</span>';h+='<div class="cinfo"><h3>'+r.item.nom+'</h3><p>'+r.d.nom+' • '+r.p.nom+'</p></div></div>';}
-      else if(r.type==="loueur")h+='<div class="card" onclick="go(\'loud\',\''+r.item.id+'\')"><span class="cicon">🏪</span><div class="cinfo"><h3>'+r.item.nom+'</h3><p>Loueur</p></div></div>';}}
+  var h='<div class="page-title">🏪 '+LO.nom+'</div>';
+  if(LO.specialite)h+='<div class="page-sub">'+LO.specialite+'</div>';
+  
+  h+='<div class="acts">';
+  if(LO.telephone)h+='<a href="tel:'+LO.telephone+'" class="abtn p" style="text-decoration:none">📞 Appeler</a>';
+  if(LO.email)h+='<a href="mailto:'+LO.email+'" class="abtn" style="text-decoration:none">✉️ Email</a>';
+  h+='<div class="abtn" onclick="edit(\'loueur\',LO)">✏️</div>';
+  h+='</div>';
+  
+  h+='<div class="box">';
+  if(LO.contact)h+='<div class="row"><span>Contact</span><span>'+LO.contact+'</span></div>';
+  if(LO.telephone)h+='<div class="row"><span>Téléphone</span><span>'+LO.telephone+'</span></div>';
+  if(LO.adresse)h+='<div class="row"><span>Adresse</span><span>'+LO.adresse+'</span></div>';
+  if(LO.notes)h+='<div class="row"><span>Notes</span><span>'+LO.notes+'</span></div>';
+  h+='</div>';
+  
+  h+='<div class="abtn d" style="width:100%" onclick="delL()">🗑️ Supprimer</div>';
   return h;
 }
 
-window.goToDec=function(pId,dId){for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===pId){P=D.projets[i];break;}go("dec",dId);};
-
-function rPrint(){
-  if(!DC)return"";
-  var phs=[];if(DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.photos)for(var j=0;j<e.photos.length;j++)phs.push({d:e.photos[j].data,n:e.nom,s:gs(e.statut).l});}
-  var h='<div style="text-align:center;margin-bottom:20px"><h2>'+P.nom+' - '+DC.nom+'</h2><p style="color:#64748b">'+phs.length+' photos</p></div>';
-  h+='<div class="acts"><button class="abtn" onclick="go(\'back\')">← Retour</button><button class="abtn p" onclick="window.print()">🖨️ Imprimer</button></div>';
-  h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
-  for(var i=0;i<phs.length;i++)h+='<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:6px;text-align:center"><img src="'+phs[i].d+'" style="width:100%;height:80px;object-fit:cover;border-radius:6px"><p style="font-size:10px;margin-top:4px">'+phs[i].n+'</p><small style="color:#64748b;font-size:8px">'+phs[i].s+'</small></div>';
-  h+='</div>';return h;
+function rDep(){
+  var deps=D.depenses.slice();
+  if(P)deps=deps.filter(function(d){return d.projetId===P.id});
+  deps.sort(function(a,b){return new Date(b.date||0)-new Date(a.date||0)});
+  
+  var total=0,estim=0;
+  for(var i=0;i<deps.length;i++){total+=parseFloat(deps[i].montant)||0;estim+=parseFloat(deps[i].estime)||0;}
+  
+  var h='<div class="page-title">💰 '+(P?'Budget '+P.nom:'Toutes les dépenses')+'</div>';
+  h+='<div class="page-sub">'+deps.length+' dépenses</div>';
+  
+  h+='<div class="total-box"><span>Total</span><strong>'+fm(total)+'</strong></div>';
+  if(estim>0){
+    var diff=total-estim;
+    h+='<div class="box" style="display:flex;justify-content:space-between;font-size:13px"><span>Estimé: '+fm(estim)+'</span><span style="color:'+(diff>0?'#ef4444':'#10b981')+'">Écart: '+fm(diff)+'</span></div>';
+  }
+  
+  if(!deps.length){
+    h+='<div class="empty"><div class="icon">💰</div><p>Aucune dépense</p></div>';
+  }else{
+    for(var i=0;i<deps.length;i++){
+      var d=deps[i];
+      h+='<div class="dep-item" onclick="editDep(\''+d.id+'\')">';
+      h+='<div><h4>'+(d.description||'Dépense')+'</h4><p>'+fd(d.date)+(d.fournisseur?' • '+d.fournisseur:'')+'</p></div>';
+      h+='<strong>'+fm(d.montant)+'</strong>';
+      h+='</div>';
+    }
+  }
+  h+='<button class="fab" onclick="modal(\'ndep\')">+</button>';
+  return h;
 }
 
+window.editDep=function(id){for(var i=0;i<D.depenses.length;i++)if(D.depenses[i].id===id){EDIT=D.depenses[i];M="edit_depense";R();break;}};
+
+function rAcc(){
+  var items=[];
+  for(var i=0;i<D.projets.length;i++){var p=D.projets[i];if(!p.decors)continue;
+    for(var j=0;j<p.decors.length;j++){var d=p.decors[j];if(!d.elements)continue;
+      for(var k=0;k<d.elements.length;k++){var e=d.elements[k];if(e.rubrique==="accessoires")items.push({e:e,d:d,p:p});}}}
+  
+  if(SQ){var q=SQ.toLowerCase();items=items.filter(function(x){return x.e.nom.toLowerCase().indexOf(q)>=0||(x.e.role&&x.e.role.toLowerCase().indexOf(q)>=0);});}
+  
+  var h='<div class="page-title">🎭 Accessoires de jeu</div>';
+  h+='<div class="page-sub">'+items.length+' accessoires</div>';
+  
+  h+='<div class="hdr-search" style="margin-bottom:12px"><input placeholder="Rechercher un accessoire..." value="'+SQ+'" oninput="setSQ(this.value)"></div>';
+  
+  if(!items.length){
+    h+='<div class="empty"><div class="icon">🎭</div><p>Aucun accessoire</p></div>';
+  }else{
+    for(var i=0;i<items.length;i++){
+      var x=items[i],e=x.e,st=gs(e.statut);
+      h+='<div class="card'+(e.urgent?' urgent':'')+'" onclick="goTo(\''+x.p.id+'\',\''+x.d.id+'\',\''+e.id+'\')">';
+      if(e.photos&&e.photos.length)h+='<img src="'+e.photos[0].data+'" style="width:44px;height:44px;object-fit:cover;border-radius:8px">';
+      else h+='<div class="card-icon">🎭</div>';
+      h+='<div class="card-info"><h3>'+e.nom+(e.urgent?' 🚨':'')+'</h3><p>'+(e.role?'👤 '+e.role+' • ':'')+(e.dateJeu?'📅 '+fd(e.dateJeu):'')+'</p></div>';
+      h+='<span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span>';
+      h+='</div>';
+    }
+  }
+  return h;
+}
+
+function rSearch(){
+  var results=search(GSQ);
+  var h='<div class="page-title">🔍 Recherche</div>';
+  
+  if(!GSQ||GSQ.length<2){
+    h+='<div class="empty"><div class="icon">🔍</div><p>Tapez au moins 2 caractères</p></div>';
+  }else if(!results.length){
+    h+='<div class="empty"><div class="icon">😕</div><p>Aucun résultat pour "'+GSQ+'"</p></div>';
+  }else{
+    h+='<div class="page-sub">'+results.length+' résultat(s)</div>';
+    for(var i=0;i<results.length;i++){
+      var r=results[i];
+      if(r.t==="projet"){
+        h+='<div class="card" onclick="go(\'proj\',\''+r.item.id+'\')"><div class="card-icon">📁</div><div class="card-info"><h3>'+r.item.nom+'</h3><p>Projet</p></div></div>';
+      }else if(r.t==="decor"){
+        h+='<div class="card" onclick="goTo(\''+r.p.id+'\',\''+r.item.id+'\')"><div class="card-icon">🎭</div><div class="card-info"><h3>'+r.item.nom+'</h3><p>Décor • '+r.p.nom+'</p></div></div>';
+      }else if(r.t==="element"){
+        h+='<div class="card" onclick="goTo(\''+r.p.id+'\',\''+r.d.id+'\',\''+r.item.id+'\')">';
+        if(r.item.photos&&r.item.photos.length)h+='<img src="'+r.item.photos[0].data+'" style="width:40px;height:40px;object-fit:cover;border-radius:8px">';
+        else h+='<div class="card-icon">📦</div>';
+        h+='<div class="card-info"><h3>'+r.item.nom+'</h3><p>'+r.d.nom+' • '+r.p.nom+'</p></div></div>';
+      }else if(r.t==="loueur"){
+        h+='<div class="card" onclick="go(\'loud\',\''+r.item.id+'\')"><div class="card-icon">🏪</div><div class="card-info"><h3>'+r.item.nom+'</h3><p>Loueur</p></div></div>';
+      }
+    }
+  }
+  return h;
+}
+
+function rViewer(){
+  if(!VWC||!VWC.length)return"";
+  var ph=VWC[VWI];
+  var h='<div class="viewer">';
+  h+='<div class="viewer-hdr"><button onclick="closePh()">✕ Fermer</button><span style="color:#94a3b8">'+(VWI+1)+'/'+VWC.length+'</span><button onclick="delPh()" style="color:#ef4444">🗑️</button></div>';
+  if(VWC.length>1){
+    h+='<button class="viewer-nav l" onclick="navPh(-1)">‹</button>';
+    h+='<button class="viewer-nav r" onclick="navPh(1)">›</button>';
+  }
+  h+='<div class="viewer-body"><img src="'+(ph.data||ph)+'"></div>';
+  if(ph.nom)h+='<div class="viewer-ftr">'+ph.nom+'</div>';
+  h+='</div>';
+  return h;
+}
+
+window.delPh=function(){
+  if(!confirm("Supprimer cette photo?"))return;
+  if(EL&&EL.photos){EL.photos.splice(VWI,1);sv();if(VWI>=EL.photos.length)VWI=Math.max(0,EL.photos.length-1);if(!EL.photos.length){VW=null;VWC=null;}R();}
+  else{VW=null;VWC=null;R();}
+};
+
 function rMenu(){
-  var h='<div class="menu"><div class="mbg" onclick="menu(false)"></div><div class="mpnl">';
-  h+='<h3 style="margin:0 0 20px">⚙️ Menu</h3>';
-  h+='<div class="mitm" onclick="go(\'home\');menu(false)">🏠 Tableau de bord</div>';
-  h+='<div class="mitm" onclick="go(\'search\');menu(false)">🔍 Recherche globale</div>';
-  h+='<div class="mitm" onclick="go(\'lou\');menu(false)">🏪 Loueurs <span style="margin-left:auto;opacity:0.5">'+D.loueurs.length+'</span></div>';
-  h+='<div class="mitm" onclick="P=null;go(\'dep\');menu(false)">💰 Toutes dépenses</div>';
-  h+='<div class="mitm" onclick="P=null;go(\'acc\');menu(false)">🎭 Tous accessoires</div>';
-  h+='<div class="mitm" onclick="go(\'collab\');menu(false)">👥 Collaborateurs <span style="margin-left:auto;opacity:0.5">'+D.collaborateurs.length+'</span></div>';
-  h+='<div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1)"><div class="mitm" onclick="expData()">💾 Exporter JSON</div><label class="mitm" style="cursor:pointer">📥 Importer<input type="file" accept=".json" style="display:none" onchange="impData(event)"></label></div>';
-  h+='<div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);font-size:11px;color:#64748b"><p>Décor Pro v6.0</p><p>'+D.projets.length+' projets</p></div></div></div>';
+  var h='<div class="menu"><div class="menu-bg" onclick="menu(false)"></div><div class="menu-panel">';
+  h+='<div style="font-size:18px;font-weight:700;margin-bottom:20px">⚙️ Menu</div>';
+  h+='<div class="menu-item" onclick="go(\'home\');menu(false)">🏠 Accueil</div>';
+  h+='<div class="menu-item" onclick="go(\'acc\');menu(false)">🎭 Accessoires</div>';
+  h+='<div class="menu-item" onclick="go(\'dep\');menu(false)">💰 Dépenses</div>';
+  h+='<div class="menu-item" onclick="go(\'lou\');menu(false)">🏪 Loueurs</div>';
+  h+='<div style="border-top:1px solid rgba(255,255,255,0.1);margin:16px 0"></div>';
+  h+='<div class="menu-item" onclick="expData()">💾 Exporter données</div>';
+  h+='<label class="menu-item" style="cursor:pointer">📥 Importer<input type="file" accept=".json" style="display:none" onchange="impData(event)"></label>';
+  h+='<div style="margin-top:20px;font-size:11px;color:#64748b"><p>Décor Pro v7.0</p><p>'+D.projets.length+' projets • '+D.loueurs.length+' loueurs</p></div>';
+  h+='</div></div>';
   return h;
 }
 
 function rModal(){
   var c="";
+  
+  // Nouveau projet - SIMPLIFIÉ
   if(M==="np"){
     c='<div class="mbar"></div><div class="mtit">🎬 Nouveau projet</div>';
-    c+='<div class="fld"><label>Nom *</label><input id="f1"></div>';
-    c+='<div class="fld"><label>Type</label><select id="f2">';for(var i=0;i<TPROJ.length;i++)c+='<option value="'+TPROJ[i].id+'">'+TPROJ[i].i+' '+TPROJ[i].l+'</option>';c+='</select></div>';
+    c+='<div class="form-section"><div class="fld"><label>Nom du projet *</label><input id="f1" placeholder="Ex: Mon Film"></div>';
+    c+='<div class="fld"><label>Type</label><select id="f2">';for(var i=0;i<TPROJ.length;i++)c+='<option value="'+TPROJ[i].id+'">'+TPROJ[i].i+' '+TPROJ[i].l+'</option>';c+='</select></div></div>';
+    c+='<div class="toggle-more" onclick="toggleMore()">'+(MORE?'▲ Moins d\'options':'▼ Plus d\'options')+'</div>';
+    c+='<div class="form-section'+(MORE?'':' hidden')+'">';
     c+='<div class="fld"><label>Production</label><input id="f3"></div>';
-    c+='<div class="cols"><div class="fld"><label>Réalisateur</label><input id="f4"></div><div class="fld"><label>Chef déco</label><input id="f5"></div></div>';
-    c+='<div class="fld"><label>Notes</label><textarea id="f6"></textarea></div>';
-    c+='<button class="btn p" onclick="saveP()">Créer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
+    c+='<div class="fld-row"><div class="fld"><label>Réalisateur</label><input id="f4"></div><div class="fld"><label>Chef déco</label><input id="f5"></div></div>';
+    c+='<div class="fld"><label>Notes</label><textarea id="f6"></textarea></div></div>';
+    c+='<button class="btn p" onclick="saveP()">Créer le projet</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Modifier projet
   else if(M==="edit_projet"&&EDIT){
     c='<div class="mbar"></div><div class="mtit">✏️ Modifier projet</div>';
     c+='<div class="fld"><label>Nom *</label><input id="f1" value="'+EDIT.nom+'"></div>';
-    c+='<div class="fld"><label>Type</label><select id="f2">';for(var i=0;i<TPROJ.length;i++)c+='<option value="'+TPROJ[i].id+'"'+(TPROJ[i].id===EDIT.type?" selected":"")+'>'+TPROJ[i].i+' '+TPROJ[i].l+'</option>';c+='</select></div>';
+    c+='<div class="fld"><label>Type</label><select id="f2">';for(var i=0;i<TPROJ.length;i++)c+='<option value="'+TPROJ[i].id+'"'+(TPROJ[i].id===EDIT.type?' selected':'')+'>'+TPROJ[i].i+' '+TPROJ[i].l+'</option>';c+='</select></div>';
     c+='<div class="fld"><label>Production</label><input id="f3" value="'+(EDIT.production||"")+'"></div>';
-    c+='<div class="cols"><div class="fld"><label>Réalisateur</label><input id="f4" value="'+(EDIT.realisateur||"")+'"></div><div class="fld"><label>Chef déco</label><input id="f5" value="'+(EDIT.chefDeco||"")+'"></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Réalisateur</label><input id="f4" value="'+(EDIT.realisateur||"")+'"></div><div class="fld"><label>Chef déco</label><input id="f5" value="'+(EDIT.chefDeco||"")+'"></div></div>';
     c+='<div class="fld"><label>Notes</label><textarea id="f6">'+(EDIT.notes||"")+'</textarea></div>';
     c+='<button class="btn p" onclick="updateP()">Enregistrer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Nouveau décor - SIMPLIFIÉ
   else if(M==="nd"){
     c='<div class="mbar"></div><div class="mtit">🎭 Nouveau décor</div>';
-    c+='<div class="fld"><label>Nom *</label><input id="f1"></div>';
+    c+='<div class="fld"><label>Nom du décor *</label><input id="f1" placeholder="Ex: Appartement Marie"></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Type</label><select id="f3"><option value="1">🏠 Intérieur</option><option value="0">🌳 Extérieur</option></select></div><div class="fld"><label>Nature</label><select id="f4"><option value="0">Naturel</option><option value="1">Studio</option></select></div></div>';
+    c+='<div class="toggle-more" onclick="toggleMore()">'+(MORE?'▲ Moins':'▼ Plus d\'options')+'</div>';
+    c+='<div class="form-section'+(MORE?'':' hidden')+'">';
     c+='<div class="fld"><label>Adresse</label><input id="f2"></div>';
-    c+='<div class="cols"><div class="fld"><label>Type</label><select id="f3"><option value="1">🏠 Intérieur</option><option value="0">🌳 Extérieur</option></select></div><div class="fld"><label>Nature</label><select id="f4"><option value="0">🏡 Naturel</option><option value="1">🎬 Studio</option></select></div></div>';
     c+='<div class="fld"><label>Statut</label><select id="f5">';for(var i=0;i<STATD.length;i++)c+='<option value="'+STATD[i].id+'">'+STATD[i].l+'</option>';c+='</select></div>';
-    c+='<div class="cols"><div class="fld"><label>Installation</label><input type="date" id="f6"></div><div class="fld"><label>Tournage</label><input type="date" id="f7"></div></div>';
-    c+='<div class="fld"><label>Notes</label><textarea id="f8"></textarea></div>';
-    c+='<button class="btn p" onclick="saveDC()">Créer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
+    c+='<div class="fld-row"><div class="fld"><label>Installation</label><input type="date" id="f6"></div><div class="fld"><label>Tournage</label><input type="date" id="f7"></div></div>';
+    c+='<div class="fld"><label>Notes</label><textarea id="f8"></textarea></div></div>';
+    c+='<button class="btn p" onclick="saveDC()">Créer le décor</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Modifier décor
   else if(M==="edit_decor"&&EDIT){
     c='<div class="mbar"></div><div class="mtit">✏️ Modifier décor</div>';
     c+='<div class="fld"><label>Nom *</label><input id="f1" value="'+EDIT.nom+'"></div>';
     c+='<div class="fld"><label>Adresse</label><input id="f2" value="'+(EDIT.adresse||"")+'"></div>';
-    c+='<div class="cols"><div class="fld"><label>Type</label><select id="f3"><option value="1"'+(EDIT.interieur?" selected":"")+'>🏠 Intérieur</option><option value="0"'+(!EDIT.interieur?" selected":"")+'>🌳 Extérieur</option></select></div><div class="fld"><label>Nature</label><select id="f4"><option value="0"'+(!EDIT.studio?" selected":"")+'>🏡 Naturel</option><option value="1"'+(EDIT.studio?" selected":"")+'>🎬 Studio</option></select></div></div>';
-    c+='<div class="fld"><label>Statut</label><select id="f5">';for(var i=0;i<STATD.length;i++)c+='<option value="'+STATD[i].id+'"'+(STATD[i].id===EDIT.statut?" selected":"")+'>'+STATD[i].l+'</option>';c+='</select></div>';
-    c+='<div class="cols"><div class="fld"><label>Installation</label><input type="date" id="f6" value="'+(EDIT.dateInstallation||"")+'"></div><div class="fld"><label>Tournage</label><input type="date" id="f7" value="'+(EDIT.dateTournage||"")+'"></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Type</label><select id="f3"><option value="1"'+(EDIT.interieur?' selected':'')+'>🏠 Intérieur</option><option value="0"'+(!EDIT.interieur?' selected':'')+'>🌳 Extérieur</option></select></div><div class="fld"><label>Nature</label><select id="f4"><option value="0"'+(!EDIT.studio?' selected':'')+'>Naturel</option><option value="1"'+(EDIT.studio?' selected':'')+'>Studio</option></select></div></div>';
+    c+='<div class="fld"><label>Statut</label><select id="f5">';for(var i=0;i<STATD.length;i++)c+='<option value="'+STATD[i].id+'"'+(STATD[i].id===EDIT.statut?' selected':'')+'>'+STATD[i].l+'</option>';c+='</select></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Installation</label><input type="date" id="f6" value="'+(EDIT.dateInstallation||"")+'"></div><div class="fld"><label>Tournage</label><input type="date" id="f7" value="'+(EDIT.dateTournage||"")+'"></div></div>';
     c+='<div class="fld"><label>Notes</label><textarea id="f8">'+(EDIT.notes||"")+'</textarea></div>';
     c+='<button class="btn p" onclick="updateDC()">Enregistrer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Nouvel élément - SIMPLIFIÉ
   else if(M==="ne"){
     var rb=RB?gr(RB):null;
     c='<div class="mbar"></div><div class="mtit">📦 Nouvel élément</div>';
-    c+='<div class="drop" onclick="document.getElementById(\'phi\').click()"><div id="phpr"></div><div id="phpl"><i>📸</i><strong>Photos</strong></div><input type="file" accept="image/*" multiple id="phi" style="display:none" onchange="prvPh(event)"></div>';
-    c+='<div class="fld"><label>Nom *</label><input id="f1"></div>';
-    c+='<div class="cols"><div class="fld"><label>Rubrique</label><select id="f2">';for(var i=0;i<RUB.length;i++)c+='<option value="'+RUB[i].id+'"'+(rb&&rb.id===RUB[i].id?" selected":"")+'>'+RUB[i].i+' '+RUB[i].n+'</option>';c+='</select></div><div class="fld"><label>Statut</label><select id="f3">';for(var i=0;i<STAT.length;i++)c+='<option value="'+STAT[i].id+'">'+STAT[i].l+'</option>';c+='</select></div></div>';
-    c+='<div class="fld"><label>Description</label><textarea id="f4"></textarea></div>';
-    c+='<div class="cols"><div class="fld"><label>Dimensions</label><input id="f5"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="1"></div></div>';
-    c+='<div class="cols"><div class="fld"><label>Couleur</label><input id="f7"></div><div class="fld"><label>Matière</label><input id="f8"></div></div>';
-    c+='<div class="fld"><label>🏷️ Tags (virgules)</label><input id="f9" placeholder="vintage, bois..."></div>';
-    c+='<div class="accbox"><h4>🎭 Accessoire de jeu</h4><div class="cols"><div class="fld" style="margin:0"><label>Scène n°</label><input id="f10"></div><div class="fld" style="margin:0"><label>Rôle</label><input id="f11"></div></div><div class="fld" style="margin-top:10px"><label>Date de jeu</label><input type="date" id="f12"></div><div class="fld"><label>📋 Continuité</label><input id="f13" placeholder="Position, état..."></div></div>';
+    c+='<div class="drop" onclick="document.getElementById(\'phi\').click()"><div id="phpr"></div><div id="phpl"><span class="icon">📸</span><p>Ajouter des photos</p></div><input type="file" accept="image/*" multiple id="phi" style="display:none" onchange="prvPh(event)"></div>';
+    c+='<div class="fld"><label>Nom *</label><input id="f1" placeholder="Ex: Vase bleu"></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Rubrique</label><select id="f2">';for(var i=0;i<RUB.length;i++)c+='<option value="'+RUB[i].id+'"'+(rb&&rb.id===RUB[i].id?' selected':'')+'>'+RUB[i].i+' '+RUB[i].n+'</option>';c+='</select></div><div class="fld"><label>Statut</label><select id="f3">';for(var i=0;i<STAT.length;i++)c+='<option value="'+STAT[i].id+'">'+STAT[i].l+'</option>';c+='</select></div></div>';
+    c+='<div class="toggle-more" onclick="toggleMore()">'+(MORE?'▲ Moins d\'options':'▼ Plus d\'options (accessoire, location...)')+'</div>';
+    c+='<div class="form-section'+(MORE?'':' hidden')+'">';
+    c+='<div class="fld"><label>Description</label><textarea id="f4" placeholder="Notes, remarques..."></textarea></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Dimensions</label><input id="f5"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="1"></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Couleur</label><input id="f7"></div><div class="fld"><label>Matière</label><input id="f8"></div></div>';
+    c+='<div class="fld"><label>Tags</label><input id="f9" placeholder="vintage, bois..."></div>';
+    c+='<div style="background:rgba(236,72,153,0.1);border-radius:10px;padding:10px;margin-bottom:12px">';
+    c+='<div style="color:#ec4899;font-size:12px;font-weight:600;margin-bottom:8px">🎭 Accessoire de jeu</div>';
+    c+='<div class="fld-row"><div class="fld"><label>Scène</label><input id="f10"></div><div class="fld"><label>Personnage</label><input id="f11"></div></div>';
+    c+='<div class="fld"><label>Date de jeu</label><input type="date" id="f12"></div>';
+    c+='<div class="fld"><label>Continuité</label><input id="f13" placeholder="Position, état..."></div></div>';
     if(D.loueurs.length){c+='<div class="fld"><label>Loueur</label><select id="f14"><option value="">Aucun</option>';for(var i=0;i<D.loueurs.length;i++)c+='<option value="'+D.loueurs[i].id+'">'+D.loueurs[i].nom+'</option>';c+='</select></div>';}
-    c+='<div class="cols"><div class="fld"><label>Coût estimé €</label><input type="number" id="f15"></div><div class="fld"><label>Coût réel €</label><input type="number" id="f16"></div></div>';
-    c+='<div class="cols"><div class="fld"><label>Départ loc.</label><input type="date" id="f17"></div><div class="fld"><label>Retour loc.</label><input type="date" id="f18"></div></div>';
-    c+='<div class="check"><input type="checkbox" id="f19"><label>🚨 Marquer urgent</label></div>';
-    c+='<button class="btn p" onclick="saveEl()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
+    c+='<div class="fld-row"><div class="fld"><label>Coût estimé €</label><input type="number" id="f15"></div><div class="fld"><label>Coût réel €</label><input type="number" id="f16"></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Départ loc.</label><input type="date" id="f17"></div><div class="fld"><label>Retour loc.</label><input type="date" id="f18"></div></div>';
+    c+='</div>';
+    c+='<button class="btn p" onclick="saveEl()">Ajouter l\'élément</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Modifier élément
   else if(M==="edit_element"&&EDIT){
     c='<div class="mbar"></div><div class="mtit">✏️ Modifier élément</div>';
     c+='<div class="fld"><label>Nom *</label><input id="f1" value="'+EDIT.nom+'"></div>';
-    c+='<div class="cols"><div class="fld"><label>Rubrique</label><select id="f2">';for(var i=0;i<RUB.length;i++)c+='<option value="'+RUB[i].id+'"'+(RUB[i].id===EDIT.rubrique?" selected":"")+'>'+RUB[i].i+' '+RUB[i].n+'</option>';c+='</select></div><div class="fld"><label>Statut</label><select id="f3">';for(var i=0;i<STAT.length;i++)c+='<option value="'+STAT[i].id+'"'+(STAT[i].id===EDIT.statut?" selected":"")+'>'+STAT[i].l+'</option>';c+='</select></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Rubrique</label><select id="f2">';for(var i=0;i<RUB.length;i++)c+='<option value="'+RUB[i].id+'"'+(RUB[i].id===EDIT.rubrique?' selected':'')+'>'+RUB[i].i+' '+RUB[i].n+'</option>';c+='</select></div><div class="fld"><label>Statut</label><select id="f3">';for(var i=0;i<STAT.length;i++)c+='<option value="'+STAT[i].id+'"'+(STAT[i].id===EDIT.statut?' selected':'')+'>'+STAT[i].l+'</option>';c+='</select></div></div>';
     c+='<div class="fld"><label>Description</label><textarea id="f4">'+(EDIT.description||"")+'</textarea></div>';
-    c+='<div class="cols"><div class="fld"><label>Dimensions</label><input id="f5" value="'+(EDIT.dimensions||"")+'"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="'+(EDIT.quantite||1)+'"></div></div>';
-    c+='<div class="cols"><div class="fld"><label>Couleur</label><input id="f7" value="'+(EDIT.couleur||"")+'"></div><div class="fld"><label>Matière</label><input id="f8" value="'+(EDIT.matiere||"")+'"></div></div>';
-    c+='<div class="fld"><label>🏷️ Tags</label><input id="f9" value="'+(EDIT.tags||"")+'"></div>';
-    c+='<div class="accbox"><h4>🎭 Accessoire de jeu</h4><div class="cols"><div class="fld" style="margin:0"><label>Scène n°</label><input id="f10" value="'+(EDIT.scene||"")+'"></div><div class="fld" style="margin:0"><label>Rôle</label><input id="f11" value="'+(EDIT.role||"")+'"></div></div><div class="fld" style="margin-top:10px"><label>Date de jeu</label><input type="date" id="f12" value="'+(EDIT.dateJeu||"")+'"></div><div class="fld"><label>📋 Continuité</label><input id="f13" value="'+(EDIT.continuity||"")+'"></div></div>';
-    if(D.loueurs.length){c+='<div class="fld"><label>Loueur</label><select id="f14"><option value="">Aucun</option>';for(var i=0;i<D.loueurs.length;i++)c+='<option value="'+D.loueurs[i].id+'"'+(D.loueurs[i].id===EDIT.loueurId?" selected":"")+'>'+D.loueurs[i].nom+'</option>';c+='</select></div>';}
-    c+='<div class="cols"><div class="fld"><label>Coût estimé €</label><input type="number" id="f15" value="'+(EDIT.coutLocation||"")+'"></div><div class="fld"><label>Coût réel €</label><input type="number" id="f16" value="'+(EDIT.coutReel||"")+'"></div></div>';
-    c+='<div class="cols"><div class="fld"><label>Départ</label><input type="date" id="f17" value="'+(EDIT.dateDepart||"")+'"></div><div class="fld"><label>Retour</label><input type="date" id="f18" value="'+(EDIT.dateRetour||"")+'"></div></div>';
-    c+='<div class="check"><input type="checkbox" id="f19"'+(EDIT.urgent?" checked":"")+'><label>🚨 Urgent</label></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Dimensions</label><input id="f5" value="'+(EDIT.dimensions||"")+'"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="'+(EDIT.quantite||1)+'"></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Couleur</label><input id="f7" value="'+(EDIT.couleur||"")+'"></div><div class="fld"><label>Matière</label><input id="f8" value="'+(EDIT.matiere||"")+'"></div></div>';
+    c+='<div class="fld"><label>Tags</label><input id="f9" value="'+(EDIT.tags||"")+'"></div>';
+    c+='<div style="background:rgba(236,72,153,0.1);border-radius:10px;padding:10px;margin-bottom:12px">';
+    c+='<div style="color:#ec4899;font-size:12px;font-weight:600;margin-bottom:8px">🎭 Accessoire</div>';
+    c+='<div class="fld-row"><div class="fld"><label>Scène</label><input id="f10" value="'+(EDIT.scene||"")+'"></div><div class="fld"><label>Personnage</label><input id="f11" value="'+(EDIT.role||"")+'"></div></div>';
+    c+='<div class="fld"><label>Date de jeu</label><input type="date" id="f12" value="'+(EDIT.dateJeu||"")+'"></div>';
+    c+='<div class="fld"><label>Continuité</label><input id="f13" value="'+(EDIT.continuity||"")+'"></div></div>';
+    if(D.loueurs.length){c+='<div class="fld"><label>Loueur</label><select id="f14"><option value="">Aucun</option>';for(var i=0;i<D.loueurs.length;i++)c+='<option value="'+D.loueurs[i].id+'"'+(D.loueurs[i].id===EDIT.loueurId?' selected':'')+'>'+D.loueurs[i].nom+'</option>';c+='</select></div>';}
+    c+='<div class="fld-row"><div class="fld"><label>Estimé €</label><input type="number" id="f15" value="'+(EDIT.coutLocation||"")+'"></div><div class="fld"><label>Réel €</label><input type="number" id="f16" value="'+(EDIT.coutReel||"")+'"></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Départ</label><input type="date" id="f17" value="'+(EDIT.dateDepart||"")+'"></div><div class="fld"><label>Retour</label><input type="date" id="f18" value="'+(EDIT.dateRetour||"")+'"></div></div>';
     c+='<button class="btn p" onclick="updateEl()">Enregistrer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Nouveau loueur
   else if(M==="nl"){
     c='<div class="mbar"></div><div class="mtit">🏪 Nouveau loueur</div>';
-    c+='<div class="fld"><label>Nom *</label><input id="f1"></div><div class="fld"><label>Spécialité</label><input id="f2"></div>';
-    c+='<div class="cols"><div class="fld"><label>Contact</label><input id="f3"></div><div class="fld"><label>Téléphone</label><input type="tel" id="f4"></div></div>';
-    c+='<div class="fld"><label>Email</label><input type="email" id="f5"></div><div class="fld"><label>Adresse</label><input id="f6"></div>';
-    c+='<div class="fld"><label>Notes</label><textarea id="f7"></textarea></div>';
+    c+='<div class="fld"><label>Nom *</label><input id="f1"></div>';
+    c+='<div class="fld"><label>Spécialité</label><input id="f2" placeholder="Mobilier, accessoires..."></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Contact</label><input id="f3"></div><div class="fld"><label>Téléphone</label><input type="tel" id="f4"></div></div>';
+    c+='<div class="fld"><label>Email</label><input type="email" id="f5"></div>';
+    c+='<div class="toggle-more" onclick="toggleMore()">'+(MORE?'▲ Moins':'▼ Plus')+'</div>';
+    c+='<div class="form-section'+(MORE?'':' hidden')+'">';
+    c+='<div class="fld"><label>Adresse</label><input id="f6"></div>';
+    c+='<div class="fld"><label>Notes</label><textarea id="f7"></textarea></div></div>';
     c+='<button class="btn p" onclick="saveLo()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Modifier loueur
   else if(M==="edit_loueur"&&EDIT){
     c='<div class="mbar"></div><div class="mtit">✏️ Modifier loueur</div>';
-    c+='<div class="fld"><label>Nom *</label><input id="f1" value="'+EDIT.nom+'"></div><div class="fld"><label>Spécialité</label><input id="f2" value="'+(EDIT.specialite||"")+'"></div>';
-    c+='<div class="cols"><div class="fld"><label>Contact</label><input id="f3" value="'+(EDIT.contact||"")+'"></div><div class="fld"><label>Téléphone</label><input type="tel" id="f4" value="'+(EDIT.telephone||"")+'"></div></div>';
-    c+='<div class="fld"><label>Email</label><input type="email" id="f5" value="'+(EDIT.email||"")+'"></div><div class="fld"><label>Adresse</label><input id="f6" value="'+(EDIT.adresse||"")+'"></div>';
+    c+='<div class="fld"><label>Nom *</label><input id="f1" value="'+EDIT.nom+'"></div>';
+    c+='<div class="fld"><label>Spécialité</label><input id="f2" value="'+(EDIT.specialite||"")+'"></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Contact</label><input id="f3" value="'+(EDIT.contact||"")+'"></div><div class="fld"><label>Téléphone</label><input type="tel" id="f4" value="'+(EDIT.telephone||"")+'"></div></div>';
+    c+='<div class="fld"><label>Email</label><input type="email" id="f5" value="'+(EDIT.email||"")+'"></div>';
+    c+='<div class="fld"><label>Adresse</label><input id="f6" value="'+(EDIT.adresse||"")+'"></div>';
     c+='<div class="fld"><label>Notes</label><textarea id="f7">'+(EDIT.notes||"")+'</textarea></div>';
     c+='<button class="btn p" onclick="updateLo()">Enregistrer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Nouvelle dépense
   else if(M==="ndep"){
     c='<div class="mbar"></div><div class="mtit">💰 Nouvelle dépense</div>';
-    c+='<div class="fld"><label>Type</label><select id="f1">';for(var i=0;i<TDEP.length;i++)c+='<option value="'+TDEP[i].id+'">'+TDEP[i].l+'</option>';c+='</select></div>';
-    c+='<div class="fld"><label>Description</label><input id="f2"></div>';
-    c+='<div class="cols"><div class="fld"><label>Estimé €</label><input type="number" step="0.01" id="f3"></div><div class="fld"><label>Réel € *</label><input type="number" step="0.01" id="f4"></div></div>';
-    c+='<div class="cols"><div class="fld"><label>Date</label><input type="date" id="f5" value="'+new Date().toISOString().split("T")[0]+'"></div><div class="fld"><label>Fournisseur</label><input id="f6"></div></div>';
+    c+='<div class="fld"><label>Description *</label><input id="f2" placeholder="Ex: Location canapé"></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Montant € *</label><input type="number" step="0.01" id="f4"></div><div class="fld"><label>Type</label><select id="f1">';for(var i=0;i<TDEP.length;i++)c+='<option value="'+TDEP[i].id+'">'+TDEP[i].l+'</option>';c+='</select></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Date</label><input type="date" id="f5" value="'+new Date().toISOString().split("T")[0]+'"></div><div class="fld"><label>Fournisseur</label><input id="f6"></div></div>';
+    c+='<div class="toggle-more" onclick="toggleMore()">'+(MORE?'▲':'▼ Budget estimé')+'</div>';
+    c+='<div class="fld'+(MORE?'':' hidden')+'"><label>Estimé €</label><input type="number" step="0.01" id="f3"></div>';
     c+='<button class="btn p" onclick="saveDep()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
+  
+  // Modifier dépense
   else if(M==="edit_depense"&&EDIT){
     c='<div class="mbar"></div><div class="mtit">✏️ Modifier dépense</div>';
-    c+='<div class="fld"><label>Type</label><select id="f1">';for(var i=0;i<TDEP.length;i++)c+='<option value="'+TDEP[i].id+'"'+(TDEP[i].id===EDIT.type?" selected":"")+'>'+TDEP[i].l+'</option>';c+='</select></div>';
     c+='<div class="fld"><label>Description</label><input id="f2" value="'+(EDIT.description||"")+'"></div>';
-    c+='<div class="cols"><div class="fld"><label>Estimé €</label><input type="number" step="0.01" id="f3" value="'+(EDIT.estime||"")+'"></div><div class="fld"><label>Réel € *</label><input type="number" step="0.01" id="f4" value="'+(EDIT.montant||"")+'"></div></div>';
-    c+='<div class="cols"><div class="fld"><label>Date</label><input type="date" id="f5" value="'+(EDIT.date||"")+'"></div><div class="fld"><label>Fournisseur</label><input id="f6" value="'+(EDIT.fournisseur||"")+'"></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Montant €</label><input type="number" step="0.01" id="f4" value="'+(EDIT.montant||"")+'"></div><div class="fld"><label>Type</label><select id="f1">';for(var i=0;i<TDEP.length;i++)c+='<option value="'+TDEP[i].id+'"'+(TDEP[i].id===EDIT.type?' selected':'')+'>'+TDEP[i].l+'</option>';c+='</select></div></div>';
+    c+='<div class="fld-row"><div class="fld"><label>Date</label><input type="date" id="f5" value="'+(EDIT.date||"")+'"></div><div class="fld"><label>Fournisseur</label><input id="f6" value="'+(EDIT.fournisseur||"")+'"></div></div>';
+    c+='<div class="fld"><label>Estimé €</label><input type="number" step="0.01" id="f3" value="'+(EDIT.estime||"")+'"></div>';
     c+='<button class="btn p" onclick="updateDep()">Enregistrer</button><button class="btn d" onclick="delDep()">Supprimer</button><button class="btn s" onclick="modal(null)">Annuler</button>';
   }
-  else if(M==="nc"){
-    c='<div class="mbar"></div><div class="mtit">👥 Nouveau collaborateur</div>';
-    c+='<div class="fld"><label>Nom *</label><input id="f1"></div><div class="fld"><label>Email *</label><input type="email" id="f2"></div>';
-    c+='<button class="btn p" onclick="saveCollab()">Ajouter</button><button class="btn s" onclick="modal(null)">Annuler</button>';
-  }
+  
+  // Vue rubrique
   else if(M==="rub"){
     var rb=gr(RB);if(!rb)return"";
     var els=[];if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].rubrique===rb.id)els.push(DC.elements[i]);
-    c='<div class="mbar"></div><div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><div style="width:44px;height:44px;background:'+rb.c+'20;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px">'+rb.i+'</div><div><h3 style="margin:0">'+rb.n+'</h3><small style="color:#64748b">'+els.length+' éléments</small></div></div>';
-    if(!els.length){c+='<div class="empty"><i>📦</i>Aucun élément</div>';}
-    else{c+='<div style="max-height:50vh;overflow-y:auto">';for(var i=0;i<els.length;i++){var e=els[i],st=gs(e.statut);c+='<div class="card'+(e.urgent?" urgent":"")+'" onclick="goToElFromRub(\''+e.id+'\')">';if(e.photos&&e.photos.length)c+='<img src="'+e.photos[0].data+'" style="width:44px;height:44px;object-fit:cover;border-radius:8px">';else c+='<div style="width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center">📦</div>';c+='<div class="cinfo"><h3>'+e.nom+(e.urgent?' 🚨':'')+'</h3><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span></div></div>';}c+='</div>';}
-    c+='<button class="btn p" style="margin-top:16px" onclick="modal(\'ne\')">➕ Ajouter élément</button>';
+    c='<div class="mbar"></div>';
+    c+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">';
+    c+='<div style="width:40px;height:40px;background:'+rb.c+'20;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">'+rb.i+'</div>';
+    c+='<div><div style="font-size:16px;font-weight:600">'+rb.n+'</div><div style="font-size:12px;color:#64748b">'+els.length+' éléments</div></div></div>';
+    
+    // Portfolio photos
+    var phs=[];for(var i=0;i<els.length;i++)if(els[i].photos)for(var j=0;j<els[i].photos.length;j++)phs.push({data:els[i].photos[j].data,nom:els[i].nom,idx:i});
+    if(phs.length){
+      c+='<div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px">';
+      for(var i=0;i<phs.length;i++)c+='<img src="'+phs[i].data+'" onclick="event.stopPropagation();openRubPh(\''+RB+'\','+i+')" style="width:70px;height:70px;object-fit:cover;border-radius:8px;flex-shrink:0;cursor:pointer">';
+      c+='</div>';
+    }
+    
+    if(!els.length){c+='<div class="empty"><div class="icon">📦</div><p>Aucun élément</p></div>';}
+    else{
+      c+='<div style="max-height:45vh;overflow-y:auto">';
+      for(var i=0;i<els.length;i++){
+        var e=els[i],st=gs(e.statut);
+        c+='<div class="card'+(e.urgent?' urgent':'')+'" onclick="goToRubEl(\''+e.id+'\')">';
+        if(e.photos&&e.photos.length)c+='<img src="'+e.photos[0].data+'" style="width:40px;height:40px;object-fit:cover;border-radius:8px">';
+        else c+='<div class="card-icon" style="width:40px;height:40px;font-size:18px">📦</div>';
+        c+='<div class="card-info"><h3>'+e.nom+(e.urgent?' 🚨':'')+'</h3><span class="badge" style="background:'+st.c+'30;color:'+st.c+'">'+st.l+'</span></div></div>';
+      }
+      c+='</div>';
+    }
+    c+='<button class="btn p" style="margin-top:12px" onclick="modal(\'ne\')">+ Ajouter élément</button>';
   }
+  
   return '<div class="modal" onclick="modal(null)"><div class="mpan" onclick="event.stopPropagation()">'+c+'</div></div>';
 }
 
-window.goToElFromRub=function(eId){for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===eId){EL=DC.elements[i];break;}M=null;V="el";R();};
+window.goToRubEl=function(eId){for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===eId){EL=DC.elements[i];break}M=null;V="el";R();};
+window.openRubPh=function(rubId,idx){var phs=[];var rb=gr(rubId);if(DC&&DC.elements)for(var i=0;i<DC.elements.length;i++){var e=DC.elements[i];if(e.rubrique===rubId&&e.photos)for(var j=0;j<e.photos.length;j++)phs.push({data:e.photos[j].data,nom:e.nom});}if(phs.length)openPh(phs,idx);};
 
-window.prvPh=function(e){var files=e.target.files;for(var i=0;i<files.length;i++){(function(file){var r=new FileReader();r.onload=function(ev){PHS.push(ev.target.result);updPh()};r.readAsDataURL(file);})(files[i]);}};
-function updPh(){var pr=document.getElementById("phpr"),pl=document.getElementById("phpl");if(pr&&pl){if(PHS.length){var h="";for(var i=0;i<PHS.length;i++)h+='<img src="'+PHS[i]+'" style="width:50px;height:50px;object-fit:cover;border-radius:6px;margin:2px">';pr.innerHTML=h;pl.style.display="none";}else{pr.innerHTML="";pl.style.display="block";}}}
+window.prvPh=function(e){var files=e.target.files;for(var i=0;i<files.length;i++){(function(f){var r=new FileReader();r.onload=function(ev){PHS.push(ev.target.result);updPh()};r.readAsDataURL(f);})(files[i]);}};
+function updPh(){var pr=document.getElementById("phpr"),pl=document.getElementById("phpl");if(pr&&pl){if(PHS.length){var h="";for(var i=0;i<PHS.length;i++)h+='<img src="'+PHS[i]+'" style="width:50px;height:50px;object-fit:cover;border-radius:6px;margin:2px">';pr.innerHTML=h;pl.style.display="none";}}}
+window.addPh=function(){var i=document.createElement("input");i.type="file";i.accept="image/*";i.multiple=true;i.onchange=function(e){var files=e.target.files;for(var j=0;j<files.length;j++){(function(f){var r=new FileReader();r.onload=function(ev){if(!EL.photos)EL.photos=[];EL.photos.push({data:ev.target.result});sv();R();};r.readAsDataURL(f);})(files[j]);}};i.click();};
 
-window.addPh=function(){var i=document.createElement("input");i.type="file";i.accept="image/*";i.multiple=true;i.onchange=function(e){var files=e.target.files;for(var j=0;j<files.length;j++){(function(file){var r=new FileReader();r.onload=function(ev){if(!EL.photos)EL.photos=[];EL.photos.push({data:ev.target.result});addHist(EL,"Photo ajoutée");sv();R();};r.readAsDataURL(file);})(files[j]);}};i.click();};
+window.saveP=function(){var n=gv("f1");if(!n)return alert("Nom requis");D.projets.push({id:uid(),nom:n,type:gv("f2")||"film",production:gv("f3"),realisateur:gv("f4"),chefDeco:gv("f5"),notes:gv("f6"),decors:[]});sv();M=null;R();};
+window.updateP=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.type=gv("f2");EDIT.production=gv("f3");EDIT.realisateur=gv("f4");EDIT.chefDeco=gv("f5");EDIT.notes=gv("f6");sv();M=null;R();};
+window.saveDC=function(){var n=gv("f1");if(!n)return alert("Nom requis");if(!P.decors)P.decors=[];P.decors.push({id:uid(),nom:n,adresse:gv("f2"),interieur:gv("f3")==="1",studio:gv("f4")==="1",statut:gv("f5")||"a_preparer",dateInstallation:gv("f6"),dateTournage:gv("f7"),notes:gv("f8"),elements:[]});sv();M=null;R();};
+window.updateDC=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.adresse=gv("f2");EDIT.interieur=gv("f3")==="1";EDIT.studio=gv("f4")==="1";EDIT.statut=gv("f5");EDIT.dateInstallation=gv("f6");EDIT.dateTournage=gv("f7");EDIT.notes=gv("f8");sv();M=null;R();};
+window.saveEl=function(){var n=gv("f1");if(!n)return alert("Nom requis");if(!DC.elements)DC.elements=[];var el={id:uid(),nom:n,rubrique:gv("f2")||"mobilier",statut:gv("f3")||"a_sourcer",description:gv("f4"),dimensions:gv("f5"),quantite:gv("f6")||1,couleur:gv("f7"),matiere:gv("f8"),tags:gv("f9"),scene:gv("f10"),role:gv("f11"),dateJeu:gv("f12"),continuity:gv("f13"),loueurId:gv("f14"),coutLocation:gv("f15"),coutReel:gv("f16"),dateDepart:gv("f17"),dateRetour:gv("f18"),photos:[]};for(var i=0;i<PHS.length;i++)el.photos.push({data:PHS[i]});DC.elements.push(el);sv();M=null;PHS=[];R();};
+window.updateEl=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.rubrique=gv("f2");EDIT.statut=gv("f3");EDIT.description=gv("f4");EDIT.dimensions=gv("f5");EDIT.quantite=gv("f6");EDIT.couleur=gv("f7");EDIT.matiere=gv("f8");EDIT.tags=gv("f9");EDIT.scene=gv("f10");EDIT.role=gv("f11");EDIT.dateJeu=gv("f12");EDIT.continuity=gv("f13");EDIT.loueurId=gv("f14");EDIT.coutLocation=gv("f15");EDIT.coutReel=gv("f16");EDIT.dateDepart=gv("f17");EDIT.dateRetour=gv("f18");sv();M=null;R();};
+window.dupEl=function(){if(!confirm("Dupliquer?"))return;var c=JSON.parse(JSON.stringify(EL));c.id=uid();c.nom+=" (copie)";DC.elements.push(c);sv();alert("Dupliqué!");R();};
+window.saveLo=function(){var n=gv("f1");if(!n)return alert("Nom requis");D.loueurs.push({id:uid(),nom:n,specialite:gv("f2"),contact:gv("f3"),telephone:gv("f4"),email:gv("f5"),adresse:gv("f6"),notes:gv("f7")});sv();M=null;R();};
+window.updateLo=function(){var n=gv("f1");if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.specialite=gv("f2");EDIT.contact=gv("f3");EDIT.telephone=gv("f4");EDIT.email=gv("f5");EDIT.adresse=gv("f6");EDIT.notes=gv("f7");sv();M=null;R();};
+window.saveDep=function(){var m=gv("f4");if(!m)return alert("Montant requis");D.depenses.push({id:uid(),projetId:P?P.id:null,type:gv("f1"),description:gv("f2"),estime:parseFloat(gv("f3"))||0,montant:parseFloat(m),date:gv("f5"),fournisseur:gv("f6")});sv();M=null;R();};
+window.updateDep=function(){var m=gv("f4");if(!m)return alert("Montant requis");EDIT.type=gv("f1");EDIT.description=gv("f2");EDIT.estime=parseFloat(gv("f3"))||0;EDIT.montant=parseFloat(m);EDIT.date=gv("f5");EDIT.fournisseur=gv("f6");sv();M=null;R();};
+window.delDep=function(){if(!confirm("Supprimer?"))return;D.depenses=D.depenses.filter(function(d){return d.id!==EDIT.id});sv();M=null;R();};
+window.delP=function(){if(!confirm("Supprimer ce projet?"))return;D.projets=D.projets.filter(function(p){return p.id!==P.id});sv();P=null;V="home";R();};
+window.delD=function(){if(!confirm("Supprimer ce décor?"))return;P.decors=P.decors.filter(function(d){return d.id!==DC.id});sv();DC=null;V="proj";R();};
+window.delE=function(){if(!confirm("Supprimer?"))return;DC.elements=DC.elements.filter(function(e){return e.id!==EL.id});sv();EL=null;V="dec";R();};
+window.delL=function(){if(!confirm("Supprimer?"))return;D.loueurs=D.loueurs.filter(function(l){return l.id!==LO.id});sv();LO=null;V="lou";R();};
 
-window.saveP=function(){var n=document.getElementById("f1").value.trim();if(!n)return alert("Nom requis");D.projets.push({id:uid(),nom:n,type:document.getElementById("f2").value,production:document.getElementById("f3").value,realisateur:document.getElementById("f4").value,chefDeco:document.getElementById("f5").value,notes:document.getElementById("f6").value,decors:[]});sv();M=null;sendMail("projet",n);R();};
-
-window.updateP=function(){var n=document.getElementById("f1").value.trim();if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.type=document.getElementById("f2").value;EDIT.production=document.getElementById("f3").value;EDIT.realisateur=document.getElementById("f4").value;EDIT.chefDeco=document.getElementById("f5").value;EDIT.notes=document.getElementById("f6").value;sv();M=null;R();};
-
-window.saveDC=function(){var n=document.getElementById("f1").value.trim();if(!n)return alert("Nom requis");if(!P.decors)P.decors=[];P.decors.push({id:uid(),nom:n,adresse:document.getElementById("f2").value,interieur:document.getElementById("f3").value==="1",studio:document.getElementById("f4").value==="1",statut:document.getElementById("f5").value,dateInstallation:document.getElementById("f6").value,dateTournage:document.getElementById("f7").value,notes:document.getElementById("f8").value,elements:[]});sv();M=null;sendMail("decor",n);R();};
-
-window.updateDC=function(){var n=document.getElementById("f1").value.trim();if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.adresse=document.getElementById("f2").value;EDIT.interieur=document.getElementById("f3").value==="1";EDIT.studio=document.getElementById("f4").value==="1";EDIT.statut=document.getElementById("f5").value;EDIT.dateInstallation=document.getElementById("f6").value;EDIT.dateTournage=document.getElementById("f7").value;EDIT.notes=document.getElementById("f8").value;sv();M=null;R();};
-
-window.saveEl=function(){var n=document.getElementById("f1").value.trim();if(!n)return alert("Nom requis");if(!DC.elements)DC.elements=[];
-var el={id:uid(),nom:n,rubrique:document.getElementById("f2").value,statut:document.getElementById("f3").value,description:document.getElementById("f4").value,dimensions:document.getElementById("f5").value,quantite:document.getElementById("f6").value,couleur:document.getElementById("f7").value,matiere:document.getElementById("f8").value,tags:document.getElementById("f9")?document.getElementById("f9").value:"",scene:document.getElementById("f10")?document.getElementById("f10").value:"",role:document.getElementById("f11")?document.getElementById("f11").value:"",dateJeu:document.getElementById("f12")?document.getElementById("f12").value:"",continuity:document.getElementById("f13")?document.getElementById("f13").value:"",loueurId:document.getElementById("f14")?document.getElementById("f14").value:"",coutLocation:document.getElementById("f15")?document.getElementById("f15").value:"",coutReel:document.getElementById("f16")?document.getElementById("f16").value:"",dateDepart:document.getElementById("f17")?document.getElementById("f17").value:"",dateRetour:document.getElementById("f18")?document.getElementById("f18").value:"",urgent:document.getElementById("f19")?document.getElementById("f19").checked:false,photos:[],historique:[{date:new Date().toISOString(),action:"Créé"}]};
-for(var i=0;i<PHS.length;i++)el.photos.push({data:PHS[i]});DC.elements.push(el);sv();M=null;PHS=[];sendMail("element",n);R();};
-
-window.updateEl=function(){var n=document.getElementById("f1").value.trim();if(!n)return alert("Nom requis");var changes=[];if(EDIT.nom!==n)changes.push("Nom");EDIT.nom=n;EDIT.rubrique=document.getElementById("f2").value;var newStat=document.getElementById("f3").value;if(EDIT.statut!==newStat)changes.push("Statut: "+gs(newStat).l);EDIT.statut=newStat;EDIT.description=document.getElementById("f4").value;EDIT.dimensions=document.getElementById("f5").value;EDIT.quantite=document.getElementById("f6").value;EDIT.couleur=document.getElementById("f7").value;EDIT.matiere=document.getElementById("f8").value;EDIT.tags=document.getElementById("f9")?document.getElementById("f9").value:"";EDIT.scene=document.getElementById("f10")?document.getElementById("f10").value:"";EDIT.role=document.getElementById("f11")?document.getElementById("f11").value:"";EDIT.dateJeu=document.getElementById("f12")?document.getElementById("f12").value:"";EDIT.continuity=document.getElementById("f13")?document.getElementById("f13").value:"";EDIT.loueurId=document.getElementById("f14")?document.getElementById("f14").value:"";EDIT.coutLocation=document.getElementById("f15")?document.getElementById("f15").value:"";EDIT.coutReel=document.getElementById("f16")?document.getElementById("f16").value:"";EDIT.dateDepart=document.getElementById("f17")?document.getElementById("f17").value:"";EDIT.dateRetour=document.getElementById("f18")?document.getElementById("f18").value:"";EDIT.urgent=document.getElementById("f19")?document.getElementById("f19").checked:false;if(changes.length)addHist(EDIT,"Modifié: "+changes.join(", "));else addHist(EDIT,"Modifié");sv();M=null;R();};
-
-window.dupEl=function(){if(!confirm("Dupliquer cet élément?"))return;var copy=JSON.parse(JSON.stringify(EL));copy.id=uid();copy.nom=EL.nom+" (copie)";copy.historique=[{date:new Date().toISOString(),action:"Dupliqué"}];DC.elements.push(copy);sv();alert("Élément dupliqué!");R();};
-
-window.saveLo=function(){var n=document.getElementById("f1").value.trim();if(!n)return alert("Nom requis");D.loueurs.push({id:uid(),nom:n,specialite:document.getElementById("f2").value,contact:document.getElementById("f3").value,telephone:document.getElementById("f4").value,email:document.getElementById("f5").value,adresse:document.getElementById("f6").value,notes:document.getElementById("f7").value});sv();M=null;R();};
-
-window.updateLo=function(){var n=document.getElementById("f1").value.trim();if(!n)return alert("Nom requis");EDIT.nom=n;EDIT.specialite=document.getElementById("f2").value;EDIT.contact=document.getElementById("f3").value;EDIT.telephone=document.getElementById("f4").value;EDIT.email=document.getElementById("f5").value;EDIT.adresse=document.getElementById("f6").value;EDIT.notes=document.getElementById("f7").value;sv();M=null;R();};
-
-window.saveDep=function(){var m=document.getElementById("f4").value;if(!m)return alert("Montant requis");D.depenses.push({id:uid(),projetId:P?P.id:null,type:document.getElementById("f1").value,description:document.getElementById("f2").value,estime:parseFloat(document.getElementById("f3").value)||0,montant:parseFloat(m),date:document.getElementById("f5").value,fournisseur:document.getElementById("f6").value});sv();M=null;R();};
-
-window.updateDep=function(){var m=document.getElementById("f4").value;if(!m)return alert("Montant requis");EDIT.type=document.getElementById("f1").value;EDIT.description=document.getElementById("f2").value;EDIT.estime=parseFloat(document.getElementById("f3").value)||0;EDIT.montant=parseFloat(m);EDIT.date=document.getElementById("f5").value;EDIT.fournisseur=document.getElementById("f6").value;sv();M=null;R();};
-
-window.delDep=function(){if(!confirm("Supprimer?"))return;for(var i=0;i<D.depenses.length;i++)if(D.depenses[i].id===EDIT.id){D.depenses.splice(i,1);break;}sv();M=null;R();};
-window.saveCollab=function(){var n=document.getElementById("f1").value.trim(),e=document.getElementById("f2").value.trim();if(!n||!e)return alert("Nom et email requis");D.collaborateurs.push({id:uid(),nom:n,email:e});sv();M=null;R();};
-window.delCollab=function(i){if(confirm("Supprimer?")){D.collaborateurs.splice(i,1);sv();R();}};
-window.delP=function(){if(confirm("Supprimer ce projet?")){for(var i=0;i<D.projets.length;i++)if(D.projets[i].id===P.id){D.projets.splice(i,1);break;}sv();P=null;V="home";R();}};
-window.delD=function(){if(confirm("Supprimer ce décor?")){for(var i=0;i<P.decors.length;i++)if(P.decors[i].id===DC.id){P.decors.splice(i,1);break;}sv();DC=null;V="proj";R();}};
-window.delE=function(){if(confirm("Supprimer?")){for(var i=0;i<DC.elements.length;i++)if(DC.elements[i].id===EL.id){DC.elements.splice(i,1);break;}sv();EL=null;V="dec";R();}};
-window.delL=function(){if(confirm("Supprimer?")){for(var i=0;i<D.loueurs.length;i++)if(D.loueurs[i].id===LO.id){D.loueurs.splice(i,1);break;}sv();LO=null;V="lou";R();}};
+function gv(id){var el=document.getElementById(id);return el?el.value.trim():"";}
 
 window.expData=function(){var b=new Blob([JSON.stringify(D,null,2)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="decor-pro-"+new Date().toISOString().split("T")[0]+".json";a.click();MN=false;R();};
-window.impData=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.projets){D=d;if(!D.depenses)D.depenses=[];if(!D.collaborateurs)D.collaborateurs=[];sv();MN=false;alert("Import réussi!");R();}}catch(err){alert("Erreur");}};r.readAsText(f);};
+window.impData=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.projets){D=d;if(!D.depenses)D.depenses=[];if(!D.loueurs)D.loueurs=[];if(!D.collaborateurs)D.collaborateurs=[];sv();MN=false;alert("Import réussi!");R();}}catch(err){alert("Erreur");}};r.readAsText(f);};
 
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");
 R();
