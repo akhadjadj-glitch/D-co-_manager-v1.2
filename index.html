@@ -496,6 +496,9 @@ function rMenu(){
   h+='<div class="menu-item" onclick="go(\'dep\');menu(false)">💰 Dépenses</div>';
   h+='<div class="menu-item" onclick="go(\'lou\');menu(false)">🏪 Loueurs</div>';
   h+='<div style="border-top:1px solid rgba(255,255,255,0.1);margin:16px 0"></div>';
+  h+='<div class="menu-item" onclick="exportData()">📤 Exporter (JSON)</div>';
+  h+='<div class="menu-item" onclick="importData()">📥 Importer (JSON)</div>';
+  h+='<div style="border-top:1px solid rgba(255,255,255,0.1);margin:16px 0"></div>';
   h+='<div class="menu-item" style="color:#ef4444" onclick="leaveProject()">🚪 Quitter</div>';
   h+='<p style="margin-top:20px;font-size:11px;color:#64748b">Décor Pro v8 Cloud</p>';
   h+='</div></div>';
@@ -661,6 +664,59 @@ window.addPh=function(){
         }
       });
     }
+  };
+  inp.click();
+};
+
+// Export données
+window.exportData=function(){
+  MN=false;
+  var data={
+    version:"8.0",
+    code:CODE,
+    exportDate:new Date().toISOString(),
+    projets:D.projets,
+    loueurs:D.loueurs,
+    depenses:D.depenses
+  };
+  var json=JSON.stringify(data,null,2);
+  var blob=new Blob([json],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;
+  a.download="decor-pro-"+CODE+"-"+new Date().toISOString().split("T")[0]+".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  alert("✅ Export terminé !");
+  R();
+};
+
+// Import données
+window.importData=function(){
+  MN=false;R();
+  var inp=document.createElement("input");
+  inp.type="file";
+  inp.accept=".json,application/json";
+  inp.onchange=function(e){
+    var file=e.target.files[0];
+    if(!file)return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var data=JSON.parse(ev.target.result);
+        if(!data.projets){alert("❌ Fichier invalide");return;}
+        if(!confirm("⚠️ Importer "+data.projets.length+" projet(s), "+data.loueurs.length+" loueur(s), "+data.depenses.length+" dépense(s) ?\n\nCela remplacera les données actuelles."))return;
+        D.projets=data.projets||[];
+        D.loueurs=data.loueurs||[];
+        D.depenses=data.depenses||[];
+        sv();
+        alert("✅ Import réussi !");
+        V="home";P=null;DC=null;EL=null;R();
+      }catch(err){
+        alert("❌ Erreur: "+err.message);
+      }
+    };
+    reader.readAsText(file);
   };
   inp.click();
 };
