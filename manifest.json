@@ -1,10 +1,10 @@
 {
-  "name": "Décor Pro",
-  "short_name": "DécorPro",
+  "name": "Décor Pro v11",
+  "short_name": "DécorPro v11",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0c0f1a",
-  "theme_color": "#818cf8",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
   "icons": [
     {
       "src": "icon-192.png",
