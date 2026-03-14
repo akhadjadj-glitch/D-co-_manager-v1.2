@@ -9,7 +9,597 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Décor Pro</title>
-<link rel="stylesheet" href="css/app.css">
+<style>
+/* ============================================
+   Décor Pro — Premium Design System
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap');
+
+:root {
+  --bg:        #0c0f1a;
+  --bg-card:   rgba(255,255,255,0.04);
+  --bg-card-h: rgba(255,255,255,0.07);
+  --bg-input:  rgba(0,0,0,0.35);
+  --border:    rgba(255,255,255,0.08);
+  --border-h:  rgba(255,255,255,0.14);
+  --text:      #e8ecf4;
+  --text-2:    #8b95a8;
+  --text-3:    #505a6d;
+  --accent:    #818cf8;
+  --accent-bg: rgba(129,140,248,0.12);
+  --accent-2:  #a78bfa;
+  --success:   #34d399;
+  --danger:    #f87171;
+  --warn:      #fbbf24;
+  --radius:    14px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --shadow:    0 8px 32px rgba(0,0,0,0.3);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --font: 'DM Sans', -apple-system, system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { font-size: 16px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 90px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font: inherit; font-size: 16px; border: none; background: none; color: inherit; outline: none; }
+a { color: var(--accent); text-decoration: none; }
+img { display: block; }
+
+/* ── Icons ── */
+.ico { display: inline-flex; width: 18px; height: 18px; flex-shrink: 0; vertical-align: middle; }
+.ico svg { width: 100%; height: 100%; }
+.ico.nav-icon { width: 22px; height: 22px; }
+.ico.search-icon { width: 16px; height: 16px; color: var(--text-3); position: absolute; left: 14px; top: 50%; transform: translateY(-50%); }
+.ico.empty-icon { width: 40px; height: 40px; color: var(--text-3); margin-bottom: 8px; opacity: 0.5; }
+.ico.hero-cam-icon { width: 32px; height: 32px; margin-bottom: 4px; }
+
+/* ── Header ── */
+.hdr {
+  position: sticky; top: 0; z-index: 100;
+  padding: 14px 18px;
+  padding-top: max(14px, env(safe-area-inset-top));
+  background: rgba(12, 15, 26, 0.92);
+  backdrop-filter: blur(20px) saturate(1.2);
+  border-bottom: 1px solid var(--border);
+}
+.hdr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; letter-spacing: -0.3px; }
+.logo .ico { width: 28px; height: 28px; padding: 5px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-radius: 8px; color: #fff; }
+.hdr-right { display: flex; align-items: center; gap: 8px; }
+
+.sync-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.3px;
+  padding: 5px 10px; border-radius: 20px;
+  background: var(--bg-card);
+}
+.sync-badge.online { color: var(--success); }
+.sync-badge.offline { color: var(--warn); }
+.sync-badge.syncing { color: var(--accent); }
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.sync-badge.syncing .sync-dot { animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); color: var(--text-2); }
+.icon-btn:hover, .icon-btn:active { background: var(--bg-card-h); color: var(--text); }
+.icon-btn.sm { width: 32px; height: 32px; }
+.icon-btn.success { color: var(--success); }
+.icon-btn.light { color: #fff; background: rgba(255,255,255,0.1); }
+.icon-btn.light.danger { color: var(--danger); }
+
+/* ── Search ── */
+.search-bar {
+  position: relative;
+}
+.search-bar input {
+  width: 100%;
+  padding: 11px 14px 11px 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  font-size: 14px;
+  transition: var(--transition);
+}
+.search-bar input:focus { border-color: var(--accent); background: var(--bg-input); }
+.search-bar.compact { margin-bottom: 14px; }
+
+/* ── Breadcrumb ── */
+.bread {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 18px; font-size: 12px; color: var(--text-3);
+  overflow-x: auto; white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+.bread span { cursor: pointer; padding: 4px 10px; border-radius: var(--radius-xs); background: var(--bg-card); transition: var(--transition); }
+.bread span:hover { background: var(--bg-card-h); }
+.bread span.current { color: var(--accent); background: var(--accent-bg); }
+.bread span .ico { width: 14px; height: 14px; }
+.bread i { font-style: normal; color: var(--text-3); opacity: 0.5; }
+
+/* ── Navbar ── */
+.navbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 6px 0;
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+  background: rgba(12, 15, 26, 0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 7px 16px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: var(--transition); min-width: 64px; border: none;
+}
+.nav-item:active { transform: scale(0.96); }
+.nav-item.active { background: var(--accent-bg); }
+.nav-label { font-size: 10px; font-weight: 500; color: var(--text-3); }
+.nav-item.active .nav-label { color: var(--accent); }
+.nav-item .nav-icon { color: var(--text-3); }
+.nav-item.active .nav-icon { color: var(--accent); }
+
+/* ── Content ── */
+.cnt { padding: 18px; padding-bottom: 20px; }
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+.card:active { background: var(--bg-card-h); transform: scale(0.99); }
+.card.urgent { border-left: 3px solid var(--danger); }
+.card-avatar {
+  font-size: 24px; width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-card); border-radius: var(--radius-sm); flex-shrink: 0;
+}
+.card-thumb { width: 44px; height: 44px; object-fit: cover; border-radius: var(--radius-sm); flex-shrink: 0; }
+.card-body { flex: 1; min-width: 0; }
+.card-body h3 { font-size: 14px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-body p { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card-actions { display: flex; gap: 4px; }
+
+/* ── Badge ── */
+.badge {
+  display: inline-block; padding: 3px 9px; border-radius: 20px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+  background: color-mix(in srgb, var(--bc) 15%, transparent);
+  color: var(--bc);
+}
+
+.urgent-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--danger); vertical-align: middle; animation: pulse 1.5s infinite; }
+
+/* ── Page layout ── */
+.page-head { margin-bottom: 16px; }
+.page-head-icon { font-size: 28px; }
+.page-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+.page-title .ico { width: 24px; height: 24px; }
+.page-sub { font-size: 13px; color: var(--text-2); margin-top: 2px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* ── Stats ── */
+.stats-row { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+.stat-card {
+  flex: 1; min-width: 72px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px; text-align: center;
+}
+.stat-card strong { display: block; font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
+.stat-card small { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── Project code card ── */
+.project-code-card {
+  background: linear-gradient(135deg, rgba(129,140,248,0.15), rgba(167,139,250,0.15));
+  border: 1px solid rgba(129,140,248,0.2);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.pcc-label { display: block; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; }
+.pcc-code { font-size: 26px; font-weight: 700; letter-spacing: 4px; }
+
+/* ── Alerts ── */
+.alerts-row { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+.alert-chip {
+  flex-shrink: 0; display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  cursor: pointer; border: none; transition: var(--transition);
+}
+.alert-chip:active { transform: scale(0.97); }
+.alert-chip .ico { width: 14px; height: 14px; }
+.alert-chip.danger { background: rgba(248,113,113,0.12); color: #fca5a5; }
+.alert-chip.warn { background: rgba(251,191,36,0.12); color: #fcd34d; }
+.alert-chip.info { background: rgba(236,72,153,0.12); color: #f9a8d4; }
+.alert-chip.cool { background: rgba(59,130,246,0.12); color: #93c5fd; }
+
+/* ── Section ── */
+.section-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin: 18px 0 10px; font-size: 12px; font-weight: 600; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
+.section-head small { font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 20px; border-radius: var(--radius-sm);
+  font-weight: 600; font-size: 14px; cursor: pointer;
+  transition: var(--transition); border: none; text-align: center;
+  width: 100%; margin-bottom: 8px;
+}
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn .ico { width: 16px; height: 16px; }
+
+.btn.primary { background: linear-gradient(135deg, #818cf8, #a78bfa); color: #fff; box-shadow: 0 4px 16px rgba(129,140,248,0.25); }
+.btn.primary:hover { box-shadow: 0 6px 20px rgba(129,140,248,0.35); }
+.btn.ghost { background: var(--bg-card); color: var(--text-2); border: 1px solid var(--border); }
+.btn.danger { background: rgba(248,113,113,0.15); color: var(--danger); }
+.btn.danger-ghost { background: none; color: var(--danger); border: 1px solid rgba(248,113,113,0.2); }
+
+.btn.sm { width: auto; padding: 8px 14px; font-size: 12px; margin-bottom: 0; }
+.btn-text { background: none; border: none; color: var(--accent); font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+.btn-text .ico { width: 14px; height: 14px; }
+.btn-ghost { background: var(--bg-card); border: 1px solid var(--border); padding: 8px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); transition: var(--transition); }
+.btn-ghost:active { background: var(--bg-card-h); }
+
+.actions-row { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+
+/* ── FAB ── */
+.fab {
+  position: fixed;
+  bottom: max(80px, calc(env(safe-area-inset-bottom) + 74px));
+  right: 18px;
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  color: #fff; border-radius: 16px; border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(129,140,248,0.4);
+  z-index: 90;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.fab:active { transform: scale(0.93); }
+.fab .ico { width: 24px; height: 24px; }
+
+/* ── Total card ── */
+.total-card {
+  background: linear-gradient(135deg, rgba(129,140,248,0.12), rgba(167,139,250,0.12));
+  border: 1px solid rgba(129,140,248,0.15);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.total-card span { color: var(--accent); font-size: 12px; font-weight: 500; }
+.total-card strong { font-size: 22px; letter-spacing: -0.5px; }
+
+/* ── Info box ── */
+.info-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 14px;
+}
+.info-box.accent { background: rgba(129,140,248,0.06); border-color: rgba(129,140,248,0.15); }
+.info-box-title { font-weight: 600; font-size: 13px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.info-box-title .ico { width: 16px; height: 16px; }
+.info-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.info-row:last-child { border: none; }
+.info-row span:first-child { color: var(--text-2); }
+.el-desc { font-size: 13px; color: var(--text-2); margin-bottom: 10px; line-height: 1.6; }
+
+/* ── Tabs ── */
+.tabs-bar {
+  display: flex; gap: 4px; margin-bottom: 14px;
+  background: var(--bg-card); padding: 4px; border-radius: var(--radius-sm);
+}
+.tab {
+  flex: 1; padding: 9px; border-radius: 8px; text-align: center;
+  font-size: 12px; font-weight: 500; color: var(--text-2);
+  cursor: pointer; transition: var(--transition); border: none;
+}
+.tab.on { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+
+/* ── Rubrique grid ── */
+.rub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+.rub-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+  cursor: pointer; position: relative; transition: var(--transition);
+  border-left: 3px solid var(--rc);
+}
+.rub-card:active { background: var(--bg-card-h); transform: scale(0.98); }
+.rub-card.urgent { border-color: var(--danger); }
+.rub-icon { font-size: 28px; margin-bottom: 6px; }
+.rub-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.rub-card p { font-size: 11px; color: var(--text-2); }
+.rub-count { position: absolute; top: 10px; right: 10px; background: var(--bg-card-h); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+
+/* ── Photo ── */
+.photo-hero {
+  width: 100%; aspect-ratio: 4/3; border-radius: var(--radius);
+  overflow: hidden; margin-bottom: 12px; background: rgba(255,255,255,0.03);
+  cursor: pointer;
+}
+.photo-hero img { width: 100%; height: 100%; object-fit: cover; }
+.photo-hero.empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: var(--text-3); gap: 4px; font-size: 13px; border: 2px dashed var(--border);
+}
+.photo-strip { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+.photo-thumb {
+  width: 56px; height: 56px; border-radius: 10px; overflow: hidden; flex-shrink: 0;
+  cursor: pointer; border: 2px solid transparent; transition: var(--transition);
+}
+.photo-thumb.active { border-color: var(--accent); }
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.photo-thumb.photo-add {
+  background: var(--bg-card); border: 2px dashed var(--border);
+  display: flex; align-items: center; justify-content: center; color: var(--text-3);
+}
+.photo-thumb.photo-add .ico { width: 20px; height: 20px; }
+
+.photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px; }
+.photo-grid-item { position: relative; cursor: pointer; border-radius: 10px; overflow: hidden; }
+.photo-grid-item img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.photo-grid-label {
+  position: absolute; left: 4px; right: 4px; bottom: 4px;
+  font-size: 10px; padding: 4px 6px;
+  background: rgba(12,15,26,0.8); backdrop-filter: blur(4px);
+  border-radius: var(--radius-xs); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── Chips ── */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip {
+  padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--cc, var(--text-2));
+}
+
+/* ── Supplier card ── */
+.supplier-card {
+  background: var(--accent-bg); border: 1px solid rgba(129,140,248,0.15);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.supplier-icon { width: 20px; height: 20px; color: var(--accent); }
+.supplier-card strong { color: var(--accent); }
+.supplier-phone { color: var(--text-2); font-size: 12px; display: inline-flex; align-items: center; gap: 4px; }
+.supplier-phone .ico { width: 12px; height: 12px; }
+
+/* ── Select status ── */
+.select-status {
+  width: 100%; padding: 10px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--sc); background: color-mix(in srgb, var(--sc) 10%, transparent);
+  color: var(--sc); font-weight: 500;
+}
+
+/* ── List items ── */
+.list-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; transition: var(--transition);
+}
+.list-item:active { background: var(--bg-card-h); }
+.list-item h4 { font-size: 13px; font-weight: 600; }
+.list-item p { font-size: 11px; color: var(--text-2); }
+.list-item strong { font-size: 16px; }
+
+/* ── Empty state ── */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-3); display: flex; flex-direction: column; align-items: center; }
+.empty-state p { font-size: 14px; margin-bottom: 2px; }
+.empty-state small { font-size: 12px; }
+.empty-state.sm { padding: 24px 16px; }
+
+/* ── Forms ── */
+.fld { margin-bottom: 12px; }
+.fld label { display: block; font-size: 11px; font-weight: 500; color: var(--text-2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
+.fld input, .fld select, .fld textarea {
+  width: 100%; padding: 11px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--bg-input);
+  font-size: 14px; transition: var(--transition);
+}
+.fld input:focus, .fld select:focus, .fld textarea:focus { border-color: var(--accent); }
+.fld textarea { min-height: 64px; resize: none; }
+.fld-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.code-input { font-size: 26px; letter-spacing: 8px; text-align: center; text-transform: uppercase; font-weight: 700; }
+.toggle-more { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; color: var(--accent); font-size: 12px; font-weight: 500; cursor: pointer; margin-bottom: 12px; border: none; width: 100%; }
+.toggle-more .ico { width: 16px; height: 16px; }
+.hidden { display: none !important; }
+.form-extra { margin-bottom: 8px; }
+
+.accessoire-section {
+  background: rgba(236,72,153,0.06); border: 1px solid rgba(236,72,153,0.12);
+  border-radius: var(--radius-sm); padding: 12px; margin-bottom: 14px;
+}
+.accessoire-title { color: #ec4899; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+
+/* ── Drop zone ── */
+.drop-zone {
+  border: 2px dashed rgba(129,140,248,0.25); border-radius: var(--radius);
+  padding: 24px; text-align: center; cursor: pointer; margin-bottom: 14px;
+  background: rgba(129,140,248,0.04); color: var(--text-2); font-size: 13px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  transition: var(--transition);
+}
+.drop-zone:hover { border-color: var(--accent); background: rgba(129,140,248,0.08); }
+.drop-zone .ico { width: 24px; height: 24px; color: var(--accent); }
+
+/* ── Upload progress ── */
+.upload-progress { background: var(--accent-bg); border-radius: var(--radius-sm); padding: 12px; margin: 8px 0; }
+.upload-progress span { font-size: 12px; color: var(--accent); }
+.upload-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+.upload-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center; z-index: 200;
+}
+.modal-panel {
+  background: #151926; border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0; padding: 20px;
+  padding-bottom: max(20px, calc(env(safe-area-inset-bottom) + 12px));
+  width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;
+}
+.modal-bar { width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 18px; }
+.modal-title { font-size: 17px; font-weight: 700; text-align: center; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.modal-title .ico { width: 20px; height: 20px; }
+
+.rub-modal-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.rub-modal-icon { width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.rub-modal-head h3 { font-size: 16px; font-weight: 600; }
+.rub-modal-head small { font-size: 12px; color: var(--text-2); }
+.rub-photo-strip { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 14px; padding-bottom: 4px; }
+.rub-photo-strip img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; flex-shrink: 0; cursor: pointer; }
+.rub-el-list { max-height: 45vh; overflow-y: auto; }
+
+/* ── Viewer ── */
+.viewer { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 250; display: flex; flex-direction: column; }
+.viewer-hdr {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top));
+}
+.viewer-count { color: var(--text-2); font-size: 13px; font-weight: 500; }
+.viewer-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.viewer-body img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-sm); }
+.viewer-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 80px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.5); color: #fff; cursor: pointer; border: none;
+  transition: var(--transition);
+}
+.viewer-nav:hover { background: rgba(255,255,255,0.1); }
+.viewer-nav .ico { width: 24px; height: 24px; }
+.viewer-nav.l { left: 0; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.viewer-nav.r { right: 0; border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.viewer-ftr { padding: 12px; text-align: center; color: var(--text-2); font-size: 13px; }
+
+/* ── Side menu ── */
+.side-menu { position: fixed; inset: 0; z-index: 150; }
+.menu-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); }
+.menu-panel {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 280px;
+  background: #151926; border-left: 1px solid var(--border);
+  padding: 20px;
+  padding-top: max(20px, env(safe-area-inset-top));
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.menu-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.menu-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.menu-title .ico { width: 20px; height: 20px; }
+.menu-code-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px; margin-bottom: 20px;
+}
+.menu-code-box small { display: block; font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.menu-code-box strong { font-size: 20px; font-weight: 700; letter-spacing: 3px; }
+.menu-nav { display: flex; flex-direction: column; gap: 2px; }
+.menu-nav button {
+  display: flex; align-items: center; gap: 10px; padding: 12px;
+  border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; font-weight: 500;
+  transition: var(--transition); border: none; width: 100%; text-align: left; color: var(--text);
+}
+.menu-nav button:active { background: var(--bg-card-h); }
+.menu-nav button .ico { width: 18px; height: 18px; color: var(--text-2); }
+.menu-divider { border-top: 1px solid var(--border); margin: 16px 0; }
+.menu-danger {
+  display: flex; align-items: center; gap: 10px; padding: 12px;
+  border-radius: var(--radius-sm); color: var(--danger); cursor: pointer;
+  font-size: 14px; font-weight: 500; border: none; width: 100%; text-align: left;
+  transition: var(--transition);
+}
+.menu-danger:active { background: rgba(248,113,113,0.08); }
+.menu-danger .ico { width: 18px; height: 18px; }
+.menu-footer { margin-top: auto; padding-top: 20px; font-size: 11px; color: var(--text-3); }
+.menu-footer p { margin-bottom: 2px; }
+
+/* ── Login ── */
+.login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 20px; position: relative; overflow: hidden;
+}
+.login-glow {
+  position: absolute; width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(129,140,248,0.15), transparent 70%);
+  top: 20%; left: 50%; transform: translateX(-50%);
+  pointer-events: none;
+}
+.login-content { position: relative; z-index: 1; text-align: center; width: 100%; max-width: 360px; }
+.login-brand { margin-bottom: 32px; }
+.login-logo { margin: 0 auto 16px; }
+.login-logo .ico { width: 56px; height: 56px; padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-radius: 18px; color: #fff; }
+.login-title { font-size: 32px; font-weight: 700; letter-spacing: -1px; margin-bottom: 6px; }
+.login-sub { font-size: 14px; color: var(--text-2); }
+.login-box {
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  border-radius: 18px; padding: 24px;
+}
+.login-tabs { display: flex; margin-bottom: 20px; background: rgba(0,0,0,0.25); border-radius: var(--radius-sm); padding: 4px; }
+.login-tab {
+  flex: 1; padding: 10px; border-radius: 8px; font-size: 13px;
+  cursor: pointer; color: var(--text-2); transition: var(--transition);
+  font-weight: 500; border: none;
+}
+.login-tab.on { background: var(--accent); color: #fff; }
+.login-hint { font-size: 13px; color: var(--text-2); margin-bottom: 16px; }
+.login-info {
+  background: var(--bg-card); border-radius: var(--radius-sm);
+  padding: 12px; margin-top: 12px; font-size: 12px; color: var(--text-3);
+}
+
+/* ── Loader ── */
+.loader { display: flex; align-items: center; justify-content: center; padding: 40px; min-height: 100vh; }
+.loader-spin {
+  width: 32px; height: 32px;
+  border: 3px solid rgba(129,140,248,0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Color helpers ── */
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+
+/* ── Print ── */
+@media print {
+  .hdr, .navbar, .fab, .modal-overlay, .viewer, .side-menu { display: none !important; }
+  body { background: #fff !important; color: #000 !important; padding: 10px; }
+}
+
+/* ── Responsive ── */
+@media (min-width: 600px) {
+  .cnt { max-width: 540px; margin: 0 auto; }
+  .rub-grid { grid-template-columns: repeat(3, 1fr); }
+  .photo-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+</style>
 </head>
 <body>
 <div id="app"><div class="loader"><div class="loader-spin"></div></div></div>
@@ -19,6 +609,1429 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
-<script type="module" src="js/app.js"></script>
+<script>
+(function() {
+"use strict";
+
+// ============================================
+// utils.js
+// ============================================
+// ============================================
+// utils.js — Fonctions utilitaires
+// ============================================
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+function genCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c = '';
+  for (let i = 0; i < 6; i++) c += chars[Math.floor(Math.random() * chars.length)];
+  return c;
+}
+
+function fd(d) {
+  return d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '—';
+}
+
+function fm(n) {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n || 0);
+}
+
+function money(v) {
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : n;
+}
+
+function gv(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+// ============================================
+// store.js
+// ============================================
+// ============================================
+// store.js — State & Data Constants
+// ============================================
+
+// ── Rubriques ──
+const RUB = [
+  { id: 'mobilier',     n: 'Mobilier',      i: 'sofa',       emoji: '🪑', c: '#6366f1' },
+  { id: 'accessoires',  n: 'Accessoires',    i: 'masks',      emoji: '🎭', c: '#ec4899' },
+  { id: 'regie',        n: 'Régie',          i: 'building',   emoji: '🏢', c: '#14b8a6' },
+  { id: 'luminaires',   n: 'Luminaires',     i: 'lightbulb',  emoji: '💡', c: '#f59e0b' },
+  { id: 'deco',         n: 'Déco',           i: 'frame',      emoji: '🖼️', c: '#8b5cf6' },
+  { id: 'textiles',     n: 'Textiles',       i: 'scissors',   emoji: '🧵', c: '#ef4444' },
+  { id: 'graphiques',   n: 'Graphiques',     i: 'clipboard',  emoji: '📋', c: '#06b6d4' },
+  { id: 'consommables', n: 'Consommables',   i: 'package',    emoji: '📦', c: '#64748b' },
+];
+
+// ── Statuts éléments ──
+const STAT = [
+  { id: 'a_sourcer',    l: 'À sourcer',   c: '#64748b' },
+  { id: 'en_recherche', l: 'En recherche', c: '#f59e0b' },
+  { id: 'valide',       l: 'Validé',       c: '#3b82f6' },
+  { id: 'reserve',      l: 'Réservé',      c: '#6366f1' },
+  { id: 'loue',         l: 'Loué',         c: '#ec4899' },
+  { id: 'livre',        l: 'Livré',        c: '#14b8a6' },
+  { id: 'installe',     l: 'Installé',     c: '#10b981' },
+  { id: 'restitue',     l: 'Restitué',     c: '#22c55e' },
+];
+
+// ── Statuts décors ──
+const STATD = [
+  { id: 'a_preparer',   l: 'À préparer',   c: '#64748b' },
+  { id: 'en_cours',     l: 'En cours',      c: '#f59e0b' },
+  { id: 'pret',         l: 'Prêt',          c: '#10b981' },
+  { id: 'en_tournage',  l: 'En tournage',   c: '#6366f1' },
+  { id: 'termine',      l: 'Terminé',       c: '#22c55e' },
+];
+
+// ── Types projets ──
+const TPROJ = [
+  { id: 'film',  l: 'Film',  i: '🎬' },
+  { id: 'serie', l: 'Série', i: '📺' },
+  { id: 'pub',   l: 'Pub',   i: '📢' },
+  { id: 'clip',  l: 'Clip',  i: '🎵' },
+  { id: 'autre', l: 'Autre', i: '📁' },
+];
+
+// ── Types dépenses ──
+const TDEP = [
+  { id: 'location',     l: 'Location' },
+  { id: 'achat',        l: 'Achat' },
+  { id: 'transport',    l: 'Transport' },
+  { id: 'fabrication',  l: 'Fabrication' },
+  { id: 'autre',        l: 'Autre' },
+];
+
+// ── Helpers lookup ──
+function gs(id)  { return STAT.find(s => s.id === id) || STAT[0]; }
+function gsd(id) { return STATD.find(s => s.id === id) || STATD[0]; }
+function gr(id)  { return RUB.find(r => r.id === id) || null; }
+function gt(id)  { return TPROJ.find(t => t.id === id) || TPROJ[0]; }
+
+// ── Application State ──
+const state = {
+  CODE: localStorage.getItem('dp_code') || null,
+  D: { projets: [], loueurs: [], depenses: [] },
+  V: 'home',        // current view
+  P: null,           // current project
+  DC: null,          // current decor
+  EL: null,          // current element
+  LO: null,          // current loueur
+  RB: null,          // current rubrique id
+  M: null,           // current modal
+  MN: false,         // menu open
+  TB: 'rub',         // tab in decor view
+  VW: null,          // viewer open
+  VWC: null,         // viewer collection
+  VWI: 0,            // viewer index
+  SQ: '',            // accessoires search
+  GSQ: '',           // global search
+  EDIT: null,        // editing object
+  MORE: false,       // show more fields
+  RTL: 'all',        // rent tab
+  LTAB: 'join',      // login tab
+  ONLINE: navigator.onLine,
+  SYNCING: false,
+  UNSUB: null,
+  PENDING_FILES: [],
+};
+
+function gl(id) {
+  return state.D.loueurs.find(l => l.id === id) || null;
+}
+
+// ── Computed helpers ──
+function isRentedElement(e) {
+  if (!e) return false;
+  return !!(e.loueurId || e.coutLocation || e.coutReel || e.dateDepart || e.dateRetour ||
+    e.statut === 'loue' || e.statut === 'reserve' || e.statut === 'livre' || e.statut === 'restitue');
+}
+
+function getRentItems() {
+  const items = [];
+  for (const p of state.D.projets) {
+    if (!p.decors) continue;
+    for (const d of p.decors) {
+      if (!d.elements) continue;
+      for (const e of d.elements) {
+        if (isRentedElement(e)) items.push({ e, d, p, l: e.loueurId ? gl(e.loueurId) : null });
+      }
+    }
+  }
+  return items;
+}
+
+function getAlerts() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
+  const a = { urgents: [], retards: [], nonPrets: [], aujourdhui: [], demain: [] };
+
+  for (const p of state.D.projets) {
+    if (!p.decors) continue;
+    for (const d of p.decors) {
+      if (!d.elements) continue;
+      for (const e of d.elements) {
+        if (e.urgent) a.urgents.push({ e, d, p });
+        if (e.dateJeu) {
+          const dj = new Date(e.dateJeu); dj.setHours(0, 0, 0, 0);
+          if (dj.getTime() === today.getTime()) a.aujourdhui.push({ e, d, p });
+          else if (dj.getTime() === tomorrow.getTime()) a.demain.push({ e, d, p });
+          if (dj <= tomorrow && e.statut !== 'installe' && e.statut !== 'livre') a.nonPrets.push({ e, d, p });
+        }
+        if (e.dateRetour) {
+          const dr = new Date(e.dateRetour); dr.setHours(0, 0, 0, 0);
+          if (dr < today && e.statut !== 'restitue') a.retards.push({ e, d, p });
+        }
+      }
+    }
+  }
+  return a;
+}
+
+function search(q) {
+  if (!q || q.length < 2) return [];
+  q = q.toLowerCase();
+  const r = [];
+  for (const p of state.D.projets) {
+    if (p.nom.toLowerCase().includes(q)) r.push({ t: 'projet', item: p });
+    if (p.decors) for (const d of p.decors) {
+      if (d.nom.toLowerCase().includes(q)) r.push({ t: 'decor', item: d, p });
+      if (d.elements) for (const e of d.elements) {
+        if (e.nom.toLowerCase().includes(q) || (e.tags && e.tags.toLowerCase().includes(q)))
+          r.push({ t: 'element', item: e, d, p });
+      }
+    }
+  }
+  for (const l of state.D.loueurs) {
+    if (l.nom.toLowerCase().includes(q)) r.push({ t: 'loueur', item: l });
+  }
+  return r.slice(0, 15);
+}
+
+function getDecorPortfolioGroups() {
+  const groups = [];
+  for (const r of RUB) {
+    const arr = [];
+    if (state.DC && state.DC.elements) {
+      for (const e of state.DC.elements) {
+        if (e.rubrique === r.id && e.photos && e.photos.length) {
+          for (const ph of e.photos) arr.push({ data: ph, nom: e.nom, rubrique: r.n });
+        }
+      }
+    }
+    if (arr.length) groups.push({ rubrique: r, photos: arr });
+  }
+  return groups;
+}
+
+
+// ============================================
+// firebase.js
+// ============================================
+// ============================================
+// firebase.js — Firebase Config & Sync
+// ============================================
+
+
+
+// ── Firebase Config — REMPLACEZ PAR VOS VALEURS ──
+const firebaseConfig = {
+  apiKey: "VOTRE_API_KEY",
+  authDomain: "VOTRE_PROJECT.firebaseapp.com",
+  projectId: "VOTRE_PROJECT_ID",
+  storageBucket: "VOTRE_PROJECT.appspot.com",
+  messagingSenderId: "VOTRE_SENDER_ID",
+  appId: "VOTRE_APP_ID"
+};
+
+let HAS_FIREBASE = false;
+let db = null;
+let storage = null;
+
+function hasRealConfig() {
+  return firebaseConfig && firebaseConfig.apiKey &&
+    !firebaseConfig.apiKey.startsWith('VOTRE_') &&
+    firebaseConfig.projectId && !firebaseConfig.projectId.startsWith('VOTRE_');
+}
+
+function initFirebase() {
+  try {
+    if (window.firebase && hasRealConfig()) {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      storage = firebase.storage();
+      HAS_FIREBASE = true;
+      db.enablePersistence().catch(err => console.log('Persistence error:', err));
+    }
+  } catch (err) {
+    console.log('Firebase indisponible, mode local', err);
+    HAS_FIREBASE = false;
+  }
+}
+
+// ── Local storage fallback ──
+function loadLocalData() {
+  try {
+    return JSON.parse(localStorage.getItem('decorpro_local_data') || '{"projets":[],"loueurs":[],"depenses":[]}');
+  } catch {
+    return { projets: [], loueurs: [], depenses: [] };
+  }
+}
+
+function saveLocalData(data) {
+  localStorage.setItem('decorpro_local_data', JSON.stringify(data || state.D || { projets: [], loueurs: [], depenses: [] }));
+}
+
+// ── Firebase sync ──
+function subscribeToProject(code, onUpdate) {
+  if (!HAS_FIREBASE) {
+    state.SYNCING = false;
+    state.D = loadLocalData();
+    state.CODE = code || 'LOCAL';
+    onUpdate();
+    return;
+  }
+
+  if (state.UNSUB) state.UNSUB();
+  state.SYNCING = true;
+  onUpdate();
+
+  state.UNSUB = db.collection('projects').doc(code).onSnapshot(
+    (doc) => {
+      state.SYNCING = false;
+      if (doc.exists) {
+        const data = doc.data();
+        state.D.projets = data.projets || [];
+        state.D.loueurs = data.loueurs || [];
+        state.D.depenses = data.depenses || [];
+
+        // Re-bind references
+        if (state.P) {
+          const pid = state.P.id;
+          state.P = state.D.projets.find(p => p.id === pid) || null;
+        }
+        if (state.DC && state.P && state.P.decors) {
+          const did = state.DC.id;
+          state.DC = state.P.decors.find(d => d.id === did) || null;
+        }
+        if (state.EL && state.DC && state.DC.elements) {
+          const eid = state.EL.id;
+          state.EL = state.DC.elements.find(e => e.id === eid) || null;
+        }
+        onUpdate();
+      }
+    },
+    (err) => {
+      console.error('Firestore error:', err);
+      state.SYNCING = false;
+      onUpdate();
+    }
+  );
+}
+
+function saveToFirebase(onUpdate) {
+  if (!HAS_FIREBASE) { saveLocalData(state.D); state.SYNCING = false; return; }
+  if (!state.CODE) return;
+  state.SYNCING = true;
+  onUpdate();
+
+  db.collection('projects').doc(state.CODE).set({
+    projets: state.D.projets,
+    loueurs: state.D.loueurs,
+    depenses: state.D.depenses,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    state.SYNCING = false;
+    onUpdate();
+  }).catch((err) => {
+    console.error('Save error:', err);
+    state.SYNCING = false;
+    onUpdate();
+  });
+}
+
+function createFirebaseProject(onUpdate) {
+  if (!HAS_FIREBASE) return Promise.resolve();
+  return db.collection('projects').doc(state.CODE).set({
+    projets: [], loueurs: [], depenses: [],
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+function checkProjectExists(code) {
+  if (!HAS_FIREBASE) return Promise.resolve(false);
+  return db.collection('projects').doc(code).get().then(doc => doc.exists);
+}
+
+// ── Photo upload ──
+function uploadPhoto(file, onProgress) {
+  if (!HAS_FIREBASE || !state.CODE) {
+    return fileToDataUrl(file);
+  }
+
+  return new Promise((resolve) => {
+    const path = 'projects/' + state.CODE + '/photos/' + uid() + '_' + file.name;
+    const ref = storage.ref(path);
+    const task = ref.put(file);
+    task.on('state_changed',
+      (snapshot) => {
+        const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        if (onProgress) onProgress(pct);
+      },
+      (err) => { console.error('Upload error:', err); resolve(null); },
+      () => { task.snapshot.ref.getDownloadURL().then(url => resolve(url)); }
+    );
+  });
+}
+
+
+// ============================================
+// ui.js
+// ============================================
+// ============================================
+// ui.js — All rendering functions
+// ============================================
+
+
+
+
+// ── SVG Icon system ──
+const ICONS = {
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+  chevDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
+  chevUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>',
+  chevLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
+  chevRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  film: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>',
+  box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+  store: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18l-2 13H5L3 3z"/><path d="M3 3l-1.5 9h21L21 3"/><path d="M7.5 12v9"/><path d="M16.5 12v9"/><path d="M4.5 21h15"/></svg>',
+  dollar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+  logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+  settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+  duplicate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+};
+
+function icon(name, cls = '') {
+  return `<span class="ico ${cls}">${ICONS[name] || ''}</span>`;
+}
+
+// ── Login Screen ──
+function rLogin() {
+  return `
+  <div class="login-screen">
+    <div class="login-glow"></div>
+    <div class="login-content">
+      <div class="login-brand">
+        <div class="login-logo">${icon('film')}</div>
+        <h1 class="login-title">Décor Pro</h1>
+        <p class="login-sub">Gestion de décors collaborative${HAS_FIREBASE ? '' : ' · mode local'}</p>
+      </div>
+      <div class="login-box">
+        <div class="login-tabs">
+          <button class="login-tab ${state.LTAB === 'join' ? 'on' : ''}" onclick="setLTab('join')">Rejoindre</button>
+          <button class="login-tab ${state.LTAB === 'create' ? 'on' : ''}" onclick="setLTab('create')">Créer</button>
+        </div>
+        ${state.LTAB === 'join' ? `
+          <p class="login-hint">Entrez le code projet partagé par votre équipe</p>
+          <div class="fld"><input id="join-code" class="code-input" placeholder="ABC123" maxlength="6" autocapitalize="characters"></div>
+          <button class="btn primary" onclick="joinProject()">Rejoindre le projet</button>
+        ` : `
+          <p class="login-hint">${HAS_FIREBASE ? 'Créez un nouveau projet et partagez le code' : "Démarrez l'application en local sur cet appareil"}</p>
+          <button class="btn primary" onclick="createProject()">${HAS_FIREBASE ? 'Créer un projet' : 'Ouvrir le mode local'}</button>
+          <div class="login-info">${HAS_FIREBASE ? "Un code unique sera généré. Partagez-le avec vos collaborateurs." : "Vos données seront conservées dans le navigateur."}</div>
+        `}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Header ──
+function rHeader() {
+  const syncClass = HAS_FIREBASE ? (state.SYNCING ? 'syncing' : (state.ONLINE ? 'online' : 'offline')) : 'offline';
+  const syncText = HAS_FIREBASE ? (state.SYNCING ? 'Sync...' : (state.ONLINE ? 'Connecté' : 'Hors-ligne')) : 'Local';
+
+  let h = `<header class="hdr">
+    <div class="hdr-top">
+      <div class="logo">${icon('film')}<span>Décor Pro</span></div>
+      <div class="hdr-right">
+        <div class="sync-badge ${syncClass}"><span class="sync-dot"></span>${syncText}</div>
+        <button class="icon-btn" onclick="menu(true)">${icon('menu')}</button>
+      </div>
+    </div>
+    <div class="search-bar">
+      ${icon('search', 'search-icon')}
+      <input placeholder="Rechercher…" value="${escHtml(state.GSQ)}" oninput="setGSQ(this.value)" onfocus="go('search')">
+    </div>
+  </header>`;
+
+  if (state.V !== 'home' && state.V !== 'search') h += rBread();
+  return h;
+}
+
+// ── Breadcrumb ──
+function rBread() {
+  let h = '<nav class="bread">';
+  h += `<span onclick="go('home')">${icon('home')}</span><i>›</i>`;
+  if (state.P) h += `<span onclick="go('proj','${state.P.id}')" ${state.V === 'proj' ? 'class="current"' : ''}>${escHtml(state.P.nom)}</span>`;
+  if (state.DC) h += `<i>›</i><span onclick="go('dec','${state.DC.id}')" ${state.V === 'dec' ? 'class="current"' : ''}>${escHtml(state.DC.nom)}</span>`;
+  if (state.EL) h += `<i>›</i><span class="current">${escHtml(state.EL.nom)}</span>`;
+  if (state.V === 'lou' || state.V === 'loud') h += '<span class="current">Loueurs</span>';
+  if (state.V === 'rent') h += '<span class="current">Locations</span>';
+  if (state.V === 'dep') h += '<span class="current">Dépenses</span>';
+  if (state.V === 'acc') h += '<span class="current">Accessoires</span>';
+  h += '</nav>';
+  return h;
+}
+
+// ── Navbar ──
+function rNavbar() {
+  const items = [
+    { v: 'home', ico: 'home', label: 'Accueil' },
+    { v: 'acc',  ico: 'box',  label: 'Accessoires' },
+    { v: 'rent', ico: 'box',  label: 'Locations' },
+    { v: 'lou',  ico: 'store', label: 'Loueurs' },
+  ];
+  let h = '<nav class="navbar">';
+  for (const it of items) {
+    const active = (state.V === it.v || (it.v === 'lou' && state.V === 'loud')) ? ' active' : '';
+    h += `<button class="nav-item${active}" onclick="go('${it.v}')">${icon(it.ico, 'nav-icon')}<span class="nav-label">${it.label}</span></button>`;
+  }
+  h += '</nav>';
+  return h;
+}
+
+// ── Home ──
+function rHome() {
+  const D = state.D;
+  let np = D.projets.length, nd = 0, ne = 0, td = 0;
+  for (const p of D.projets) { nd += p.decors ? p.decors.length : 0; if (p.decors) for (const d of p.decors) ne += d.elements ? d.elements.length : 0; }
+  for (const dep of D.depenses) td += parseFloat(dep.montant) || 0;
+  const al = getAlerts();
+
+  let h = `<div class="project-code-card">
+    <div class="pcc-left"><span class="pcc-label">Code projet</span><span class="pcc-code">${state.CODE}</span></div>
+    <button class="btn-ghost" onclick="copyCode()">${icon('copy')} Copier</button>
+  </div>`;
+
+  h += `<div class="stats-row">
+    <div class="stat-card"><strong>${np}</strong><small>Projets</small></div>
+    <div class="stat-card"><strong>${nd}</strong><small>Décors</small></div>
+    <div class="stat-card"><strong>${ne}</strong><small>Éléments</small></div>
+    <div class="stat-card"><strong>${fm(td).replace('€', '').trim()}</strong><small>Budget</small></div>
+  </div>`;
+
+  if (al.urgents.length || al.retards.length || al.nonPrets.length || al.aujourdhui.length || al.demain.length) {
+    h += '<div class="alerts-row">';
+    if (al.urgents.length) h += `<button class="alert-chip danger" onclick="go('acc')">${icon('alert')} ${al.urgents.length} urgent</button>`;
+    if (al.retards.length) h += `<button class="alert-chip danger" onclick="go('acc')">${icon('zap')} ${al.retards.length} retard</button>`;
+    if (al.nonPrets.length) h += `<button class="alert-chip warn" onclick="go('acc')">${icon('box')} ${al.nonPrets.length} non prêts</button>`;
+    if (al.aujourdhui.length) h += `<button class="alert-chip info" onclick="go('acc')">${icon('film')} ${al.aujourdhui.length} aujourd'hui</button>`;
+    if (al.demain.length) h += `<button class="alert-chip cool" onclick="go('acc')">📅 ${al.demain.length} demain</button>`;
+    h += '</div>';
+  }
+
+  h += `<div class="section-head"><span>Mes projets</span><button class="btn-text" onclick="modal('np')">${icon('plus')} Nouveau</button></div>`;
+
+  if (!D.projets.length) {
+    h += `<div class="empty-state">${icon('film', 'empty-icon')}<p>Aucun projet</p><small>Créez votre premier projet</small></div>`;
+  } else {
+    for (let i = 0; i < D.projets.length; i++) {
+      const p = D.projets[i], t = gt(p.type), ndc = p.decors ? p.decors.length : 0;
+      h += `<div class="card" onclick="go('proj','${p.id}')">
+        <div class="card-avatar">${t.i}</div>
+        <div class="card-body"><h3>${escHtml(p.nom)}</h3><p>${ndc} décors${p.production ? ' · ' + escHtml(p.production) : ''}</p></div>
+        <button class="icon-btn sm" onclick="event.stopPropagation();edit('projet',window._store.D.projets[${i}])">${icon('edit')}</button>
+      </div>`;
+    }
+  }
+
+  h += `<button class="fab" onclick="modal('np')">${icon('plus')}</button>`;
+  return h;
+}
+
+// ── Project view ──
+function rProj() {
+  if (!state.P) return '';
+  const P = state.P, t = gt(P.type), nd = P.decors ? P.decors.length : 0;
+  let td = 0;
+  for (const dep of state.D.depenses) if (dep.projetId === P.id) td += parseFloat(dep.montant) || 0;
+
+  let h = `<div class="page-head">
+    <div class="page-head-icon">${t.i}</div>
+    <div><h1 class="page-title">${escHtml(P.nom)}</h1><p class="page-sub">${escHtml(P.production || t.l)} · ${nd} décors</p></div>
+  </div>`;
+
+  if (td > 0) h += `<div class="total-card"><span>Budget projet</span><strong>${fm(td)}</strong></div>`;
+
+  h += `<div class="actions-row">
+    <button class="btn primary sm" onclick="modal('nd')">${icon('plus')} Décor</button>
+    <button class="btn ghost sm" onclick="edit('projet',window._store.P)">${icon('edit')} Modifier</button>
+    <button class="btn danger-ghost sm" onclick="delP()">${icon('trash')}</button>
+  </div>`;
+
+  h += '<div class="section-head"><span>Décors</span></div>';
+  if (!P.decors || !P.decors.length) {
+    h += `<div class="empty-state">${icon('film', 'empty-icon')}<p>Aucun décor</p></div>`;
+  } else {
+    for (let i = 0; i < P.decors.length; i++) {
+      const d = P.decors[i], st = gsd(d.statut), nel = d.elements ? d.elements.length : 0;
+      h += `<div class="card" onclick="go('dec','${d.id}')">
+        <div class="card-avatar">${d.interieur ? '🏠' : '🌳'}</div>
+        <div class="card-body"><h3>${escHtml(d.nom)}</h3><p><span class="badge" style="--bc:${st.c}">${st.l}</span> ${nel} él.</p></div>
+        <button class="icon-btn sm" onclick="event.stopPropagation();window._store.DC=window._store.P.decors[${i}];edit('decor',window._store.DC)">${icon('edit')}</button>
+      </div>`;
+    }
+  }
+  h += `<button class="fab" onclick="modal('nd')">${icon('plus')}</button>`;
+  return h;
+}
+
+// ── Decor view ──
+function rDec() {
+  if (!state.DC) return '';
+  const DC = state.DC, st = gsd(DC.statut);
+
+  let h = `<div class="page-head">
+    <h1 class="page-title">${escHtml(DC.nom)}</h1>
+    <p class="page-sub"><span class="badge" style="--bc:${st.c}">${st.l}</span>${DC.adresse ? ' · 📍 ' + escHtml(DC.adresse) : ''}</p>
+  </div>`;
+
+  h += `<div class="tabs-bar">
+    <button class="tab ${state.TB === 'rub' ? 'on' : ''}" onclick="setTab('rub')">Rubriques</button>
+    <button class="tab ${state.TB === 'portfolio' ? 'on' : ''}" onclick="setTab('portfolio')">Portfolio</button>
+    <button class="tab ${state.TB === 'info' ? 'on' : ''}" onclick="setTab('info')">Infos</button>
+  </div>`;
+
+  if (state.TB === 'rub') {
+    h += '<div class="rub-grid">';
+    for (const r of RUB) {
+      let cnt = 0, urg = 0, phs = 0;
+      if (DC.elements) for (const e of DC.elements) {
+        if (e.rubrique === r.id) { cnt++; if (e.urgent) urg++; if (e.photos) phs += e.photos.length; }
+      }
+      h += `<div class="rub-card ${urg ? 'urgent' : ''}" onclick="modal('rub','${r.id}')" style="--rc:${r.c}">
+        <div class="rub-icon">${r.emoji}</div>
+        <h4>${r.n}</h4><p>${cnt} él.${phs ? ' · ' + phs + ' 📷' : ''}</p>
+        ${cnt ? `<span class="rub-count">${cnt}</span>` : ''}
+      </div>`;
+    }
+    h += '</div>';
+  } else if (state.TB === 'portfolio') {
+    const groups = getDecorPortfolioGroups();
+    if (!groups.length) {
+      h += `<div class="empty-state">${icon('image', 'empty-icon')}<p>Aucune photo</p><small>Ajoutez des photos aux éléments</small></div>`;
+    } else {
+      for (const group of groups) {
+        const rb = group.rubrique;
+        h += `<div class="section-head"><span>${rb.emoji} ${rb.n}</span><small>${group.photos.length} photo(s)</small></div>`;
+        h += '<div class="photo-grid">';
+        for (let p = 0; p < group.photos.length; p++) {
+          h += `<div class="photo-grid-item" onclick="openPortfolioGroup('${rb.id}',${p})">
+            <img src="${group.photos[p].data}" loading="lazy">
+            <span class="photo-grid-label">${escHtml(group.photos[p].nom)}</span>
+          </div>`;
+        }
+        h += '</div>';
+      }
+    }
+  } else if (state.TB === 'info') {
+    h += '<div class="info-box">';
+    h += `<div class="info-row"><span>Type</span><span>${DC.interieur ? 'Intérieur' : 'Extérieur'} · ${DC.studio ? 'Studio' : 'Naturel'}</span></div>`;
+    if (DC.dateInstallation) h += `<div class="info-row"><span>Installation</span><span>${fd(DC.dateInstallation)}</span></div>`;
+    if (DC.dateTournage) h += `<div class="info-row"><span>Tournage</span><span>${fd(DC.dateTournage)}</span></div>`;
+    if (DC.elements) h += `<div class="info-row"><span>Éléments</span><span>${DC.elements.length}</span></div>`;
+    if (DC.notes) h += `<div class="info-row"><span>Notes</span><span>${escHtml(DC.notes)}</span></div>`;
+    h += '</div>';
+    h += `<div class="actions-row">
+      <button class="btn primary sm" onclick="edit('decor',window._store.DC)">${icon('edit')} Modifier</button>
+      <button class="btn danger-ghost sm" onclick="delD()">${icon('trash')} Supprimer</button>
+    </div>`;
+  }
+
+  h += `<button class="fab" onclick="modal('ne')">${icon('plus')}</button>`;
+  return h;
+}
+
+// ── Element view ──
+function rEl() {
+  if (!state.EL) return '';
+  const EL = state.EL, st = gs(EL.statut), rb = gr(EL.rubrique);
+
+  let h = '';
+  if (EL.photos && EL.photos.length) {
+    h += `<div class="photo-hero" onclick="openPh(window._store.EL.photos.map(p=>({data:p})),0)"><img src="${EL.photos[0]}" loading="lazy"></div>`;
+    h += '<div class="photo-strip">';
+    for (let i = 0; i < EL.photos.length; i++)
+      h += `<div class="photo-thumb ${i === 0 ? 'active' : ''}" onclick="openPh(window._store.EL.photos.map(p=>({data:p})),${i})"><img src="${EL.photos[i]}" loading="lazy"></div>`;
+    h += `<button class="photo-thumb photo-add" onclick="addPh()">${icon('plus')}</button></div>`;
+  } else {
+    h += `<div class="photo-hero empty" onclick="addPh()">${icon('camera', 'hero-cam-icon')}<span>Ajouter photos</span></div>`;
+  }
+
+  h += `<h1 class="page-title">${escHtml(EL.nom)}${EL.urgent ? ' <span class="urgent-dot"></span>' : ''}</h1>`;
+  h += '<div class="chips">';
+  if (rb) h += `<span class="chip" style="--cc:${rb.c}">${rb.emoji} ${rb.n}</span>`;
+  if (EL.scene) h += `<span class="chip">🎬 Sc.${escHtml(EL.scene)}</span>`;
+  if (EL.role) h += `<span class="chip" style="--cc:#ec4899">👤 ${escHtml(EL.role)}</span>`;
+  if (EL.dateJeu) h += `<span class="chip">📅 ${fd(EL.dateJeu)}</span>`;
+  h += '</div>';
+
+  h += `<div class="actions-row">
+    <button class="btn primary sm" onclick="edit('element',window._store.EL)">${icon('edit')} Modifier</button>
+    <button class="btn ${EL.urgent ? 'danger-ghost' : 'ghost'} sm" onclick="toggleUrg()">${icon('zap')} Urgent</button>
+    <button class="btn ghost sm" onclick="dupEl()">${icon('duplicate')}</button>
+    <button class="btn danger-ghost sm" onclick="delE()">${icon('trash')}</button>
+  </div>`;
+
+  h += `<div class="fld"><label>Statut</label><select onchange="setStat(this.value)" class="select-status" style="--sc:${st.c}">`;
+  for (const s of STAT) h += `<option value="${s.id}" ${s.id === EL.statut ? 'selected' : ''}>${s.l}</option>`;
+  h += '</select></div>';
+
+  h += '<div class="info-box">';
+  if (EL.description) h += `<p class="el-desc">${escHtml(EL.description)}</p>`;
+  if (EL.dimensions) h += `<div class="info-row"><span>Dimensions</span><span>${escHtml(EL.dimensions)}</span></div>`;
+  if (EL.couleur) h += `<div class="info-row"><span>Couleur</span><span>${escHtml(EL.couleur)}</span></div>`;
+  if (EL.matiere) h += `<div class="info-row"><span>Matière</span><span>${escHtml(EL.matiere)}</span></div>`;
+  if (EL.quantite && EL.quantite > 1) h += `<div class="info-row"><span>Quantité</span><span>${EL.quantite}</span></div>`;
+  h += '</div>';
+
+  const lo = EL.loueurId ? gl(EL.loueurId) : null;
+  if (lo) {
+    h += `<div class="supplier-card">
+      ${icon('store', 'supplier-icon')}
+      <div><strong>${escHtml(lo.nom)}</strong>
+      ${lo.telephone ? `<br><a href="tel:${lo.telephone}" class="supplier-phone">${icon('phone')} ${escHtml(lo.telephone)}</a>` : ''}
+      </div>
+    </div>`;
+  }
+
+  if (EL.coutLocation || EL.coutReel || EL.dateDepart || EL.dateRetour) {
+    h += `<div class="info-box accent"><div class="info-box-title">${icon('box')} Location</div>`;
+    if (EL.dateDepart) h += `<div class="info-row"><span>Départ</span><span>${fd(EL.dateDepart)}</span></div>`;
+    if (EL.dateRetour) h += `<div class="info-row"><span>Retour</span><span>${fd(EL.dateRetour)}</span></div>`;
+    if (EL.coutLocation) h += `<div class="info-row"><span>Estimé</span><span>${fm(EL.coutLocation)}</span></div>`;
+    if (EL.coutReel) h += `<div class="info-row"><span>Réel</span><span class="text-success">${fm(EL.coutReel)}</span></div>`;
+    h += '</div>';
+  }
+  return h;
+}
+
+// ── Loueurs list ──
+function rLou() {
+  const D = state.D;
+  let h = `<div class="page-head"><h1 class="page-title">${icon('store')} Loueurs</h1><p class="page-sub">${D.loueurs.length} contacts</p></div>`;
+  if (!D.loueurs.length) {
+    h += `<div class="empty-state">${icon('store', 'empty-icon')}<p>Aucun loueur</p></div>`;
+  } else {
+    for (let i = 0; i < D.loueurs.length; i++) {
+      const l = D.loueurs[i];
+      h += `<div class="card" onclick="go('loud','${l.id}')">
+        <div class="card-avatar">🏪</div>
+        <div class="card-body"><h3>${escHtml(l.nom)}</h3><p>${escHtml(l.specialite || 'Loueur')}</p></div>
+        <div class="card-actions">
+          ${l.telephone ? `<a href="tel:${l.telephone}" class="icon-btn sm success" onclick="event.stopPropagation()">${icon('phone')}</a>` : ''}
+          <button class="icon-btn sm" onclick="event.stopPropagation();edit('loueur',window._store.D.loueurs[${i}])">${icon('edit')}</button>
+        </div>
+      </div>`;
+    }
+  }
+  h += `<button class="fab" onclick="modal('nl')">${icon('plus')}</button>`;
+  return h;
+}
+
+// ── Loueur detail ──
+function rLouD() {
+  if (!state.LO) return '';
+  const LO = state.LO;
+  const rented = getRentItems().filter(x => x.l && x.l.id === LO.id);
+
+  let h = `<div class="page-head"><h1 class="page-title">${icon('store')} ${escHtml(LO.nom)}</h1>`;
+  if (LO.specialite) h += `<p class="page-sub">${escHtml(LO.specialite)}</p>`;
+  h += '</div>';
+
+  h += '<div class="actions-row">';
+  if (LO.telephone) h += `<a href="tel:${LO.telephone}" class="btn primary sm" style="text-decoration:none">${icon('phone')} Appeler</a>`;
+  if (LO.email) h += `<a href="mailto:${LO.email}" class="btn ghost sm" style="text-decoration:none">${icon('mail')} Email</a>`;
+  h += `<button class="btn ghost sm" onclick="edit('loueur',window._store.LO)">${icon('edit')}</button></div>`;
+
+  h += '<div class="info-box">';
+  if (LO.contact) h += `<div class="info-row"><span>Contact</span><span>${escHtml(LO.contact)}</span></div>`;
+  if (LO.telephone) h += `<div class="info-row"><span>Téléphone</span><span>${escHtml(LO.telephone)}</span></div>`;
+  if (LO.adresse) h += `<div class="info-row"><span>Adresse</span><span>${escHtml(LO.adresse)}</span></div>`;
+  if (LO.notes) h += `<div class="info-row"><span>Notes</span><span>${escHtml(LO.notes)}</span></div>`;
+  h += '</div>';
+
+  h += `<div class="section-head"><span>Objets loués</span><button class="btn-text" onclick="go('rent')">Voir tout</button></div>`;
+  if (!rented.length) {
+    h += `<div class="empty-state sm">${icon('box', 'empty-icon')}<p>Aucun objet lié</p></div>`;
+  } else {
+    for (const x of rented) {
+      h += `<div class="list-item" onclick="goTo('${x.p.id}','${x.d.id}','${x.e.id}')">
+        <div><h4>${escHtml(x.e.nom)}</h4><p>${escHtml(x.p.nom)} · ${escHtml(x.d.nom)}</p></div>
+        <strong>${money(x.e.coutReel || x.e.coutLocation) ? fm(x.e.coutReel || x.e.coutLocation) : '—'}</strong>
+      </div>`;
+    }
+  }
+  h += `<button class="btn danger-ghost" style="width:100%;margin-top:16px" onclick="delL()">${icon('trash')} Supprimer</button>`;
+  return h;
+}
+
+// ── Rent view ──
+function rRent() {
+  const items = getRentItems();
+  let h = `<div class="page-head"><h1 class="page-title">${icon('box')} Locations</h1><p class="page-sub">${items.length} objet(s)</p></div>`;
+
+  h += `<div class="tabs-bar">
+    <button class="tab ${state.RTL === 'all' ? 'on' : ''}" onclick="setRentTab('all')">Tous</button>
+    <button class="tab ${state.RTL === 'decor' ? 'on' : ''}" onclick="setRentTab('decor')">Par décor</button>
+    <button class="tab ${state.RTL === 'loueur' ? 'on' : ''}" onclick="setRentTab('loueur')">Par loueur</button>
+  </div>`;
+
+  if (!items.length) {
+    h += `<div class="empty-state">${icon('box', 'empty-icon')}<p>Aucun objet loué</p><small>Renseignez un loueur ou des dates dans les fiches</small></div>`;
+    return h;
+  }
+
+  if (state.RTL === 'all') {
+    items.sort((a, b) => money(b.e.coutReel || b.e.coutLocation) - money(a.e.coutReel || a.e.coutLocation));
+    for (const x of items) {
+      const st = gs(x.e.statut);
+      h += `<div class="card" onclick="goTo('${x.p.id}','${x.d.id}','${x.e.id}')">
+        ${x.e.photos && x.e.photos.length ? `<img class="card-thumb" src="${x.e.photos[0]}" loading="lazy">` : `<div class="card-avatar">📦</div>`}
+        <div class="card-body"><h3>${escHtml(x.e.nom)}</h3><p>${escHtml(x.d.nom)} · ${x.l ? escHtml(x.l.nom) : 'Sans loueur'}${x.e.dateRetour ? ' · retour ' + fd(x.e.dateRetour) : ''}</p></div>
+        <span class="badge" style="--bc:${st.c}">${st.l}</span>
+      </div>`;
+    }
+  } else if (state.RTL === 'decor') {
+    const map = {};
+    for (const x of items) { const key = x.p.id + '__' + x.d.id; if (!map[key]) map[key] = { title: x.p.nom + ' · ' + x.d.nom, items: [] }; map[key].items.push(x); }
+    for (const key in map) {
+      h += `<div class="section-head"><span>${escHtml(map[key].title)}</span><small>${map[key].items.length}</small></div>`;
+      for (const x of map[key].items) {
+        h += `<div class="list-item" onclick="goTo('${x.p.id}','${x.d.id}','${x.e.id}')"><div><h4>${escHtml(x.e.nom)}</h4><p>${x.l ? escHtml(x.l.nom) : 'Sans loueur'}${x.e.dateDepart ? ' · départ ' + fd(x.e.dateDepart) : ''}</p></div><strong>${money(x.e.coutReel || x.e.coutLocation) ? fm(x.e.coutReel || x.e.coutLocation) : '—'}</strong></div>`;
+      }
+    }
+  } else {
+    const map2 = {};
+    for (const x of items) { const key = x.l ? x.l.id : 'none'; if (!map2[key]) map2[key] = { title: x.l ? x.l.nom : 'Sans loueur', items: [], l: x.l }; map2[key].items.push(x); }
+    for (const key in map2) {
+      h += `<div class="section-head"><span>${escHtml(map2[key].title)}</span><small>${map2[key].items.length}</small></div>`;
+      if (map2[key].l) h += `<button class="btn ghost sm" style="margin-bottom:8px" onclick="go('loud','${map2[key].l.id}')">${icon('store')} Fiche loueur</button>`;
+      for (const x of map2[key].items) {
+        h += `<div class="list-item" onclick="goTo('${x.p.id}','${x.d.id}','${x.e.id}')"><div><h4>${escHtml(x.e.nom)}</h4><p>${escHtml(x.p.nom)} · ${escHtml(x.d.nom)}</p></div><strong>${money(x.e.coutReel || x.e.coutLocation) ? fm(x.e.coutReel || x.e.coutLocation) : '—'}</strong></div>`;
+      }
+    }
+  }
+  return h;
+}
+
+// ── Depenses ──
+function rDep() {
+  let deps = state.D.depenses.slice();
+  if (state.P) deps = deps.filter(d => d.projetId === state.P.id);
+  deps.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+  let total = 0, estim = 0;
+  for (const d of deps) { total += parseFloat(d.montant) || 0; estim += parseFloat(d.estime) || 0; }
+
+  let h = `<div class="page-head"><h1 class="page-title">${icon('dollar')} ${state.P ? 'Budget ' + escHtml(state.P.nom) : 'Dépenses'}</h1><p class="page-sub">${deps.length} dépenses</p></div>`;
+  h += `<div class="total-card"><span>Total</span><strong>${fm(total)}</strong></div>`;
+  if (estim > 0) {
+    const diff = total - estim;
+    h += `<div class="info-box" style="display:flex;justify-content:space-between"><span>Estimé: ${fm(estim)}</span><span class="${diff > 0 ? 'text-danger' : 'text-success'}">Écart: ${fm(diff)}</span></div>`;
+  }
+
+  if (!deps.length) {
+    h += `<div class="empty-state">${icon('dollar', 'empty-icon')}<p>Aucune dépense</p></div>`;
+  } else {
+    for (const d of deps) {
+      h += `<div class="list-item" onclick="editDep('${d.id}')"><div><h4>${escHtml(d.description || 'Dépense')}</h4><p>${fd(d.date)}${d.fournisseur ? ' · ' + escHtml(d.fournisseur) : ''}</p></div><strong class="text-success">${fm(d.montant)}</strong></div>`;
+    }
+  }
+  h += `<button class="fab" onclick="modal('ndep')">${icon('plus')}</button>`;
+  return h;
+}
+
+// ── Accessoires ──
+function rAcc() {
+  let items = [];
+  for (const p of state.D.projets) {
+    if (!p.decors) continue;
+    for (const d of p.decors) {
+      if (!d.elements) continue;
+      for (const e of d.elements) {
+        if (e.rubrique === 'accessoires') items.push({ e, d, p });
+      }
+    }
+  }
+  if (state.SQ) { const q = state.SQ.toLowerCase(); items = items.filter(x => x.e.nom.toLowerCase().includes(q) || (x.e.role && x.e.role.toLowerCase().includes(q))); }
+
+  let h = `<div class="page-head"><h1 class="page-title">${icon('box')} Accessoires de jeu</h1><p class="page-sub">${items.length} accessoires</p></div>`;
+  h += `<div class="search-bar compact">${icon('search', 'search-icon')}<input placeholder="Rechercher…" value="${escHtml(state.SQ)}" oninput="setSQ(this.value)"></div>`;
+
+  if (!items.length) {
+    h += `<div class="empty-state">${icon('box', 'empty-icon')}<p>Aucun accessoire</p></div>`;
+  } else {
+    for (const x of items) {
+      const st = gs(x.e.statut);
+      h += `<div class="card ${x.e.urgent ? 'urgent' : ''}" onclick="goTo('${x.p.id}','${x.d.id}','${x.e.id}')">
+        ${x.e.photos && x.e.photos.length ? `<img class="card-thumb" src="${x.e.photos[0]}" loading="lazy">` : `<div class="card-avatar">🎭</div>`}
+        <div class="card-body"><h3>${escHtml(x.e.nom)}${x.e.urgent ? ' <span class="urgent-dot"></span>' : ''}</h3><p>${x.e.role ? '👤 ' + escHtml(x.e.role) + ' · ' : ''}${x.e.dateJeu ? '📅 ' + fd(x.e.dateJeu) : ''}</p></div>
+        <span class="badge" style="--bc:${st.c}">${st.l}</span>
+      </div>`;
+    }
+  }
+  return h;
+}
+
+// ── Search ──
+function rSearch() {
+  const results = search(state.GSQ);
+  let h = '<div class="page-head"><h1 class="page-title">Recherche</h1></div>';
+  if (!state.GSQ || state.GSQ.length < 2) {
+    h += `<div class="empty-state">${icon('search', 'empty-icon')}<p>Tapez au moins 2 caractères</p></div>`;
+  } else if (!results.length) {
+    h += `<div class="empty-state">${icon('search', 'empty-icon')}<p>Aucun résultat pour "${escHtml(state.GSQ)}"</p></div>`;
+  } else {
+    h += `<p class="page-sub">${results.length} résultat(s)</p>`;
+    for (const r of results) {
+      if (r.t === 'projet') h += `<div class="card" onclick="go('proj','${r.item.id}')"><div class="card-avatar">📁</div><div class="card-body"><h3>${escHtml(r.item.nom)}</h3><p>Projet</p></div></div>`;
+      else if (r.t === 'decor') h += `<div class="card" onclick="goTo('${r.p.id}','${r.item.id}')"><div class="card-avatar">🎭</div><div class="card-body"><h3>${escHtml(r.item.nom)}</h3><p>Décor · ${escHtml(r.p.nom)}</p></div></div>`;
+      else if (r.t === 'element') h += `<div class="card" onclick="goTo('${r.p.id}','${r.d.id}','${r.item.id}')">
+        ${r.item.photos && r.item.photos.length ? `<img class="card-thumb" src="${r.item.photos[0]}" loading="lazy">` : '<div class="card-avatar">📦</div>'}
+        <div class="card-body"><h3>${escHtml(r.item.nom)}</h3><p>${escHtml(r.d.nom)} · ${escHtml(r.p.nom)}</p></div></div>`;
+      else if (r.t === 'loueur') h += `<div class="card" onclick="go('loud','${r.item.id}')"><div class="card-avatar">🏪</div><div class="card-body"><h3>${escHtml(r.item.nom)}</h3><p>Loueur</p></div></div>`;
+    }
+  }
+  return h;
+}
+
+// ── Viewer ──
+function rViewer() {
+  if (!state.VWC || !state.VWC.length) return '';
+  const ph = state.VWC[state.VWI];
+  return `<div class="viewer">
+    <div class="viewer-hdr">
+      <button class="icon-btn light" onclick="closePh()">${icon('x')}</button>
+      <span class="viewer-count">${state.VWI + 1} / ${state.VWC.length}</span>
+      <button class="icon-btn light danger" onclick="delPh()">${icon('trash')}</button>
+    </div>
+    ${state.VWC.length > 1 ? `<button class="viewer-nav l" onclick="navPh(-1)">${icon('chevLeft')}</button><button class="viewer-nav r" onclick="navPh(1)">${icon('chevRight')}</button>` : ''}
+    <div class="viewer-body"><img src="${ph.data || ph}"></div>
+    ${ph.nom ? `<div class="viewer-ftr">${escHtml(ph.nom)}</div>` : ''}
+  </div>`;
+}
+
+// ── Menu ──
+function rMenu() {
+  return `<div class="side-menu">
+    <div class="menu-bg" onclick="menu(false)"></div>
+    <div class="menu-panel">
+      <div class="menu-head">
+        <span class="menu-title">${icon('settings')} Menu</span>
+        <button class="icon-btn" onclick="menu(false)">${icon('x')}</button>
+      </div>
+      <div class="menu-code-box"><small>Code projet</small><strong>${state.CODE}</strong></div>
+      <nav class="menu-nav">
+        <button onclick="go('home');menu(false)">${icon('home')} Accueil</button>
+        <button onclick="go('acc');menu(false)">${icon('box')} Accessoires</button>
+        <button onclick="go('rent');menu(false)">${icon('box')} Locations</button>
+        <button onclick="go('dep');menu(false)">${icon('dollar')} Dépenses</button>
+        <button onclick="go('lou');menu(false)">${icon('store')} Loueurs</button>
+      </nav>
+      <div class="menu-divider"></div>
+      <button class="menu-danger" onclick="leaveProject()">${icon('logout')} Quitter le projet</button>
+      <div class="menu-footer"><p>Décor Pro v9.0</p><p>${state.D.projets.length} projets</p></div>
+    </div>
+  </div>`;
+}
+
+// ── Modal ──
+function rModal() {
+  let c = '';
+  const M = state.M, EDIT = state.EDIT, MORE = state.MORE;
+
+  if (M === 'np') {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">${icon('film')} Nouveau projet</h2>`;
+    c += `<div class="fld"><label>Nom du projet *</label><input id="f1" placeholder="Ex: Mon Film"></div>`;
+    c += '<div class="fld"><label>Type</label><select id="f2">';
+    for (const t of TPROJ) c += `<option value="${t.id}">${t.i} ${t.l}</option>`;
+    c += '</select></div>';
+    c += `<button class="toggle-more" onclick="toggleMore()">${icon(MORE ? 'chevUp' : 'chevDown')} ${MORE ? 'Moins' : "Plus d'options"}</button>`;
+    c += `<div class="form-extra ${MORE ? '' : 'hidden'}">
+      <div class="fld"><label>Production</label><input id="f3"></div>
+      <div class="fld-row"><div class="fld"><label>Réalisateur</label><input id="f4"></div><div class="fld"><label>Chef déco</label><input id="f5"></div></div>
+      <div class="fld"><label>Notes</label><textarea id="f6"></textarea></div>
+    </div>`;
+    c += `<button class="btn primary" onclick="saveP()">Créer</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'edit_projet' && EDIT) {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">${icon('edit')} Modifier projet</h2>`;
+    c += `<div class="fld"><label>Nom *</label><input id="f1" value="${escHtml(EDIT.nom)}"></div>`;
+    c += '<div class="fld"><label>Type</label><select id="f2">';
+    for (const t of TPROJ) c += `<option value="${t.id}" ${t.id === EDIT.type ? 'selected' : ''}>${t.i} ${t.l}</option>`;
+    c += '</select></div>';
+    c += `<div class="fld"><label>Production</label><input id="f3" value="${escHtml(EDIT.production || '')}"></div>`;
+    c += `<div class="fld-row"><div class="fld"><label>Réalisateur</label><input id="f4" value="${escHtml(EDIT.realisateur || '')}"></div><div class="fld"><label>Chef déco</label><input id="f5" value="${escHtml(EDIT.chefDeco || '')}"></div></div>`;
+    c += `<div class="fld"><label>Notes</label><textarea id="f6">${escHtml(EDIT.notes || '')}</textarea></div>`;
+    c += `<button class="btn primary" onclick="updateP()">Enregistrer</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'nd') {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">🎭 Nouveau décor</h2>`;
+    c += `<div class="fld"><label>Nom *</label><input id="f1" placeholder="Ex: Appartement Marie"></div>`;
+    c += `<div class="fld-row"><div class="fld"><label>Type</label><select id="f3"><option value="1">🏠 Int.</option><option value="0">🌳 Ext.</option></select></div><div class="fld"><label>Nature</label><select id="f4"><option value="0">Naturel</option><option value="1">Studio</option></select></div></div>`;
+    c += `<button class="toggle-more" onclick="toggleMore()">${icon(MORE ? 'chevUp' : 'chevDown')} ${MORE ? 'Moins' : 'Plus'}</button>`;
+    c += `<div class="form-extra ${MORE ? '' : 'hidden'}">
+      <div class="fld"><label>Adresse</label><input id="f2"></div>
+      <div class="fld"><label>Statut</label><select id="f5">`;
+    for (const s of STATD) c += `<option value="${s.id}">${s.l}</option>`;
+    c += `</select></div>
+      <div class="fld-row"><div class="fld"><label>Installation</label><input type="date" id="f6"></div><div class="fld"><label>Tournage</label><input type="date" id="f7"></div></div>
+      <div class="fld"><label>Notes</label><textarea id="f8"></textarea></div>
+    </div>`;
+    c += `<button class="btn primary" onclick="saveDC()">Créer</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'edit_decor' && EDIT) {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">${icon('edit')} Modifier décor</h2>`;
+    c += `<div class="fld"><label>Nom *</label><input id="f1" value="${escHtml(EDIT.nom)}"></div>`;
+    c += `<div class="fld"><label>Adresse</label><input id="f2" value="${escHtml(EDIT.adresse || '')}"></div>`;
+    c += `<div class="fld-row"><div class="fld"><label>Type</label><select id="f3"><option value="1" ${EDIT.interieur ? 'selected' : ''}>🏠 Int.</option><option value="0" ${!EDIT.interieur ? 'selected' : ''}>🌳 Ext.</option></select></div><div class="fld"><label>Nature</label><select id="f4"><option value="0" ${!EDIT.studio ? 'selected' : ''}>Naturel</option><option value="1" ${EDIT.studio ? 'selected' : ''}>Studio</option></select></div></div>`;
+    c += '<div class="fld"><label>Statut</label><select id="f5">';
+    for (const s of STATD) c += `<option value="${s.id}" ${s.id === EDIT.statut ? 'selected' : ''}>${s.l}</option>`;
+    c += '</select></div>';
+    c += `<div class="fld-row"><div class="fld"><label>Installation</label><input type="date" id="f6" value="${EDIT.dateInstallation || ''}"></div><div class="fld"><label>Tournage</label><input type="date" id="f7" value="${EDIT.dateTournage || ''}"></div></div>`;
+    c += `<div class="fld"><label>Notes</label><textarea id="f8">${escHtml(EDIT.notes || '')}</textarea></div>`;
+    c += `<button class="btn primary" onclick="updateDC()">Enregistrer</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'ne') {
+    const rb = state.RB ? gr(state.RB) : null;
+    c = `<div class="modal-bar"></div><h2 class="modal-title">📦 Nouvel élément</h2>`;
+    c += `<div class="drop-zone" onclick="document.getElementById('phi').click()"><div id="phpr"></div><div id="phpl">${icon('camera')} Ajouter photos</div><input type="file" accept="image/*" multiple id="phi" style="display:none" onchange="prvPh(event)"></div>`;
+    c += '<div id="upload-status"></div>';
+    c += `<div class="fld"><label>Nom *</label><input id="f1" placeholder="Ex: Vase bleu"></div>`;
+    c += '<div class="fld-row"><div class="fld"><label>Rubrique</label><select id="f2">';
+    for (const r of RUB) c += `<option value="${r.id}" ${rb && rb.id === r.id ? 'selected' : ''}>${r.emoji} ${r.n}</option>`;
+    c += '</select></div><div class="fld"><label>Statut</label><select id="f3">';
+    for (const s of STAT) c += `<option value="${s.id}">${s.l}</option>`;
+    c += '</select></div></div>';
+    c += `<button class="toggle-more" onclick="toggleMore()">${icon(MORE ? 'chevUp' : 'chevDown')} ${MORE ? 'Moins' : "Plus d'options"}</button>`;
+    c += `<div class="form-extra ${MORE ? '' : 'hidden'}">
+      <div class="fld"><label>Description</label><textarea id="f4"></textarea></div>
+      <div class="fld-row"><div class="fld"><label>Dimensions</label><input id="f5"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="1"></div></div>
+      <div class="fld-row"><div class="fld"><label>Couleur</label><input id="f7"></div><div class="fld"><label>Matière</label><input id="f8"></div></div>
+      <div class="fld"><label>Tags</label><input id="f9" placeholder="vintage, bois..."></div>
+      <div class="accessoire-section"><div class="accessoire-title">🎭 Accessoire</div>
+        <div class="fld-row"><div class="fld"><label>Scène</label><input id="f10"></div><div class="fld"><label>Personnage</label><input id="f11"></div></div>
+        <div class="fld"><label>Date jeu</label><input type="date" id="f12"></div>
+        <div class="fld"><label>Continuité</label><input id="f13"></div>
+      </div>`;
+    if (state.D.loueurs.length) {
+      c += '<div class="fld"><label>Loueur</label><select id="f14"><option value="">Aucun</option>';
+      for (const l of state.D.loueurs) c += `<option value="${l.id}">${escHtml(l.nom)}</option>`;
+      c += '</select></div>';
+    }
+    c += `<div class="fld-row"><div class="fld"><label>Estimé €</label><input type="number" id="f15"></div><div class="fld"><label>Réel €</label><input type="number" id="f16"></div></div>
+      <div class="fld-row"><div class="fld"><label>Départ</label><input type="date" id="f17"></div><div class="fld"><label>Retour</label><input type="date" id="f18"></div></div>
+    </div>`;
+    c += `<button class="btn primary" id="save-el-btn" onclick="saveEl()">Ajouter</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'edit_element' && EDIT) {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">${icon('edit')} Modifier élément</h2>`;
+    c += `<div class="fld"><label>Nom *</label><input id="f1" value="${escHtml(EDIT.nom)}"></div>`;
+    c += '<div class="fld-row"><div class="fld"><label>Rubrique</label><select id="f2">';
+    for (const r of RUB) c += `<option value="${r.id}" ${r.id === EDIT.rubrique ? 'selected' : ''}>${r.emoji} ${r.n}</option>`;
+    c += '</select></div><div class="fld"><label>Statut</label><select id="f3">';
+    for (const s of STAT) c += `<option value="${s.id}" ${s.id === EDIT.statut ? 'selected' : ''}>${s.l}</option>`;
+    c += '</select></div></div>';
+    c += `<div class="fld"><label>Description</label><textarea id="f4">${escHtml(EDIT.description || '')}</textarea></div>`;
+    c += `<div class="fld-row"><div class="fld"><label>Dimensions</label><input id="f5" value="${escHtml(EDIT.dimensions || '')}"></div><div class="fld"><label>Quantité</label><input type="number" id="f6" value="${EDIT.quantite || 1}"></div></div>`;
+    c += `<div class="fld-row"><div class="fld"><label>Couleur</label><input id="f7" value="${escHtml(EDIT.couleur || '')}"></div><div class="fld"><label>Matière</label><input id="f8" value="${escHtml(EDIT.matiere || '')}"></div></div>`;
+    c += `<div class="fld"><label>Tags</label><input id="f9" value="${escHtml(EDIT.tags || '')}"></div>`;
+    c += `<div class="accessoire-section"><div class="accessoire-title">🎭 Accessoire</div>
+      <div class="fld-row"><div class="fld"><label>Scène</label><input id="f10" value="${escHtml(EDIT.scene || '')}"></div><div class="fld"><label>Personnage</label><input id="f11" value="${escHtml(EDIT.role || '')}"></div></div>
+      <div class="fld"><label>Date jeu</label><input type="date" id="f12" value="${EDIT.dateJeu || ''}"></div>
+      <div class="fld"><label>Continuité</label><input id="f13" value="${escHtml(EDIT.continuity || '')}"></div>
+    </div>`;
+    if (state.D.loueurs.length) {
+      c += '<div class="fld"><label>Loueur</label><select id="f14"><option value="">Aucun</option>';
+      for (const l of state.D.loueurs) c += `<option value="${l.id}" ${l.id === EDIT.loueurId ? 'selected' : ''}>${escHtml(l.nom)}</option>`;
+      c += '</select></div>';
+    }
+    c += `<div class="fld-row"><div class="fld"><label>Estimé €</label><input type="number" id="f15" value="${EDIT.coutLocation || ''}"></div><div class="fld"><label>Réel €</label><input type="number" id="f16" value="${EDIT.coutReel || ''}"></div></div>`;
+    c += `<div class="fld-row"><div class="fld"><label>Départ</label><input type="date" id="f17" value="${EDIT.dateDepart || ''}"></div><div class="fld"><label>Retour</label><input type="date" id="f18" value="${EDIT.dateRetour || ''}"></div></div>`;
+    c += `<button class="btn primary" onclick="updateEl()">Enregistrer</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'nl') {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">${icon('store')} Nouveau loueur</h2>`;
+    c += `<div class="fld"><label>Nom *</label><input id="f1"></div>`;
+    c += `<div class="fld"><label>Spécialité</label><input id="f2"></div>`;
+    c += `<div class="fld-row"><div class="fld"><label>Contact</label><input id="f3"></div><div class="fld"><label>Téléphone</label><input type="tel" id="f4"></div></div>`;
+    c += `<div class="fld"><label>Email</label><input type="email" id="f5"></div>`;
+    c += `<button class="toggle-more" onclick="toggleMore()">${icon(MORE ? 'chevUp' : 'chevDown')} ${MORE ? 'Moins' : 'Plus'}</button>`;
+    c += `<div class="form-extra ${MORE ? '' : 'hidden'}"><div class="fld"><label>Adresse</label><input id="f6"></div><div class="fld"><label>Notes</label><textarea id="f7"></textarea></div></div>`;
+    c += `<button class="btn primary" onclick="saveLo()">Ajouter</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'edit_loueur' && EDIT) {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">${icon('edit')} Modifier loueur</h2>`;
+    c += `<div class="fld"><label>Nom *</label><input id="f1" value="${escHtml(EDIT.nom)}"></div>`;
+    c += `<div class="fld"><label>Spécialité</label><input id="f2" value="${escHtml(EDIT.specialite || '')}"></div>`;
+    c += `<div class="fld-row"><div class="fld"><label>Contact</label><input id="f3" value="${escHtml(EDIT.contact || '')}"></div><div class="fld"><label>Téléphone</label><input type="tel" id="f4" value="${escHtml(EDIT.telephone || '')}"></div></div>`;
+    c += `<div class="fld"><label>Email</label><input type="email" id="f5" value="${escHtml(EDIT.email || '')}"></div>`;
+    c += `<div class="fld"><label>Adresse</label><input id="f6" value="${escHtml(EDIT.adresse || '')}"></div>`;
+    c += `<div class="fld"><label>Notes</label><textarea id="f7">${escHtml(EDIT.notes || '')}</textarea></div>`;
+    c += `<button class="btn primary" onclick="updateLo()">Enregistrer</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'ndep') {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">${icon('dollar')} Nouvelle dépense</h2>`;
+    c += `<div class="fld"><label>Description *</label><input id="f2"></div>`;
+    c += '<div class="fld-row"><div class="fld"><label>Montant € *</label><input type="number" step="0.01" id="f4"></div><div class="fld"><label>Type</label><select id="f1">';
+    for (const t of TDEP) c += `<option value="${t.id}">${t.l}</option>`;
+    c += '</select></div></div>';
+    c += `<div class="fld-row"><div class="fld"><label>Date</label><input type="date" id="f5" value="${new Date().toISOString().split('T')[0]}"></div><div class="fld"><label>Fournisseur</label><input id="f6"></div></div>`;
+    c += `<button class="toggle-more" onclick="toggleMore()">${icon(MORE ? 'chevUp' : 'chevDown')} ${MORE ? 'Moins' : 'Estimé'}</button>`;
+    c += `<div class="fld ${MORE ? '' : 'hidden'}"><label>Estimé €</label><input type="number" step="0.01" id="f3"></div>`;
+    c += `<button class="btn primary" onclick="saveDep()">Ajouter</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'edit_depense' && EDIT) {
+    c = `<div class="modal-bar"></div><h2 class="modal-title">${icon('edit')} Modifier dépense</h2>`;
+    c += `<div class="fld"><label>Description</label><input id="f2" value="${escHtml(EDIT.description || '')}"></div>`;
+    c += '<div class="fld-row"><div class="fld"><label>Montant €</label><input type="number" step="0.01" id="f4" value="' + (EDIT.montant || '') + '"></div><div class="fld"><label>Type</label><select id="f1">';
+    for (const t of TDEP) c += `<option value="${t.id}" ${t.id === EDIT.type ? 'selected' : ''}>${t.l}</option>`;
+    c += '</select></div></div>';
+    c += `<div class="fld-row"><div class="fld"><label>Date</label><input type="date" id="f5" value="${EDIT.date || ''}"></div><div class="fld"><label>Fournisseur</label><input id="f6" value="${escHtml(EDIT.fournisseur || '')}"></div></div>`;
+    c += `<div class="fld"><label>Estimé €</label><input type="number" step="0.01" id="f3" value="${EDIT.estime || ''}"></div>`;
+    c += `<button class="btn primary" onclick="updateDep()">Enregistrer</button><button class="btn danger" onclick="delDep()">Supprimer</button><button class="btn ghost" onclick="modal(null)">Annuler</button>`;
+  }
+  else if (M === 'rub') {
+    const rb = gr(state.RB);
+    if (!rb) return '';
+    const els = [];
+    if (state.DC && state.DC.elements) for (const e of state.DC.elements) if (e.rubrique === rb.id) els.push(e);
+    c = `<div class="modal-bar"></div>
+      <div class="rub-modal-head"><div class="rub-modal-icon" style="background:${rb.c}20">${rb.emoji}</div><div><h3>${rb.n}</h3><small>${els.length} éléments</small></div></div>`;
+
+    const phs = [];
+    for (const e of els) if (e.photos) for (const ph of e.photos) phs.push({ data: ph, nom: e.nom });
+    if (phs.length) {
+      c += '<div class="rub-photo-strip">';
+      for (let i = 0; i < phs.length; i++) c += `<img src="${phs[i].data}" onclick="event.stopPropagation();openRubPh('${state.RB}',${i})" loading="lazy">`;
+      c += '</div>';
+    }
+
+    if (!els.length) {
+      c += `<div class="empty-state sm">${icon('box', 'empty-icon')}<p>Aucun élément</p></div>`;
+    } else {
+      c += '<div class="rub-el-list">';
+      for (const e of els) {
+        const st = gs(e.statut);
+        c += `<div class="card ${e.urgent ? 'urgent' : ''}" onclick="goToRubEl('${e.id}')">
+          <div class="card-avatar" style="font-size:18px">${e.photos && e.photos.length ? `<img src="${e.photos[0]}" style="width:40px;height:40px;object-fit:cover;border-radius:8px">` : '📦'}</div>
+          <div class="card-body"><h3>${escHtml(e.nom)}${e.urgent ? ' <span class="urgent-dot"></span>' : ''}</h3><span class="badge" style="--bc:${st.c}">${st.l}</span></div>
+        </div>`;
+      }
+      c += '</div>';
+    }
+    c += `<button class="btn primary" style="margin-top:12px" onclick="modal('ne')">Ajouter un élément</button>`;
+  }
+
+  return `<div class="modal-overlay" onclick="modal(null)"><div class="modal-panel" onclick="event.stopPropagation()">${c}</div></div>`;
+}
+
+
+// ============================================
+// app.js
+// ============================================
+// ============================================
+// app.js — Main Controller
+// ============================================
+
+
+
+
+
+// ── Expose state for inline onclick handlers ──
+window._store = state;
+
+// ── Init Firebase ──
+initFirebase();
+
+// ── Network listeners ──
+window.addEventListener('online', () => { state.ONLINE = true; R(); });
+window.addEventListener('offline', () => { state.ONLINE = false; R(); });
+
+// ── Save shortcut ──
+function sv() { saveToFirebase(R); }
+
+// ── Render ──
+function R() {
+  const app = document.getElementById('app');
+  if (!state.CODE) {
+    app.innerHTML = rLogin();
+    return;
+  }
+
+  let h = rHeader();
+  h += '<main class="cnt">';
+  if (state.V === 'home') h += rHome();
+  else if (state.V === 'proj') h += rProj();
+  else if (state.V === 'dec') h += rDec();
+  else if (state.V === 'el') h += rEl();
+  else if (state.V === 'lou') h += rLou();
+  else if (state.V === 'loud') h += rLouD();
+  else if (state.V === 'rent') h += rRent();
+  else if (state.V === 'dep') h += rDep();
+  else if (state.V === 'acc') h += rAcc();
+  else if (state.V === 'search') h += rSearch();
+  h += '</main>';
+  h += rNavbar();
+  if (state.M) h += rModal();
+  if (state.MN) h += rMenu();
+  if (state.VW && state.VWC) h += rViewer();
+  app.innerHTML = h;
+}
+
+// ── Navigation ──
+window.go = function(v, id) {
+  state.VW = null; state.VWC = null; state.GSQ = '';
+  if (v === 'home') { state.V = 'home'; state.P = null; state.DC = null; state.EL = null; }
+  else if (v === 'proj') { state.P = state.D.projets.find(p => p.id === id) || null; state.V = 'proj'; state.DC = null; state.EL = null; }
+  else if (v === 'dec') { if (state.P && state.P.decors) state.DC = state.P.decors.find(d => d.id === id) || null; state.V = 'dec'; state.EL = null; state.TB = 'rub'; }
+  else if (v === 'el') { if (state.DC && state.DC.elements) state.EL = state.DC.elements.find(e => e.id === id) || null; state.V = 'el'; }
+  else if (v === 'lou') { state.V = 'lou'; state.LO = null; }
+  else if (v === 'loud') { state.LO = state.D.loueurs.find(l => l.id === id) || null; state.V = 'loud'; }
+  else if (v === 'rent') { state.V = 'rent'; state.RTL = 'all'; }
+  else if (v === 'dep') { state.V = 'dep'; }
+  else if (v === 'acc') { state.V = 'acc'; state.SQ = ''; }
+  else if (v === 'search') { state.V = 'search'; }
+  R();
+};
+
+window.goTo = function(pId, dId, eId) {
+  state.P = state.D.projets.find(p => p.id === pId) || null;
+  if (dId && state.P && state.P.decors) state.DC = state.P.decors.find(d => d.id === dId) || null;
+  if (eId && state.DC && state.DC.elements) state.EL = state.DC.elements.find(e => e.id === eId) || null;
+  state.V = eId ? 'el' : (dId ? 'dec' : 'proj');
+  R();
+};
+
+window.goToRubEl = function(eId) {
+  if (state.DC && state.DC.elements) state.EL = state.DC.elements.find(e => e.id === eId) || null;
+  state.M = null; state.V = 'el'; R();
+};
+
+// ── UI state ──
+window.modal = function(m, id) { state.M = m; state.RB = id || null; state.PENDING_FILES = []; state.EDIT = null; state.MORE = false; R(); };
+window.edit = function(t, o) { state.M = 'edit_' + t; state.EDIT = o; state.MORE = true; R(); };
+window.menu = function(v) { state.MN = v; R(); };
+window.setTab = function(t) { state.TB = t; R(); };
+window.setGSQ = function(q) { state.GSQ = q; R(); };
+window.setSQ = function(q) { state.SQ = q; R(); };
+window.toggleMore = function() { state.MORE = !state.MORE; R(); };
+window.setLTab = function(t) { state.LTAB = t; R(); };
+window.setRentTab = function(v) { state.RTL = v; R(); };
+window.setTB = function(v) { state.TB = v; R(); };
+
+// ── Photo viewer ──
+window.openPh = function(c, i) { state.VWC = c; state.VWI = i; state.VW = true; R(); };
+window.closePh = function() { state.VW = null; state.VWC = null; R(); };
+window.navPh = function(d) { if (state.VWC) { state.VWI += d; if (state.VWI < 0) state.VWI = state.VWC.length - 1; if (state.VWI >= state.VWC.length) state.VWI = 0; R(); } };
+window.openRubPh = function(rubId, idx) {
+  const phs = [];
+  if (state.DC && state.DC.elements) for (const e of state.DC.elements) {
+    if (e.rubrique === rubId && e.photos) for (const ph of e.photos) phs.push({ data: ph, nom: e.nom });
+  }
+  if (phs.length) window.openPh(phs, idx);
+};
+window.openPortfolioGroup = function(rubId, idx) {
+  const phs = [];
+  if (state.DC && state.DC.elements) for (const e of state.DC.elements) {
+    if (e.rubrique === rubId && e.photos) for (const ph of e.photos) phs.push({ data: ph, nom: e.nom });
+  }
+  if (phs.length) window.openPh(phs, idx || 0);
+};
+window.setStat = function(s) { if (state.EL) { state.EL.statut = s; sv(); R(); } };
+window.toggleUrg = function() { if (state.EL) { state.EL.urgent = !state.EL.urgent; sv(); R(); } };
+
+// ── Photo upload helpers ──
+window.prvPh = function(e) {
+  const files = e.target.files;
+  state.PENDING_FILES = Array.from(files);
+  const pr = document.getElementById('phpr'), pl = document.getElementById('phpl');
+  if (pr && pl && state.PENDING_FILES.length) {
+    pr.innerHTML = `<span style="color:var(--accent);font-size:13px">${state.PENDING_FILES.length} photo(s) sélectionnée(s)</span>`;
+    pl.style.display = 'none';
+  }
+};
+
+window.addPh = function() {
+  const i = document.createElement('input');
+  i.type = 'file'; i.accept = 'image/*'; i.multiple = true;
+  i.onchange = function(e) {
+    const files = e.target.files;
+    let uploaded = 0;
+    const total = files.length;
+    for (let j = 0; j < files.length; j++) {
+      uploadPhoto(files[j]).then(url => {
+        if (url) { if (!state.EL.photos) state.EL.photos = []; state.EL.photos.push(url); }
+        uploaded++;
+        if (uploaded === total) { sv(); R(); }
+      });
+    }
+  };
+  i.click();
+};
+
+window.delPh = function() {
+  if (!confirm('Supprimer cette photo ?')) return;
+  if (state.EL && state.EL.photos) {
+    state.EL.photos.splice(state.VWI, 1);
+    sv();
+    if (state.VWI >= state.EL.photos.length) state.VWI = Math.max(0, state.EL.photos.length - 1);
+    if (!state.EL.photos.length) { state.VW = null; state.VWC = null; }
+    R();
+  } else { state.VW = null; state.VWC = null; R(); }
+};
+
+// ── Login / Join ──
+window.joinProject = function() {
+  if (!HAS_FIREBASE) { alert("Mode rejoindre disponible uniquement avec Firebase."); return; }
+  const code = document.getElementById('join-code').value.toUpperCase().trim();
+  if (code.length !== 6) return alert('Le code doit contenir 6 caractères');
+  checkProjectExists(code).then(exists => {
+    if (exists) { state.CODE = code; localStorage.setItem('dp_code', code); subscribeToProject(code, R); }
+    else alert('Projet introuvable.');
+  });
+};
+
+window.createProject = function() {
+  if (!HAS_FIREBASE) {
+    state.CODE = 'LOCAL';
+    localStorage.setItem('dp_code', 'LOCAL');
+    state.D = loadLocalData();
+    if (!state.D.projets) state.D = { projets: [], loueurs: [], depenses: [] };
+    state.V = 'home';
+    R();
+    return;
+  }
+  const code = (function() { const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c = ''; for (let i = 0; i < 6; i++) c += chars[Math.floor(Math.random() * chars.length)]; return c; })();
+  state.CODE = code;
+  localStorage.setItem('dp_code', code);
+  state.D = { projets: [], loueurs: [], depenses: [] };
+  createFirebaseProject().then(() => subscribeToProject(code, R));
+};
+
+window.leaveProject = function() {
+  if (!confirm('Quitter ce projet ?')) return;
+  if (state.UNSUB) state.UNSUB();
+  state.CODE = null;
+  localStorage.removeItem('dp_code');
+  if (!HAS_FIREBASE) saveLocalData(state.D);
+  state.D = { projets: [], loueurs: [], depenses: [] };
+  state.MN = false;
+  R();
+};
+
+window.copyCode = function() {
+  navigator.clipboard.writeText(state.CODE).then(() => alert('Code copié: ' + state.CODE));
+};
+
+// ── CRUD: Projets ──
+window.saveP = function() { const n = gv('f1'); if (!n) return alert('Nom requis'); state.D.projets.push({ id: uid(), nom: n, type: gv('f2') || 'film', production: gv('f3'), realisateur: gv('f4'), chefDeco: gv('f5'), notes: gv('f6'), decors: [] }); sv(); state.M = null; R(); };
+window.updateP = function() { const n = gv('f1'); if (!n) return alert('Nom requis'); state.EDIT.nom = n; state.EDIT.type = gv('f2'); state.EDIT.production = gv('f3'); state.EDIT.realisateur = gv('f4'); state.EDIT.chefDeco = gv('f5'); state.EDIT.notes = gv('f6'); sv(); state.M = null; R(); };
+window.delP = function() { if (!confirm('Supprimer ?')) return; state.D.projets = state.D.projets.filter(p => p.id !== state.P.id); sv(); state.P = null; state.V = 'home'; R(); };
+
+// ── CRUD: Décors ──
+window.saveDC = function() { const n = gv('f1'); if (!n) return alert('Nom requis'); if (!state.P.decors) state.P.decors = []; state.P.decors.push({ id: uid(), nom: n, adresse: gv('f2'), interieur: gv('f3') === '1', studio: gv('f4') === '1', statut: gv('f5') || 'a_preparer', dateInstallation: gv('f6'), dateTournage: gv('f7'), notes: gv('f8'), elements: [] }); sv(); state.M = null; R(); };
+window.updateDC = function() { const n = gv('f1'); if (!n) return alert('Nom requis'); state.EDIT.nom = n; state.EDIT.adresse = gv('f2'); state.EDIT.interieur = gv('f3') === '1'; state.EDIT.studio = gv('f4') === '1'; state.EDIT.statut = gv('f5'); state.EDIT.dateInstallation = gv('f6'); state.EDIT.dateTournage = gv('f7'); state.EDIT.notes = gv('f8'); sv(); state.M = null; R(); };
+window.delD = function() { if (!confirm('Supprimer ?')) return; state.P.decors = state.P.decors.filter(d => d.id !== state.DC.id); sv(); state.DC = null; state.V = 'proj'; R(); };
+
+// ── CRUD: Éléments ──
+window.saveEl = function() {
+  const n = gv('f1'); if (!n) return alert('Nom requis');
+  const btn = document.getElementById('save-el-btn'); if (btn) btn.disabled = true;
+  if (!state.DC.elements) state.DC.elements = [];
+  const el = { id: uid(), nom: n, rubrique: gv('f2') || 'mobilier', statut: gv('f3') || 'a_sourcer', description: gv('f4'), dimensions: gv('f5'), quantite: gv('f6') || 1, couleur: gv('f7'), matiere: gv('f8'), tags: gv('f9'), scene: gv('f10'), role: gv('f11'), dateJeu: gv('f12'), continuity: gv('f13'), loueurId: gv('f14'), coutLocation: gv('f15'), coutReel: gv('f16'), dateDepart: gv('f17'), dateRetour: gv('f18'), photos: [] };
+
+  if (!state.PENDING_FILES.length) { state.DC.elements.push(el); sv(); state.M = null; state.PENDING_FILES = []; R(); return; }
+
+  let uploaded = 0;
+  const total = state.PENDING_FILES.length;
+  const status = document.getElementById('upload-status');
+  if (status) status.innerHTML = `<div class="upload-progress"><span>Upload 0/${total}</span><div class="upload-bar"><div class="upload-fill" style="width:0%"></div></div></div>`;
+
+  for (const file of state.PENDING_FILES) {
+    uploadPhoto(file).then(url => {
+      if (url) el.photos.push(url);
+      uploaded++;
+      if (status) status.innerHTML = `<div class="upload-progress"><span>Upload ${uploaded}/${total}</span><div class="upload-bar"><div class="upload-fill" style="width:${Math.round(uploaded / total * 100)}%"></div></div></div>`;
+      if (uploaded === total) { state.DC.elements.push(el); sv(); state.M = null; state.PENDING_FILES = []; R(); }
+    });
+  }
+};
+window.updateEl = function() { const n = gv('f1'); if (!n) return alert('Nom requis'); const E = state.EDIT; E.nom = n; E.rubrique = gv('f2'); E.statut = gv('f3'); E.description = gv('f4'); E.dimensions = gv('f5'); E.quantite = gv('f6'); E.couleur = gv('f7'); E.matiere = gv('f8'); E.tags = gv('f9'); E.scene = gv('f10'); E.role = gv('f11'); E.dateJeu = gv('f12'); E.continuity = gv('f13'); E.loueurId = gv('f14'); E.coutLocation = gv('f15'); E.coutReel = gv('f16'); E.dateDepart = gv('f17'); E.dateRetour = gv('f18'); sv(); state.M = null; R(); };
+window.dupEl = function() { if (!confirm('Dupliquer ?')) return; const c = JSON.parse(JSON.stringify(state.EL)); c.id = uid(); c.nom += ' (copie)'; state.DC.elements.push(c); sv(); alert('Dupliqué !'); R(); };
+window.delE = function() { if (!confirm('Supprimer ?')) return; state.DC.elements = state.DC.elements.filter(e => e.id !== state.EL.id); sv(); state.EL = null; state.V = 'dec'; R(); };
+
+// ── CRUD: Loueurs ──
+window.saveLo = function() { const n = gv('f1'); if (!n) return alert('Nom requis'); state.D.loueurs.push({ id: uid(), nom: n, specialite: gv('f2'), contact: gv('f3'), telephone: gv('f4'), email: gv('f5'), adresse: gv('f6'), notes: gv('f7') }); sv(); state.M = null; R(); };
+window.updateLo = function() { const n = gv('f1'); if (!n) return alert('Nom requis'); state.EDIT.nom = n; state.EDIT.specialite = gv('f2'); state.EDIT.contact = gv('f3'); state.EDIT.telephone = gv('f4'); state.EDIT.email = gv('f5'); state.EDIT.adresse = gv('f6'); state.EDIT.notes = gv('f7'); sv(); state.M = null; R(); };
+window.delL = function() { if (!confirm('Supprimer ?')) return; state.D.loueurs = state.D.loueurs.filter(l => l.id !== state.LO.id); sv(); state.LO = null; state.V = 'lou'; R(); };
+
+// ── CRUD: Dépenses ──
+window.saveDep = function() { const m = gv('f4'); if (!m) return alert('Montant requis'); state.D.depenses.push({ id: uid(), projetId: state.P ? state.P.id : null, type: gv('f1'), description: gv('f2'), estime: parseFloat(gv('f3')) || 0, montant: parseFloat(m), date: gv('f5'), fournisseur: gv('f6') }); sv(); state.M = null; R(); };
+window.updateDep = function() { const m = gv('f4'); if (!m) return alert('Montant requis'); state.EDIT.type = gv('f1'); state.EDIT.description = gv('f2'); state.EDIT.estime = parseFloat(gv('f3')) || 0; state.EDIT.montant = parseFloat(m); state.EDIT.date = gv('f5'); state.EDIT.fournisseur = gv('f6'); sv(); state.M = null; R(); };
+window.delDep = function() { if (!confirm('Supprimer ?')) return; state.D.depenses = state.D.depenses.filter(d => d.id !== state.EDIT.id); sv(); state.M = null; R(); };
+window.editDep = function(id) { state.EDIT = state.D.depenses.find(d => d.id === id) || null; state.M = 'edit_depense'; R(); };
+
+// ── Register Service Worker ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function(err) {
+    console.log('SW registration failed:', err);
+  });
+}
+
+// ── Init ──
+if (state.CODE) {
+  if (!HAS_FIREBASE && state.CODE !== 'LOCAL') state.CODE = 'LOCAL';
+  subscribeToProject(state.CODE, R);
+} else {
+  R();
+}
+
+
+})();
+</script>
 </body>
 </html>
