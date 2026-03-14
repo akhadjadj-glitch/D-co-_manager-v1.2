@@ -1,1 +1,0 @@
-# D-co-_manager-v1.2
